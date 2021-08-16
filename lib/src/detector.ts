@@ -180,33 +180,6 @@ __________________________________
 				resul.key.id = "RABOT" + RandomName(11).toUpperCase() + resul.key.id
 				await this.client.relayWAMessage(resul)
 			}
-		} else if (/^(<tes)$/i.test(Command) && isOwner) {
-			const C: any = media?.message?.imageMessage
-			const a: proto.InteractiveMessage = {
-				footer: { text: "halo"},
-				body: { text: "ini body"},
-				header: {
-					title: "ini title header",
-					subtitle: "ini sub title",
-					imageMessage: C,
-				},
-				contextInfo: mess,
-				interactiveMessage: "shopsMessage",
-				shopsMessage: {
-					id: "1",
-					surface: 3,
-					type: 1,
-					messageVersion: 1
-				},
-				collectionMessage: {
-					bizJid: from,
-					id: "1",
-					messageVersion: 1
-				}
-			} as proto.InteractiveMessage
-			let z = await this.client.prepareMessageFromContent(from, { interactiveMessage: a}, {})
-			console.log(z)
-			await this.client.relayWAMessage(z)
 		} 
     }
     private getRegister() {
