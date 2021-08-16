@@ -5,10 +5,7 @@ export class AFK extends Registrasi {
     constructor() {
         super()
     }
-    public async AddAfk(
-        sender: string,
-        format: { id: string; from: string; alasan: string; time: number }
-    ): Promise<void> {
+    public async AddAfk(sender: string, format: { id: string; from: string; alasan: string; time: number }): Promise<void> {
         if (await this.checkAfk(sender)) return
         return void (await this._database.insert(format))
     }

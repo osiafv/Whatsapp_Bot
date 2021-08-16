@@ -41,7 +41,8 @@ export class groupMembers {
                 if (!Time) return
                 if (Number(Time.time) <= moment().unix()) {
 					let hasil: WAGroupParticipant[] = []
-                    Time.action?.map((value: any) => {
+					if (!Time.action) return
+                    Time.action.map((value: any) => {
                         hasil.push(...(groupMember?.filter((ress: WAGroupParticipant) => value.id !== ress.jid) || []))
                     })
                     res.sendMessage(from, IndAbsen(hasil, Number(groupMember?.length) - Number(Time.action.length)), MessageType.text, { contextInfo: { mentionedJid: hasil.map((value: WAGroupParticipant) => value.jid)}})

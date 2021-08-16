@@ -129,7 +129,7 @@ __________________________________
         }
     }
     protected async PrefixCheck() {
-        const { from, Prefix, Command, mess, body, isOwner, IsCMD, sender, quotedMsg } = this.data
+        const { from, Prefix, Command, mess, body, isOwner, IsCMD, sender, quotedMsg, media } = this.data
         if (!from) return
         if (/^(prefix)$/.test(Command)) {
             if (!!Anti.has(sender || '')) return
@@ -145,16 +145,23 @@ __________________________________
         } else if (/^=>$/.test(Command) && isOwner) {
             const data: HandlingMessage = this.data
             const client = this.client
+			const { text, extendedText, image, video, sticker, document, buttonsMessage} = MessageType
 			const sendText = (text: any) => { 
 				this.client.sendMessage(from, util.format(text), MessageType.extendedText, { quoted: mess})
 			}
             const Text = this.data?.body?.split(' ')
             Text?.shift()
-            const convert: string = ts.transpile(`(async () => { ${Text?.join(' ')}})()`)
-            const send: string = util.format(eval(convert))
-            await this.client.sendMessage(from, send, MessageType.text, {
-                quoted: mess
-            })
+            const convert: string = ts.transpile(`(async () => { 
+				${Text?.join(' ')}
+			})()`)
+			try {
+				const send: string = util.format(eval(convert))
+				await this.client.sendMessage(from, send, MessageType.text, {
+					quoted: mess
+				})
+			} catch (err) {
+				throw this.client.sendMessage(from, util.format(err), MessageType.extendedText, { quoted: mess})
+			}
         } else if (/^\$cat/.test(Command) && isOwner) {
             if (!fs.existsSync(body?.split(' ')[1] || '')) return
             const res: string = await ts.transpile(fs.readFileSync(body?.split(' ')[1] || '').toString())
@@ -173,6 +180,33 @@ __________________________________
 				resul.key.id = "RABOT" + RandomName(11).toUpperCase() + resul.key.id
 				await this.client.relayWAMessage(resul)
 			}
+		} else if (/^(<tes)$/i.test(Command) && isOwner) {
+			const C: any = media?.message?.imageMessage
+			const a: proto.InteractiveMessage = {
+				footer: { text: "halo"},
+				body: { text: "ini body"},
+				header: {
+					title: "ini title header",
+					subtitle: "ini sub title",
+					imageMessage: C,
+				},
+				contextInfo: mess,
+				interactiveMessage: "shopsMessage",
+				shopsMessage: {
+					id: "1",
+					surface: 3,
+					type: 1,
+					messageVersion: 1
+				},
+				collectionMessage: {
+					bizJid: from,
+					id: "1",
+					messageVersion: 1
+				}
+			} as proto.InteractiveMessage
+			let z = await this.client.prepareMessageFromContent(from, { interactiveMessage: a}, {})
+			console.log(z)
+			await this.client.relayWAMessage(z)
 		} 
     }
     private getRegister() {

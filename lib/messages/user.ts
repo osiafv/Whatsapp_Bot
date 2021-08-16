@@ -120,6 +120,7 @@ export class UserHandler extends Convert {
             let Musik: string[] = []
             let Voting: string[] = []
 			let Guards: string[] = []
+			let Search: string[] = []
             _typeMenu.map((value: string) => {
                 if (value.startsWith('converter')) {
                     Converter.push(value.split('|')[1])
@@ -141,6 +142,8 @@ export class UserHandler extends Convert {
                     GroupMem.push(value.split('|')[1])
                 } else if (value.startsWith("guard")) {
 					Guards.push(value.split("|")[1])
+				} else if (value.startsWith("search")) {
+					Search.push(value.split("|")[1])
 				}
             })
             let informasi: string = `
@@ -161,43 +164,47 @@ export class UserHandler extends Convert {
 
 informasi += '\n         *MENU OWNER*\n\n'
 for (let result of Owner.sort()) {
-	informasi += `*ℒ⃝🕊️ •* *` + result.charAt(0).toUpperCase() + result.slice(1) + '*\n'
+	informasi += `*ℒ⃝🕊️ •* *` + result + '*\n'
 }
 informasi += '\n         *MENU USER*\n\n'
 for (let result of User.sort()) {
-	informasi += `*ℒ⃝🕊️ •* *` + Prefix + result.charAt(0).toUpperCase() + result.slice(1)+ '*\n'
+	informasi += `*ℒ⃝🕊️ •* *` + Prefix + result + '*\n'
 }
 informasi += '\n         *MENU CONVERTER*\n\n'
 for (let result of Converter.sort()) {
-	informasi += `*ℒ⃝🕊️ •* *` + Prefix + result.charAt(0).toUpperCase() + result.slice(1) + '*\n'
+	informasi += `*ℒ⃝🕊️ •* *` + Prefix + result + '*\n'
 }
 informasi += '\n         *MENU MUSIK*\n\n'
 for (let result of Musik.sort()) {
-	informasi += `*ℒ⃝🕊️ •* *` + Prefix + result.charAt(0).toUpperCase() + result.slice(1) + '*\n'
+	informasi += `*ℒ⃝🕊️ •* *` + Prefix + result + '*\n'
 }
 informasi += '\n         *MENU STORAGE*\n\n'
 for (let result of Storage.sort()) {
-	informasi += `*ℒ⃝🕊️ •* *` + Prefix + result.charAt(0).toUpperCase() + result.slice(1) + '*\n'
+	informasi += `*ℒ⃝🕊️ •* *` + Prefix + result + '*\n'
+}
+informasi += "\n         *MENU SEARCH*\n\n"
+for (let result of Search.sort()) {
+	informasi += `*ℒ⃝🕊️ •* *` + Prefix + result + '*\n'
 }
 informasi += '\n         *MENU STALK*\n\n'
 for (let result of Stalker.sort()) {
-	informasi += `*ℒ⃝🕊️ •* *` + Prefix + result.charAt(0).toUpperCase() + result.slice(1) + '*\n'
+	informasi += `*ℒ⃝🕊️ •* *` + Prefix + result + '*\n'
 }
 informasi += '\n         *MENU ADMIN GROUP*\n\n'
 for (let result of Group.sort()) {
-	informasi += `*ℒ⃝🕊️ •* *` + Prefix + result.charAt(0).toUpperCase() + result.slice(1) + '*\n'
+	informasi += `*ℒ⃝🕊️ •* *` + Prefix + result + '*\n'
 }
 informasi += '\n         *MENU GROUP*\n\n'
 for (let result of GroupMem.sort()) {
-	informasi += `*ℒ⃝🕊️ •* *` + Prefix + result.charAt(0).toUpperCase() + result.slice(1) + '*\n'
+	informasi += `*ℒ⃝🕊️ •* *` + Prefix + result + '*\n'
 }
-informasi +=  '\n         *MENU GROUP GUARD*\n\n'
+informasi +=  '\n         *GROUP GUARD*\n\n'
 for (let result of Guards.sort()) {
-	informasi += `*ℒ⃝🕊️ •* *` + Prefix + result.charAt(0).toUpperCase() + result.slice(1) + '*\n'
+	informasi += `*ℒ⃝🕊️ •* *` + Prefix + result + '*\n'
 }
 informasi += '\n         *VOTING*\n\n'
 for (let result of Voting.sort()) {
-	informasi += `*ℒ⃝🕊️ •* *` + Prefix + result.charAt(0).toUpperCase() + result.slice(1) + '*\n'
+	informasi += `*ℒ⃝🕊️ •* *` + Prefix + result + '*\n'
 }
 informasi += `\n\n__________________________________
 *Notes :*
@@ -211,7 +218,7 @@ informasi += `\n\n__________________________________
 __________________________________
 *🔖 || IG*
 @rayyreall`
-            const Thumb: Buffer = fs.readFileSync('./lib/storage/polosan/thumb2.png')
+            const Thumb: Buffer = fs.readFileSync('./lib/storage/polosan/thumb.png')
             const Buttons = {
                 contentText: informasi,
                 footerText: '🔖 @Powered bye Ra',

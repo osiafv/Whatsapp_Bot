@@ -76,7 +76,17 @@ export function CheckCommand(Patert: string, Prefix: string, isOwner: boolean): 
     })
     return Status
 }
-
+export 	function RandomArray(array: any[]): any[]{
+	let awal = array.length, sampah, Random;
+	while (0 !== awal) {
+	  Random = Math.floor(Math.random() * awal);
+	  awal -= 1;
+	  sampah = array[awal];
+	  array[awal] = array[Random];
+	  array[Random] = sampah;
+	}
+	return array;
+  }
 export function CheckSticker(from: string, FileSha: string, Stick: Map<string, MapSticker[]>): boolean {
     let status: boolean = false
     if (FileSha == 'undefined') return status

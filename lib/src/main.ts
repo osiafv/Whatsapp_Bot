@@ -1,6 +1,6 @@
 import { config } from 'dotenv'
 config()
-import { WAChatUpdate, WAConnection } from '@adiwajshing/baileys'
+import { WAChatUpdate, WAConnection, proto } from '@adiwajshing/baileys'
 import { HandlerMsg } from './handler'
 import { HandlingMessage } from '../typings'
 import { Command } from './command'
@@ -28,6 +28,7 @@ export class Main {
         this.client.on('chat-update', async (chats: WAChatUpdate) => {
             const data: HandlingMessage | undefined = await this.message.handling(chats)
             if (data == undefined) return
+			if (!data.isOwner && !data.isGroupAdmins && (await this.database.CheckMuted(String(data.from)))) return
             this.detector = new Detector(this.client, data, this.database)
             this.detector.antiAll()
             if (data.isBot) return
@@ -38,8 +39,8 @@ export class Main {
             this.Respon.sendGlobal()
             new groupMembers(this.client, data).sendDataMembers()
             this.detector.CommnadGlobal()
-            if (/^(publik|public)/i.test(data.Command) && data.isOwner) {
-                let Body: string = data.body ? data.body : ''
+			if (/^(publik|public)/i.test(data.Command) && data.isOwner) {
+				let Body: string = data.body ? data.body : ''
                 if (/(on)/i.test(Body.split(' ')[1])) {
                     if (Public) return this.Ra.reply(data.from || '', IndPublicDuplicate(true), data.mess)
                     Public = true

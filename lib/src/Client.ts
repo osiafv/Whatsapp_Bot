@@ -1,4 +1,4 @@
-import { WAConnection, MessageType, proto } from '@adiwajshing/baileys'
+import { WAConnection, MessageType, proto, compressImage } from '@adiwajshing/baileys'
 import * as fs from 'fs'
 import { isUrl, Buffer, RandomName } from '../functions/function'
 import jimp from 'jimp'
@@ -67,37 +67,21 @@ export class Client {
     public async sendImage(from: string, media: Buffer | string, caption?: string, id?: proto.WebMessageInfo): Promise<void | Error> {
         try {
             if (typeof media !== 'string') {
-                const Path: string = `./lib/storage/temp/${RandomName(11)}.png`
-                await fs.writeFileSync(Path, media)
-                await jimp.read(Path, async (err, lenna) => {
-                    lenna.blur(10)
-                    const Media: string | Buffer = await lenna.getBufferAsync(lenna.getMIME())
-					if (typeof Media !== "string") return
-                    const data: proto.WebMessageInfo = id ? await this.Client.prepareMessage(from, media, MessageType.image, { quoted: id, thumbnail: Media, caption}): await this.Client.prepareMessage(from, media, MessageType.image, {
-                              thumbnail: Media,
-                              caption
-                          })
-                    if (fs.existsSync(Path)) fs.unlinkSync(Path)
+				const Media: any = await compressImage(media)
+				const data: proto.WebMessageInfo = id ? await this.Client.prepareMessage(from, media, MessageType.image, { quoted: id, thumbnail: Media, caption}): await this.Client.prepareMessage(from, media, MessageType.image, {
+					thumbnail: Media,
+					caption
+				})
                     return void (await this.Client.relayWAMessage(data))
-                })
             } else if (fs.existsSync(media)) {
-                await jimp.read(media, async (err, lenna) => {
-                    lenna.blur(10)
-                    const Media: Buffer = await lenna.getBufferAsync(lenna.getMIME())
-                    const data: proto.WebMessageInfo = id ? await this.Client.prepareMessage(from, Media, MessageType.image, { quoted: id, thumbnail: Media.toString(), caption }) : await this.Client.prepareMessage(from, Media, MessageType.image, { thumbnail: Media.toString(), caption })
-                    return void (await this.Client.relayWAMessage(data))
-                })
+                const Media: any = await compressImage(media)
+                const data: proto.WebMessageInfo = id ? await this.Client.prepareMessage(from, Media, MessageType.image, { quoted: id, thumbnail: Media, caption }) : await this.Client.prepareMessage(from, Media, MessageType.image, { thumbnail: Media, caption })
+                return void (await this.Client.relayWAMessage(data))
             } else if (isUrl(media)) {
                 let Media: Buffer = await Buffer(media)
-                const Path: string = `./lib/storage/temp/${RandomName(11)}.png`
-                await fs.writeFileSync(Path, Media)
-                await jimp.read(Path, async (err, lenna) => {
-                    lenna.blur(10)
-                    const Thumb: Buffer = await lenna.getBufferAsync(lenna.getMIME())
-                    const data: proto.WebMessageInfo = id ? await this.Client.prepareMessage(from, Media, MessageType.image, { quoted: id, thumbnail: Thumb.toString(), caption }) : await this.Client.prepareMessage(from, Media, MessageType.image, { thumbnail: Thumb.toString(), caption })
-                    if (fs.existsSync(Path)) fs.unlinkSync(Path)
-                    return void (await this.Client.relayWAMessage(data))
-                })
+                const Thumb: any = await  compressImage(Media)
+                const data: proto.WebMessageInfo = id ? await this.Client.prepareMessage(from, Media, MessageType.image, { quoted: id, thumbnail: Thumb, caption }) : await this.Client.prepareMessage(from, Media, MessageType.image, { thumbnail: Thumb, caption })
+                return void (await this.Client.relayWAMessage(data))
             } else {
                 throw new Error('Input Invalid')
             }

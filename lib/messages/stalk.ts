@@ -1,12 +1,12 @@
 import { Storager } from '.'
 import { WAConnection, MessageType } from '@adiwajshing/baileys'
-import { Commands, instaStalk, TiktokStalk } from '../typings'
-import { InstaStalk, InstaStalkV2, InstaStalkV3, ytStalk, tiktokStalk } from '../routers/api'
+import { Commands, instaStalk, TiktokStalk,  GhStalk  } from '../typings'
+import { InstaStalk, InstaStalkV2, InstaStalkV3, ytStalk, tiktokStalk, githubStalk  } from '../routers/api'
 import { ChannelSearchResult } from 'yt-search'
-import { IgStalk, IndUserKosong, IndUsernameNoKosong, IndYtStalk, IndYtStalkError,  IndTiktokStalk, IndMasukkanUsernameNoUrl,  IndTungguSearch  } from '../lang/ind'
+import { IgStalk, IndUserKosong, IndUsernameNoKosong, IndYtStalk, IndYtStalkError,  IndTiktokStalk, IndMasukkanUsernameNoUrl,  IndTungguSearch,  IndGhStalk   } from '../lang/ind'
 import { Client } from '../src/Client'
 import { isUrl } from '../functions/function'
-import { ConnectMoongo } from '../database/mongoodb/main'
+import { ConnectMoongo } from '../database/mongoodb/main';
 
 export class Stalking extends Storager {
     constructor(public Ra: Client, public database: ConnectMoongo) {
@@ -17,7 +17,21 @@ export class Stalking extends Storager {
         this.insta()
         this.YoutubeStalk()
         this.TiktokStalk()
+		this.GHStalk()
     }
+	private async GHStalk () {
+		globalThis.CMD.on("stalk|ghstalk <username>", ["ghstalk", "githubstalk"], async (res: WAConnection, data: Commands) => {
+			const { from, args, mess } = data
+			if (!args[0]) return  this.Ra.reply(from, IndUsernameNoKosong("Github"), mess)
+			if (isUrl(args[0])) return await this.Ra.reply(from, IndMasukkanUsernameNoUrl('Github'), mess)
+			this.Ra.reply(from,  IndTungguSearch(), mess)
+				githubStalk(String(args[0])).then((result:  GhStalk ) => {
+					return void this.Ra.sendImage(from, result.avatar_url,  IndGhStalk(result), mess)
+				}).catch(() => {
+					return void this.Ra.reply(from,  IndUserKosong("Github"), mess)
+				})
+		})
+	}
     private async TiktokStalk() {
         globalThis.CMD.on('stalk|tiktokstalk <username>', ['stalktiktok', 'tiktokstalk'], async (res: WAConnection, data: Commands) => {
 			const { from, mess, args } = data

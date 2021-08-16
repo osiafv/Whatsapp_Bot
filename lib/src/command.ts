@@ -72,7 +72,7 @@ export class Command {
                     }
                     if (typeof event.callback !== 'function') continue
                     if ((usedPrefix = (match || [])[0])) {
-                        const _text: string | undefined = body?.toLocaleLowerCase().replace(usedPrefix, '').trim() || ''
+                        const _text: string | undefined = body?.replace(usedPrefix, '').trim() || ''
                         let [command, ...args] = _text.split(' ')
                         args = args || []
                         let _args: string[] = _text.split(' ').slice(1)

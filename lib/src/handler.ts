@@ -18,7 +18,7 @@ export class HandlerMsg extends Validation {
             const content: string = JSON.stringify(message?.message)
             const pushname: string = mess?.key.fromMe ? this.client.user.name : contacts?.notify || contacts.vname || contacts.name || 'Tidak Terdeteksi'
             const fromMe: boolean | undefined | null = mess?.key ? mess.key.fromMe : false
-            const isBot: boolean | undefined = mess?.key ? mess.key.id?.startsWith('3EB0') : false
+            const isBot: boolean | undefined = mess?.key ? mess.key.id?.startsWith('3EB0') ? true : mess.key.id?.startsWith("RABOT") : false
             const botNumber: string = this.client.user.jid
             const bot: WAGroupParticipant | {} | undefined = isGroupMsg ? groupMetadata?.participants.find((v) => v.jid === this.client.user.jid) : {}
             const user: WAGroupParticipant | {} | undefined = isGroupMsg ? groupMetadata?.participants.find((v) => v.jid === this.client.user.jid) : {}

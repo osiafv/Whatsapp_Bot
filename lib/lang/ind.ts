@@ -1,8 +1,10 @@
-import { instaStalk, TiktokStalk, LirikResult, Azlirik } from '../typings'
-import { ChannelSearchResult } from 'yt-search'
+import { instaStalk, TiktokStalk, LirikResult, Azlirik,  GhStalk, Googlesearch, Question, Answer, PlayStore  } from '../typings'
+import { ChannelSearchResult, VideoSearchResult  } from 'yt-search'
 import { WAGroupMetadata, WAGroupParticipant } from '@adiwajshing/baileys'
 import parsems from 'parse-ms';
 import moment from "moment-timezone";
+import { convertAngka } from "../functions/function"
+const html = require("html-filter");
 
 moment.tz.setDefault('Asia/Jakarta').locale('id')
 
@@ -12,12 +14,12 @@ export const IndTest = (): string => {
 }
 export const IndTunggu = (): string => {
 	let kata: string[] = [
-		`_Tunggu sebentar sedang menjalankan perintah..._`,
-		`_Mohon tunggu sebentar ya kak bot sedang mengeksekusi perintah_`,
-		`_Tunggu sebentar ya kak_`,
-		`_Harap tunggu sebentar bot sedang mengeksekusi perintah_`,
-		`_Mohon tunggu sebentar bot sedang melaksanakan perintah_`,
-		`_Harap tunggu sesaat bot sedang melaksanakan perintah anda_`
+		`Tunggu sebentar sedang menjalankan perintah...`,
+		`Mohon tunggu sebentar ya kak bot sedang mengeksekusi perintah`,
+		`Tunggu sebentar ya kak`,
+		`Harap tunggu sebentar bot sedang mengeksekusi perintah`,
+		`Mohon tunggu sebentar bot sedang melaksanakan perintah`,
+		`Harap tunggu sesaat bot sedang melaksanakan perintah anda`
 	];
 	let Loading: string[] = [
 		`*⏳*`, `*⌛*`, `*⏱*`, `*⏲*`, `*🕰*`, `*🕔*`, `*🕖*`, `*🕙*`, `*🕧*`, `*🕞*`
@@ -29,9 +31,9 @@ export const IndBukanVid = (): string => {
 }
 export const IndBukanAud = (): string => {
 	let kata: string[] = [
-		`*「❗」* _Maaf kak untuk menggunakan perintah ini harap reply audio dengan caption_`,
-		`*「❗」*  _Maaf kak harap reply audio menggunakan caption_`,
-		`*「❗」*  _Maaf kak bot tidak dapat melaksanakan perintah dikarenakan bot tidak menerima audio_`
+		`*「❗」* Maaf kak untuk menggunakan perintah ini harap reply audio dengan caption`,
+		`*「❗」*  Maaf kak harap reply audio menggunakan caption`,
+		`*「❗」*  Maaf kak bot tidak dapat melaksanakan perintah dikarenakan bot tidak menerima audio`
 	]
     return  kata[Math.floor(Math.random() * (kata.length))].trim()
 }
@@ -41,17 +43,17 @@ export const IndSuccesToVid = (Proses: string) => {
 		`*✔*`
 	]
 	let kata: string[] = [
-		`_Success mengubah sticker menjadi video dengan waktu ${Proses}_`,
-		`_Berhasil mengubah sticker menjadi video dalam waktu ${Proses}_`,
-		`_Berhasil melaksanakan perintah dengan waktu ${Proses}_`
+		`Success mengubah sticker menjadi video dengan waktu ${Proses}`,
+		`Berhasil mengubah sticker menjadi video dalam waktu ${Proses}`,
+		`Berhasil melaksanakan perintah dengan waktu ${Proses}`
 	]
 	return Success[Math.floor(Math.random() * (Success.length))] + " " + kata[Math.floor(Math.random() * (kata.length))].trim()
 }
 export const IndToVid = (): string => {
 	let kata: string[] = [
-		`*「❗」*  _Maaf kak terjadi kesalahan saat conversi sticker menjadi video harap gunakan media yang lain_`,
-		`*「❗」*  _Mohon maaf kak terjadi kesalahan saat conversi sticker menjadi video harap gunakan media yang berbeda ya kak makasih 🙏🏻_`,
-		`*「❗」*  _Maaf kak ada terjadi error saat bot ingin conversi sticker menjadi video harap ganti media ya kak_`
+		`*「❗」*  Maaf kak terjadi kesalahan saat conversi sticker menjadi video harap gunakan media yang lain`,
+		`*「❗」*  Mohon maaf kak terjadi kesalahan saat conversi sticker menjadi video harap gunakan media yang berbeda ya kak makasih 🙏🏻`,
+		`*「❗」*  Maaf kak ada terjadi error saat bot ingin conversi sticker menjadi video harap ganti media ya kak`
 	]
     return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
@@ -59,7 +61,7 @@ export const IndToCute = (): string => {
     return `Maaf terjadi kesalahan pada fitur media tocute harap coba lagi`
 }
 export const IndSuccesSetPrefix = (prefix: string, status: boolean): string => {
-    return `Sukses mengubah prefix menjadi ${prefix}.\n\n_*Status Prefix saat ini :* ${status ? 'multi' : prefix}_`
+    return `Sukses mengubah prefix menjadi ${prefix}.\n\n*Status Prefix saat ini :* ${status ? 'multi' : prefix}`
 }
 export const IndSuccesSetMulti = (status: boolean): string => {
     return `Sukses  ${status ? 'Mengaktifkan mode multi prefix' : 'Menonaktifkan mode multi prefix'}`
@@ -88,17 +90,17 @@ export const IndMultiData = (prefix: string): string => {
 }
 export const IndBukanSticker = (caption: string): string => {
 	let kata: string[] = [
-		`*「❗」* _Mohon maaf ka reply sticker dengan caption *${caption}*, untuk menggunakan perintah ini_`,
-		`*「❗」* _Mohon maaf ka Kaka tidak reply sticker apapun harap reply sticker dengan caption *${caption}*, untuk menggunakan perintah ini_`,
-		`*「❗」* _Mohon maaf ka harap reply sticker dengan caption *${caption}*, untuk menggunakan perintah ini_`
+		`*「❗」* Mohon maaf ka reply sticker dengan caption *${caption}*, untuk menggunakan perintah ini`,
+		`*「❗」* Mohon maaf ka Kaka tidak reply sticker apapun harap reply sticker dengan caption *${caption}*, untuk menggunakan perintah ini`,
+		`*「❗」* Mohon maaf ka harap reply sticker dengan caption *${caption}*, untuk menggunakan perintah ini`
 	]
     return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
 export const IndGagalSticker = (): string => {
 	let kata: string[] = [
-		`*「❗」*  _Maaf ka terjadi kesalahan / error saat process membuat sticker harap ganti media lain_`,
-		`*「❗」*  _Mohon maaf ka terjadi error saat prosess membuat sticker harap ganti media lainnya kak_`,
-		`*「❗」*  _Maaf ka bot tidak dapat membuat sticker pada media itu harap ganti medianya kak_`
+		`*「❗」*  Maaf ka terjadi kesalahan / error saat process membuat sticker harap ganti media lain`,
+		`*「❗」*  Mohon maaf ka terjadi error saat prosess membuat sticker harap ganti media lainnya kak`,
+		`*「❗」*  Maaf ka bot tidak dapat membuat sticker pada media itu harap ganti medianya kak`
 	]
     return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
@@ -137,9 +139,9 @@ export const IndCheckStorage = (data: string[], sender: string): string => {
 }
 export const IndTungguSearch = () => {
 	let kata: string[] = [
-		`*🔎* _Tunggu sebentar bot akan mencarikan untuk anda_`,
-		`*🔎* _Tunggu sebentar bot sedang mencarikan perintah anda_`,
-		`*🔎* _Tunggu sebentar bot sedang mencarikan untuk anda_`
+		`*🔎* Tunggu sebentar bot akan mencarikan untuk anda`,
+		`*🔎* Tunggu sebentar bot sedang mencarikan perintah anda`,
+		`*🔎* Tunggu sebentar bot sedang mencarikan untuk anda`
 	]
 	return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
@@ -166,31 +168,46 @@ export const IgStalk = (data: instaStalk): string => {
 }
 export const IndUserKosong = (nama: string): string => {
 	let kata: string[] = [
-		`*❌* _Mohon maaf kak username ${nama} yang mau kakak stalk tidak di temukan_`,
-		`*❌* _Mohon maaf, username ${nama} yang kakak ingin stalk tidak bot temukan_`,
-		`*❌* _Mohon maaf kak, username ${nama} yang mau kakak cari tidak bot temukan, Harap ganti usernamenya kak *🙏🏻*_`,
-		`*❌* _Mohon maaf kak, username ${nama} yang ingin kakak cari tidak ditemukan, Harap ganti usernamenya ya kak *🙏🏻*_`,
-		`*❌* _Mohon maaf kak, Username ${nama} yang mau kakak cari tidak bot temukan, Mohon ganti usernamenya ya kak  *🙏🏻*_`
+		`*❌* Mohon maaf kak username ${nama} yang mau kakak stalk tidak di temukan`,
+		`*❌* Mohon maaf, username ${nama} yang kakak ingin stalk tidak bot temukan`,
+		`*❌* Mohon maaf kak, username ${nama} yang mau kakak cari tidak bot temukan, Harap ganti usernamenya kak *🙏🏻*`,
+		`*❌* Mohon maaf kak, username ${nama} yang ingin kakak cari tidak ditemukan, Harap ganti usernamenya ya kak *🙏🏻*`,
+		`*❌* Mohon maaf kak, Username ${nama} yang mau kakak cari tidak bot temukan, Mohon ganti usernamenya ya kak  *🙏🏻*`
 	]
     return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
 export const IndUsernameNoKosong = (nama: string) => {
 	let kata: string[] = [
-		`*「❗」* _Mohon maaf kak, harap masukkan username ${nama}, yang mau kakak stalk_`,
-		`*「❗」* _Mohon maaf kak, masukkan username ${nama} yang mau kakak cari  *🙏🏻*_`,
-		`*「❗」* _Maaf kak, harap masukkan username ${nama} yang ingin kakak cari  *🙏🏻*_`
+		`*「❗」* Mohon maaf kak, harap masukkan username ${nama}, yang mau kakak stalk`,
+		`*「❗」* Mohon maaf kak, masukkan username ${nama} yang mau kakak cari  *🙏🏻*`,
+		`*「❗」* Maaf kak, harap masukkan username ${nama} yang ingin kakak cari  *🙏🏻*`
 	]
     return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
 export const IndAntiDahViewOnce = (status: boolean) => {
 	let kata: string[] = [
-		`*「❗」* _Mohon maaf kak mode anti view once ${status ? "Sudah diaktifkan" : "Sudah dimatikan"} di group ini_`,
-		`*「❗」* _Mohon maaf kak anti view once sudah ${status ? "Di nyalakan" : "Di matikan"}di group ini_`
+		`*「❗」* Mohon maaf kak mode anti view once ${status ? "Sudah diaktifkan" : "Sudah dimatikan"} di group ini`,
+		`*「❗」* Mohon maaf kak anti view once sudah ${status ? "Di nyalakan" : "Di matikan"}di group ini`
+	]
+	return kata[Math.floor(Math.random() * (kata.length))].trim()
+}
+export const IndMuted = (status: boolean, metadata: WAGroupMetadata) => {
+	return `ㅤ   *「 MUTED 」* 
+
+*🛡 ID :* ${metadata.id}
+*💫 STATUS :* ${status ? "AKTIF" : "MATI"}
+*🌐 IN :* ${metadata.subject}
+`
+}
+export const IndMutedDah = (status: boolean) => {
+	let kata: string[] = [
+		`*「❗」* Mohon maaf kak mode mute ${status ? "Sudah diaktifkan" : "Sudah dimatikan"} di group ini`,
+		`*「❗」* Mohon maaf kak mode mute sudah ${status ? "Di nyalakan" : "Di matikan"} di group ini`
 	]
 	return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
 export const IndAntiViewOnce = (status: boolean, metadata: WAGroupMetadata) => {
-	return  `ㅤ   *「 ANTI VIEWONCE 」* 
+	return  `ㅤ   *「 ANTI VIEW ONCE 」* 
 
 *💠 ID :* ${metadata.id}
 *⚠ STATUS :* ${status ? "AKTIF" : "MATI"}
@@ -209,14 +226,36 @@ export const IndYtStalk = (data: ChannelSearchResult): string => {
 }
 export const IndYtStalkError = (): string => {
 	let kata: string[] = [
-		`*「❗」* _Mohon maaf kak, untuk saat ini fitur yt stalk sedang error harap coba lagi lain kali_`,
-		`*「❗」* _Mohon maaf kak, fitur yt stalk saat ini sedang error harap coba lagi nanti_`,
-		`*「❗」* _Mohon maaf kak, Fitur yt stalk untuk saat ini error, bisa di coba lain kali_`
+		`*「❗」* Mohon maaf kak, untuk saat ini fitur yt stalk sedang error harap coba lagi lain kali`,
+		`*「❗」* Mohon maaf kak, fitur yt stalk saat ini sedang error harap coba lagi nanti`,
+		`*「❗」* Mohon maaf kak, Fitur yt stalk untuk saat ini error, bisa di coba lain kali`
 	]
     return  kata[Math.floor(Math.random() * (kata.length))].trim()
 }
+export const IndGhStalk = (data:  GhStalk ) => {
+	return `	ㅤㅤ   *「 GITHUB STALK 」*
+
+
+*💫 URL :* ${data.html_url}
+*🌐 ID :* ${data.id}
+*🕵🏻‍♂️ Username :* ${data.login}
+*👤 Nama :* ${data.name}
+*👥 Pengikut :* ${data.followers}
+*🫂 Mengikuti :* ${data.following}
+*🔰 Type :* ${data.type}
+*🏬 Company :* ${data.company ?? "Tidak terdata"}
+*🧭 Blog :* ${data.blog == "" ?? "Tidak terdata"}
+*💌 Email :* ${data.email ?? "Email tidak terdeteksi"}
+*🛡️ Bio :* ${data.bio ?? "Tidak ada bio"}
+*🖥️ Username Twitter :* ${data.twitter_username ?? "Tidak di cantumkan"}
+*💠 Repo Publik :* ${data.public_repos}
+*💥 Git Publik :* ${data.public_gists}
+*🎥 Tanggal Buat :* ${moment(data.created_at).format("LLLL")}
+*🕒 Tanggal Update :* ${moment(data.updated_at).format("LLLL")}
+`
+}
 export const IndTiktokStalk = (data: TiktokStalk): string => {
-    const Tanggal_Upload: string = new Date(Number(data.createTime) * 1000).toLocaleString('id', {
+    const TanggalUpload: string = new Date(Number(data.createTime) * 1000).toLocaleString('id', {
         year: 'numeric',
         month: 'short',
         weekday: 'short',
@@ -227,24 +266,24 @@ export const IndTiktokStalk = (data: TiktokStalk): string => {
     return `	ㅤ *「 TIKTOK STALK 」*
 
 
-_*📡 ID :* ${data.id}_
-_*🕵🏻‍♂️ Username :* ${data.uniqueId}_
-_*👤 Nama :* ${data.nickname}_
-_*👥 Pengikut :* ${data.follower}_
-_*🫂  Mengikuti :* ${data.following}_
-_*❤ Suka :* ${data.suka}_
-_*🎞 Total Video :* ${data.total_video}_
-_*🎥 Tanggal Buat :* ${Tanggal_Upload}_
-_*📧 Verived :* ${data.verified ?  '✅' : '❎'}_
-_*🔐 Private :* ${data.privateAccount ?  '✅' : '❎'}_
-_*🌐 Bio Link :* ${data.bioLink ? data.bioLink.link : ''}_
-_*🛡️ Bio :*_ ${data.signature}
+*📡 ID :* ${data.id}
+*🕵🏻‍♂️ Username :* ${data.uniqueId}
+*👤 Nama :* ${data.nickname}
+*👥 Pengikut :* ${data.follower}
+*🫂  Mengikuti :* ${data.following}
+*❤ Suka :* ${data.suka}
+*🎞 Total Video :* ${data.total_video}
+*🎥 Tanggal Buat :* ${TanggalUpload}
+*📧 Verived :* ${data.verified ?  '✅' : '❎'}
+*🔐 Private :* ${data.privateAccount ?  '✅' : '❎'}
+*🌐 Bio Link :* ${data.bioLink ? data.bioLink.link : ''}
+*🛡️ Bio :* ${data.signature}
 `
 }
 export const IndMasukkanUsernameNoUrl = (fitur: string): string => {
 	let kata: string[] = [
-		`*「❗」*  _Mohon maaf kak, harap masukkan username ${fitur} bukan link_`,
-		`*「❗」*  _Mohon maaf kak, harap masukkan username ${fitur}, Bukan URL nya kak_`
+		`*「❗」*  Mohon maaf kak, harap masukkan username ${fitur} bukan link`,
+		`*「❗」*  Mohon maaf kak, harap masukkan username ${fitur}, Bukan URL nya kak`
 	];
     return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
@@ -285,17 +324,17 @@ export const IndSpammer = (): string => {
 }
 export const IndStickerReply = (command: string): string => {
 	let kata: string[] = [
-		`*「❗」* _Mohon maaf ka, diharapkan kirim/reply Gambar / Video / Sticker / dokument (image/video) dengan caption ${command} untuk menggunakan perintah ini_`,
-		`*「❗」* _Maaf ka, kaka tidak mengirimkan media apapun, Harap Kirim/reply media dengan caption ${command} untuk menggunakan command ini_`,
-		`*「❗」* _Mohon maaf kak, harap kirim/ reply media menggunakan caption ${command} Untuk menggunakan perintah ini_`
+		`*「❗」* Mohon maaf ka, diharapkan kirim/reply Gambar / Video / Sticker / dokument (image/video) dengan caption ${command} untuk menggunakan perintah ini`,
+		`*「❗」* Maaf ka, kaka tidak mengirimkan media apapun, Harap Kirim/reply media dengan caption ${command} untuk menggunakan command ini`,
+		`*「❗」* Mohon maaf kak, harap kirim/ reply media menggunakan caption ${command} Untuk menggunakan perintah ini`
 	]
     return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
 export const IndStickerVideoPanjang = () => {
 	let kata: string[] = [
-		`*「❗」* _Mohon maaf kak, video yang kakak kirim terlalu besar untuk dijadikan sticker maksimal video 15 detik_`,
-		`*「❗」* _Mohon maaf kak, durasi video yang kakak kirim terlalu besar untuk dijadikan sticker maksimal video hanya 15 detik_`,
-		`*「❗」* _Mohon maaf kak, durasi video yang kakak kirim terlalu besar untuk bot jadikan sticker, untuk video maksimal hanya 15 detik kak_`
+		`*「❗」* Mohon maaf kak, video yang kakak kirim terlalu besar untuk dijadikan sticker maksimal video 15 detik`,
+		`*「❗」* Mohon maaf kak, durasi video yang kakak kirim terlalu besar untuk dijadikan sticker maksimal video hanya 15 detik`,
+		`*「❗」* Mohon maaf kak, durasi video yang kakak kirim terlalu besar untuk bot jadikan sticker, untuk video maksimal hanya 15 detik kak`
 	]
 	return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
@@ -304,58 +343,58 @@ export const IndSpam5S = (jeda: string): string => {
 }
 export const StickerDuplicate = (sender: string, posisi: number): string => {
 	let kata: string[] = [
-		`*「❗」* _Mohon maaf Ka media itu sudah dijadikan sticker sebelumnya,  @${sender.replace('@s.whatsapp.net','')} yang bikin. Harap tidak menggunakan media yang sama ya kak 🙏🏻_`,
-		`*「❗」* _Mohon maaf ka di harapkan tidak membuat sticker dengan media yang sama kak @${sender.replace('@s.whatsapp.net','')} sudah pernah bikin media itu sebelumnya. Harap gunakan media yang berbeda_`,
-		`*「❗」* _Mohon maaf ka media yang kaka ingin jadikan sticker sudah pernah dibuat sama @${sender.replace('@s.whatsapp.net','')} sebelumnya. Diharapkan gunakan media yang berbeda ya kak makasih 🙏🏻_`
+		`*「❗」* Mohon maaf Ka media itu sudah dijadikan sticker sebelumnya,  @${sender.replace('@s.whatsapp.net','')} yang bikin. Harap tidak menggunakan media yang sama ya kak 🙏🏻`,
+		`*「❗」* Mohon maaf ka di harapkan tidak membuat sticker dengan media yang sama kak @${sender.replace('@s.whatsapp.net','')} sudah pernah bikin media itu sebelumnya. Harap gunakan media yang berbeda`,
+		`*「❗」* Mohon maaf ka media yang kaka ingin jadikan sticker sudah pernah dibuat sama @${sender.replace('@s.whatsapp.net','')} sebelumnya. Diharapkan gunakan media yang berbeda ya kak makasih 🙏🏻`
 	]
     return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
 export const StickerFound = (sender: string): string => {
 	let kata: string[] = [
-		`_Ini ka stickernya @${sender.replace('@s.whatsapp.net', '')}, Mohon tidak gunakan media yang sama ya kak 🙏🏻_`,
-		`_Ini kak sticker yang mau kakak buat tadi  @${sender.replace('@s.whatsapp.net', '')}_ `,
-		`_ini kan kak sticker yang mau di buat tadi ?, Mohon tidak gunakan media yang sama ya kak makasih 🙏🏻_`
+		`Ini ka stickernya @${sender.replace('@s.whatsapp.net', '')}, Mohon tidak gunakan media yang sama ya kak 🙏🏻`,
+		`Ini kak sticker yang mau kakak buat tadi  @${sender.replace('@s.whatsapp.net', '')} `,
+		`ini kan kak sticker yang mau di buat tadi ?, Mohon tidak gunakan media yang sama ya kak makasih 🙏🏻`
 	]
     return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
 export const BotGaAdmin = () => {
 	let kata: string[] = [
-		`*「❗」*  _Maaf kak bot bukan admin group tidak bisa melaksanakan perintah_`,
-		`*「❗」*  _Mohon maaf kak jika ingin menggunakan fitur ini harap jadikan bot sebagai admin_`,
-		`*「❗」* _Maaf ka, fitur ini berlaku jika bot menjadi admin_`,
-		`*「❗」*  _Maaf kak, bot bukan admin grup bot tidak bisa melaksanakan perintah :(_`,
-		`*「❗」*  _Mohon maaf kak harap jadikan bot sebagai admin terlebih dahulu_`,
-		`*「❗」*  _Maaf kak bot bukan admin grup tidak dapat melaksanakan perintah_`
+		`*「❗」*  Maaf kak bot bukan admin group tidak bisa melaksanakan perintah`,
+		`*「❗」*  Mohon maaf kak jika ingin menggunakan fitur ini harap jadikan bot sebagai admin`,
+		`*「❗」* Maaf ka, fitur ini berlaku jika bot menjadi admin`,
+		`*「❗」*  Maaf kak, bot bukan admin grup bot tidak bisa melaksanakan perintah :(`,
+		`*「❗」*  Mohon maaf kak harap jadikan bot sebagai admin terlebih dahulu`,
+		`*「❗」*  Maaf kak bot bukan admin grup tidak dapat melaksanakan perintah`
 	]
 	return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
 export const PilihBukatutup = () => {
 	let kata: string[] = [
-		`*「❗」*  _Maaf kak format yang kakak masukkan salah, pilih buka/tutup_`,
-		`*「❗」*  _Mohon maaf kak untuk menggunakan perintah ini harap pilih buka atau tutup_`,
-		`*「❗」*  _Maaf kak harap pilih buka/tutup_`
+		`*「❗」*  Maaf kak format yang kakak masukkan salah, pilih buka/tutup`,
+		`*「❗」*  Mohon maaf kak untuk menggunakan perintah ini harap pilih buka atau tutup`,
+		`*「❗」*  Maaf kak harap pilih buka/tutup`
 	]
     return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
 export const PilihOnOff = () => {
 	let kata: string[] = [
-		`*「❗」*  _Maaf kak format yang kakak masukkan salah, pilih on/off_`,
-		`*「❗」*  _Mohon maaf kak untuk menggunakan perintah ini harap pilih on atau off_`,
-		`*「❗」*  _Maaf kak harap pilih buka/tutup_`
+		`*「❗」*  Maaf kak format yang kakak masukkan salah, pilih on/off`,
+		`*「❗」*  Mohon maaf kak untuk menggunakan perintah ini harap pilih on atau off`,
+		`*「❗」*  Maaf kak harap pilih buka/tutup`
 	]
     return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
 export const BukanDalamGroup = () => {
 	let kata: string[] = [
-		`*「❗」* _Maaf kak perintah ini hanya bisa di gunakan di dalam grup saja kak_`,
-		`*「❗」* _Mohon maaf kak sebelumnya, command ini hanya tersedia dalam group_`,
-		`*「❗」* _Maaf ka perintah ini khusus untuk didalam group saja kak_`, 
-		`*「❗」* _Maaf kak perintah ini hanya berlaku jika kakak berada didalam group_`,
-		`*「❗」* _Maaf kak perintah ini khusus untuk group, bukan personal chat_`,
-		`*「❗」* _Maaf kak fitur ini tersedia hanya di dalam group_`,
-		`*「❗」* _Maaf kak fitur ini tidak berlaku dalam personal chat_`,
-		`*「❗」* _Maaf kak, kakak hanya bisa menggunakan perintah ini jika berada didalam group_`,
-		`*「❗」* _Mohon maaf kak perintah ini tidak tersedia untuk personal chat_`
+		`*「❗」* Maaf kak perintah ini hanya bisa di gunakan di dalam grup saja kak`,
+		`*「❗」* Mohon maaf kak sebelumnya, command ini hanya tersedia dalam group`,
+		`*「❗」* Maaf ka perintah ini khusus untuk didalam group saja kak`, 
+		`*「❗」* Maaf kak perintah ini hanya berlaku jika kakak berada didalam group`,
+		`*「❗」* Maaf kak perintah ini khusus untuk group, bukan personal chat`,
+		`*「❗」* Maaf kak fitur ini tersedia hanya di dalam group`,
+		`*「❗」* Maaf kak fitur ini tidak berlaku dalam personal chat`,
+		`*「❗」* Maaf kak, kakak hanya bisa menggunakan perintah ini jika berada didalam group`,
+		`*「❗」* Mohon maaf kak perintah ini tidak tersedia untuk personal chat`
 	]
 	return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
@@ -364,17 +403,17 @@ export const UserBaruOut = () => {
 }
 export const UserDalamGroup = () => {
 	let kata: string[] = [
-		`*「❗」* _Maaf kak user tersebut telah berada didalam group_`,
-		`*「❗」* _Maaf kak user tersebut sudah berada di group_`,
-		`*「❗」* _Maaf kak user tersebut sekarang ada di group_`
+		`*「❗」* Maaf kak user tersebut telah berada didalam group`,
+		`*「❗」* Maaf kak user tersebut sudah berada di group`,
+		`*「❗」* Maaf kak user tersebut sekarang ada di group`
 	]
 	return  kata[Math.floor(Math.random() * (kata.length))].trim()
 }
 export const UserGadaDalamGroup = () => {
 	let kata: string[] = [
-		`*「❗」* _Mohon maaf kak untuk saat ini user tersebut sedang tidak berada didalam group_`,
-		`*「❗」*  _maaf kak user tersebut sedang tidak berada didalam group_`,
-		`*「❗」*  _Maaf kak bot tidak bisa melaksanakan perintah karena user tersebut sedang tidak berada didalam group_`
+		`*「❗」* Mohon maaf kak untuk saat ini user tersebut sedang tidak berada didalam group`,
+		`*「❗」*  maaf kak user tersebut sedang tidak berada didalam group`,
+		`*「❗」*  Maaf kak bot tidak bisa melaksanakan perintah karena user tersebut sedang tidak berada didalam group`
 	]
     return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
@@ -383,58 +422,58 @@ export const UserPrivate = () => {
 }
 export const SuccesAdd = (namagc: string) => {
 	let kata: string[] = [
-		`*✅* _Berhasil menambahkan target ke dalam group ${namagc}_`,
-		`*✅* _Berhasil memasukkan user tersebut ke dalam group ${namagc}_`,
-		`*✅* _Berhasil memasukkan peserta tersebut ke dalam group ${namagc}_`
+		`*✅* Berhasil menambahkan target ke dalam group ${namagc}`,
+		`*✅* Berhasil memasukkan user tersebut ke dalam group ${namagc}`,
+		`*✅* Berhasil memasukkan peserta tersebut ke dalam group ${namagc}`
 	]
     return  kata[Math.floor(Math.random() * (kata.length))].trim()
 }
 export const AddHarapTagSeseorang = () => {
 	let kata: string[] = [
-		`*「❗」* _Mohon maaf kak harap tag/reply seseorang yang ingin ditambahkan kedalam group_`,
-		`*「❗」* _Maaf kak harap tag/reply seseorang yang ingin ditambahkan ke group_`,
-		`*「❗」* _Mohon maafkak untuk menggunakan perintah ini kaka harus tag/reply seseorang yang ingin ditambahkan_`
+		`*「❗」* Mohon maaf kak harap tag/reply seseorang yang ingin ditambahkan kedalam group`,
+		`*「❗」* Maaf kak harap tag/reply seseorang yang ingin ditambahkan ke group`,
+		`*「❗」* Mohon maafkak untuk menggunakan perintah ini kaka harus tag/reply seseorang yang ingin ditambahkan`
 	]
     return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
 export const TagOrReply = () => {
 	let kata: string[] = [
-		`*「❗」* _Mohon maaf kak untuk menggunakan perintah ini harap tag/reply pesan seseorang_`,
-		`*「❗」* _Maaf kak harap tag/reply pesan seseorang untuk menggunakan fitur ini_`,
-		`*「❗」* _Maaf kak untuk menggunakan command ini harap tag/ reply pesan seseorang_`
+		`*「❗」* Mohon maaf kak untuk menggunakan perintah ini harap tag/reply pesan seseorang`,
+		`*「❗」* Maaf kak harap tag/reply pesan seseorang untuk menggunakan fitur ini`,
+		`*「❗」* Maaf kak untuk menggunakan command ini harap tag/ reply pesan seseorang`
 	]
     return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
 export const isOwnerGroupNokick = () => {
 	let kata: string[] = [
-		`*「❗」* _Mohon maaf kak bot tidak dapat mengeluarkan pembuat group_`,
-		`*「❗」* _Maaf kak bot tidak dapat mengeluarkan owner group_`,
-		`*「❗」* _Mohon maaf kak bot tidak dapat mengeluarkan pembuat group_`
+		`*「❗」* Mohon maaf kak bot tidak dapat mengeluarkan pembuat group`,
+		`*「❗」* Maaf kak bot tidak dapat mengeluarkan owner group`,
+		`*「❗」* Mohon maaf kak bot tidak dapat mengeluarkan pembuat group`
 	]
     return  kata[Math.floor(Math.random() * (kata.length))].trim()
 }
 export const kickSucces = (sender: string, admin: string) => {
 	let kata: string[] = [
-		`*✅* _Berhasil mengeluarkan @${sender.replace('@s.whatsapp.net', '')} atas perintah admin ${admin.replace("@s.whatsapp.net","")}_`,
-		`*✅* _Berhasil mengnyepak @${sender.replace('@s.whatsapp.net', '')} atas perintah admin ${admin.replace("@s.whatsapp.net","")}_`
+		`*✅* Berhasil mengeluarkan @${sender.replace('@s.whatsapp.net', '')} atas perintah admin ${admin.replace("@s.whatsapp.net","")}`,
+		`*✅* Berhasil mengnyepak @${sender.replace('@s.whatsapp.net', '')} atas perintah admin ${admin.replace("@s.whatsapp.net","")}`
 	]
     return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
 export const Admindia = (sender: string) => {
 	let kata: string[] = [
-		`*「❗」* _Tidak dapat mengeluarkan @${sender.replace('@s.whatsapp.net', '')} karena dia admin_`,
-		`*「❗」* _Tidak dapat mengeluarkan @${sender.replace('@s.whatsapp.net',"")}, dikarenakan masih menjabat sebagai admin hanya owner group yang bisa mengeluarkan admin_`
+		`*「❗」* Tidak dapat mengeluarkan @${sender.replace('@s.whatsapp.net', '')} karena dia admin`,
+		`*「❗」* Tidak dapat mengeluarkan @${sender.replace('@s.whatsapp.net',"")}, dikarenakan masih menjabat sebagai admin hanya owner group yang bisa mengeluarkan admin`
 	]
     return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
 export const ButakahLinkGc = () => {
-    return `_Butakah ? di deskripsi group ada tod, caper caper_`
+    return `Butakah ? di deskripsi group ada tod, caper caper`
 }
 export const IndAntiViewOn = () => {
 	let kata: string[] = [
-		`*✅* _Anti ViewOnce on kamu setiap media ViewOnce akan dikirim ulang otomatis. Jika tidak menginginkan fitur ini admin group bisa mematikannya_`,
-		`*✅*  _Anti ViewOnce dinyalakan setiap media yang kamu kirim berupa View Once maka otomatis di kirim ulang oleh bot. Jika tidak menginginkan fitur ini admin group bisa mematikannya_`,
-		`*✅*  _Anda Terdeteksi mengirim ViewOnce setiap media yang dikirim berupa ViewOnce maka otomatis akan di kirim ulang oleh bot. Jika tidak menginginkan fitur ini admin group bisa mematikannya_`
+		`*✅* Anti ViewOnce on kamu setiap media ViewOnce akan dikirim ulang otomatis. Jika tidak menginginkan fitur ini admin group bisa mematikannya`,
+		`*✅*  Anti ViewOnce dinyalakan setiap media yang kamu kirim berupa View Once maka otomatis di kirim ulang oleh bot. Jika tidak menginginkan fitur ini admin group bisa mematikannya`,
+		`*✅*  Anda Terdeteksi mengirim ViewOnce setiap media yang dikirim berupa ViewOnce maka otomatis akan di kirim ulang oleh bot. Jika tidak menginginkan fitur ini admin group bisa mematikannya`
 	]
 	return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
@@ -448,68 +487,68 @@ export const IndLinkGroup = (groupMetadata: WAGroupMetadata, link: string) => {
 }
 export const SuccesOpenCloseGc = (Status: boolean, metadata: WAGroupMetadata) => {
 	let Close: string[] = [
-		`*✅* _Berhasil menutup group ${metadata.subject}, Sekarang semua member tidak dapat mengirim pesan_`,
-		`*✅* _Berhasil menutup group ${metadata.subject}, Member tidak dapat mengirim pesan_`
+		`*✅* Berhasil menutup group ${metadata.subject}, Sekarang semua member tidak dapat mengirim pesan`,
+		`*✅* Berhasil menutup group ${metadata.subject}, Member tidak dapat mengirim pesan`
 	]
 	let Open: string[] = [
-		`*✅* _Berhasil membuka group  ${metadata.subject}, Sekarang semua member dapat mengirimkan pesan_`,
-		`*✅* _Berhasil menutup group ${metadata.subject}, Member dapat mengirim pesan_`
+		`*✅* Berhasil membuka group  ${metadata.subject}, Sekarang semua member dapat mengirimkan pesan`,
+		`*✅* Berhasil menutup group ${metadata.subject}, Member dapat mengirim pesan`
 	]
     return Status ? Close[Math.floor(Math.random() * (Close.length))].trim() : Open[Math.floor(Math.random() * (Open.length))].trim()
 }
 export const PromoteSuccess = (tag: string) => {
 	let kata: string[] = [
-		`*✅* _Berhasil menaikkan jabatan ${tag.replace('@s.whatsapp.net', '')} menjadi admin_`,
-		`*✅* _Berhasil menjadikan  ${tag.replace('@s.whatsapp.net', '')} seorang admin_`
+		`*✅* Berhasil menaikkan jabatan ${tag.replace('@s.whatsapp.net', '')} menjadi admin`,
+		`*✅* Berhasil menjadikan  ${tag.replace('@s.whatsapp.net', '')} seorang admin`
 	]
     return  kata[Math.floor(Math.random() * (kata.length))].trim()
 }
 export const DemoteSuccess = (tag: string) => {
 	let kata: string[] = [
-		`*✅* _Berhasil menurunkan jabatan ${tag.replace("@s.whatsapp.net", "")} menjadi seorang member_`,
-		`*✅* _Berhasil mencabut jabatan admin  ${tag.replace("@s.whatsapp.net", "")}_`
+		`*✅* Berhasil menurunkan jabatan ${tag.replace("@s.whatsapp.net", "")} menjadi seorang member`,
+		`*✅* Berhasil mencabut jabatan admin  ${tag.replace("@s.whatsapp.net", "")}`
 	]
     return  kata[Math.floor(Math.random() * (kata.length))].trim()
 }
 export const PromoteDiaAdmin = (tag: string) => {
 	let kata: string[] = [
-		`*「❗」* _Perintah di tolak dikarenakan ${tag.replace('@s.whatsapp.net', '')} telah menjadi seorang admin_`,
-		`*「❗」* _kamu tidak dapat menaikkan  ${tag.replace('@s.whatsapp.net', '')}, karena dia telah menjadi admin_`
+		`*「❗」* Perintah di tolak dikarenakan ${tag.replace('@s.whatsapp.net', '')} telah menjadi seorang admin`,
+		`*「❗」* kamu tidak dapat menaikkan  ${tag.replace('@s.whatsapp.net', '')}, karena dia telah menjadi admin`
 	]
     return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
 export const DemoteBukanAdmin = (tag: string) => {
 	let kata: string[] = [
-		`*「❗」* _Kamu tidak dapat menurunkan jabatan ${tag.replace("@s.whatsapp.net", "")} karena dia bukan admin_`,
-		`*「❗」* _Perintah ditolak dikarenakan  ${tag.replace("@s.whatsapp.net", "")} bukan seorang admin_`
+		`*「❗」* Kamu tidak dapat menurunkan jabatan ${tag.replace("@s.whatsapp.net", "")} karena dia bukan admin`,
+		`*「❗」* Perintah ditolak dikarenakan  ${tag.replace("@s.whatsapp.net", "")} bukan seorang admin`
 	]
     return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
 export const GagalUpdatePP = () => {
 	let kata: string[] = [
-		`*「❗」*  _Terjadi kesalahan saat ingin mengubah foto profil harap ganti media anda_`,
-		`*「❗」*  _Maaf ada kesalahan saat proses mengubah foto profil group harap ganti media anda_`
+		`*「❗」*  Terjadi kesalahan saat ingin mengubah foto profil harap ganti media anda`,
+		`*「❗」*  Maaf ada kesalahan saat proses mengubah foto profil group harap ganti media anda`
 	]
     return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
 export const SuccesUpdatePP = () => {
 	let kata: string[] = [
-		`*✅* _Berhasil mengubah foto profil group_`,
-		`*✅* _Berhasil menganti foto profil group_`
+		`*✅* Berhasil mengubah foto profil group`,
+		`*✅* Berhasil menganti foto profil group`
 	]
     return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
 export const SuccesSetName = (nama: string) => {
 	let kata: string[] = [
-		`*✅*  _Berhasil mengubah nama group menjadi ${nama}_`,
-		`*✅* _Berhasil mengganti nama grup menjadi ${nama}_`
+		`*✅*  Berhasil mengubah nama group menjadi ${nama}`,
+		`*✅* Berhasil mengganti nama grup menjadi ${nama}`
 	]
     return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
 export const SuccesSetDesk = () => {
 	let kata: string[] = [
-		`*✅*  _Berhasil mengubah deskripsi group_`,
-		`*✅* _Berhasil mengganti deskripsi group_`
+		`*✅*  Berhasil mengubah deskripsi group`,
+		`*✅* Berhasil mengganti deskripsi group`
 	]
     return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
@@ -545,26 +584,26 @@ export const IndVoting = (pelapor: string, target: string, alasan: string, data:
     let Text: string = `
 	ㅤㅤㅤㅤㅤ  *「 VOTING 」*
 	
-_*📬 Pengajuan Voting :* @${pelapor.replace('@s.whatsapp.net', '')}_
-_*🐷 Target Vote :* @${target.replace('@s.whatsapp.net', '')}_
-_*💬 Alasan :* ${alasan}_\n\n\n
+*📬 Pengajuan Voting :* @${pelapor.replace('@s.whatsapp.net', '')}
+*🐷 Target Vote :* @${target.replace('@s.whatsapp.net', '')}
+*💬 Alasan :* ${alasan}\n\n\n
 	
 	
-_Ketik *vote* Jika anda setuju mengeluarkan target_
-_Ketik *devote* Jika anda tidak setuju mengeluarkan target_\n\n
+Ketik *vote* Jika anda setuju mengeluarkan target
+Ketik *devote* Jika anda tidak setuju mengeluarkan target\n\n
 `
     let Vote: number = 1
     let Devote: number = 1
     let vote: { id: string | null | undefined, status: string, pushname: string }[] = data.filter((value: { id: string | null | undefined; status: string; pushname: string }) => value.status == 'vote')
     let devote: { id: string | null | undefined, status: string, pushname: string }[] = data.filter((value: { id: string | null | undefined; status: string; pushname: string }) => value.status == 'devote')
-    Text += '_*VOTE*_\n\n'
+    Text += '*VOTE*\n\n'
     for (let result of vote) {
-        Text += `_*${Vote}.* ${result.pushname} *(${result.id?.replace('@s.whatsapp.net', '')})*_\n`
+        Text += `*${Vote}.* ${result.pushname} *(${result.id?.replace('@s.whatsapp.net', '')})*\n`
         Vote++
     }
-    Text += '\n\n_*DEVOTE*_\n\n'
+    Text += '\n\n*DEVOTE*\n\n'
     for (let result of devote) {
-        Text += `_*${Devote}.* ${result.pushname} *(${result.id?.replace('@s.whatsapp.net', '')})*_\n`
+        Text += `*${Devote}.* ${result.pushname} *(${result.id?.replace('@s.whatsapp.net', '')})*\n`
         Devote++
     }
     return Text
@@ -574,26 +613,26 @@ export const IndHasilVote = (pelapor: string, target: string, alasan: string, da
 	ㅤㅤㅤㅤㅤ  *「 VOTING 」*
 
 
-_*📬 Pengajuan Voting :* @${pelapor.replace('@s.whatsapp.net', '')}_
-_*🐷 Target Vote :* @${target.replace('@s.whatsapp.net', '')}_
-_*💬 Alasan :* ${alasan}_\n\n\n
+*📬 Pengajuan Voting :* @${pelapor.replace('@s.whatsapp.net', '')}
+*🐷 Target Vote :* @${target.replace('@s.whatsapp.net', '')}
+*💬 Alasan :* ${alasan}\n\n\n
 `
     let Vote: number = 1
     let Devote: number = 1
     let vote: { id: string | null | undefined, status: string, pushname: string }[] = data.filter((value: { id: string | null | undefined; status: string; pushname: string }) => value.status == 'vote')
     let devote: { id: string | null | undefined, status: string, pushname: string }[] = data.filter((value: { id: string | null | undefined; status: string; pushname: string }) => value.status == 'devote')
-    Text += `_*Voting berakhir dengan hasil :*_\n\n_*✅ Vote :* ${vote.length}_\n_*❎ Devote :* ${devote.length}_\n\n\n`
-    Text += '  	ㅤㅤㅤㅤㅤ  _*VOTE*_\n\n'
+    Text += `*Voting berakhir dengan hasil :*\n\n*✅ Vote :* ${vote.length}\n*❎ Devote :* ${devote.length}\n\n\n`
+    Text += '  	ㅤㅤㅤㅤㅤ  *VOTE*\n\n'
     for (let result of vote) {
         Text += `${Vote}. ${result.pushname} *(${result.id?.replace('@s.whatsapp.net', '')})*\n`
         Vote++
     }
-    Text += '\n\n  	ㅤㅤㅤㅤㅤ  _*DEVOTE*_\n\n'
+    Text += '\n\n  	ㅤㅤㅤㅤㅤ  *DEVOTE*\n\n'
     for (let result of devote) {
-        Text += `_*${Devote}.* ${result.pushname}  *(${result.id?.replace('@s.whatsapp.net', '')})*_\n`
+        Text += `*${Devote}.* ${result.pushname}  *(${result.id?.replace('@s.whatsapp.net', '')})*\n`
         Devote++
     }
-    Text += '\n\n_Voting telah berakhir, Sesi voting telah *DI TUTUP* untuk group ini._'
+    Text += '\n\nVoting telah berakhir, Sesi voting telah *DI TUTUP* untuk group ini.'
     return Text
 }
 export const IndTagall = (data: string[] | undefined) => {
@@ -608,69 +647,69 @@ export const IndTagall = (data: string[] | undefined) => {
 }
 export const IndRevoked = (metadata: WAGroupMetadata) => {
 	let kata: string[] = [
-		`*✅* _Success menarik link group ${metadata.subject}_`,
-		`*✅* _Berhasil mereset link group ${metadata.subject}_`
+		`*✅* Success menarik link group ${metadata.subject}`,
+		`*✅* Berhasil mereset link group ${metadata.subject}`
 	]
     return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
 export const IndSesiVotingAda = () => {
 	let kata: string[] = [
-		`*「❗」* _Mohon maaf kak, Sesi voting berlangsung di dalam group ini kakak bisa menyelesaikan sesi voting sebelumnya / kaka bisa menggunakan fitur delvote_`,
-		`*「❗」* _Maaf sesi voting sedang berlangsung di grup ini selesaikan sesi voting terlebih dahulu/ admin group bisa mereset sesi voting yang berlangsung._`,
-		`*「❗」* _Mohon maaf kak sesi voting sedang berjalan di group ini kaka bisa selesaikan sesi voting sebelumnya / kaka bisa menggunakan fitur *delvote*_`
+		`*「❗」* Mohon maaf kak, Sesi voting berlangsung di dalam group ini kakak bisa menyelesaikan sesi voting sebelumnya / kaka bisa menggunakan fitur delvote`,
+		`*「❗」* Maaf sesi voting sedang berlangsung di grup ini selesaikan sesi voting terlebih dahulu/ admin group bisa mereset sesi voting yang berlangsung.`,
+		`*「❗」* Mohon maaf kak sesi voting sedang berjalan di group ini kaka bisa selesaikan sesi voting sebelumnya / kaka bisa menggunakan fitur *delvote*`
 	]
     return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
 export const IndSesiVotingGada = () => {
 	let kata: string[] = [
-		`*「❗」*  _Mohon maaf kak, sesi voting tidak ada dalam group ini_`,
-		`*「❗」* _Mohon maaf, sesi voting sedang tidak berlangsung didalam group ini_`,
-		`*「❗」* _Mohon maaf kak, Group ini tidak mempunyasi sesi voting apapun_`
+		`*「❗」*  Mohon maaf kak, sesi voting tidak ada dalam group ini`,
+		`*「❗」* Mohon maaf, sesi voting sedang tidak berlangsung didalam group ini`,
+		`*「❗」* Mohon maaf kak, Group ini tidak mempunyasi sesi voting apapun`
 	]
     return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
 export const IndResetSesi = () => {
 	let kata: string[] = [
-		`*✅* _Berhasil menghapus sesi voting yang berlangsung di group ini untuk saat ini tidak ada sesi votung yang berlangsung_`,
-		`*✅* _Berhasil mereset sesi voting yang sedang berlangsung di dalam group ini. Untuk saat ini tidak ada sesi voting yang berlangsung_`
+		`*✅* Berhasil menghapus sesi voting yang berlangsung di group ini untuk saat ini tidak ada sesi votung yang berlangsung`,
+		`*✅* Berhasil mereset sesi voting yang sedang berlangsung di dalam group ini. Untuk saat ini tidak ada sesi voting yang berlangsung`
 	]
     return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
 export const IndVoteLebih15 = () => {
 	let kata: string[] = [
-		`*「❗」* _Mohon maaf kak waktu voting tidak bisa lebih dari 15 menit maksimal 15 menit_`,
-		`*「❗」* _Mohon maaf, waktu voting yang anda masukkan lebih dari 15 menit._`,
-		`*「❗」* _Mohon maaf waktu voting tidak boleh melebihi dari 15 menit_`
+		`*「❗」* Mohon maaf kak waktu voting tidak bisa lebih dari 15 menit maksimal 15 menit`,
+		`*「❗」* Mohon maaf, waktu voting yang anda masukkan lebih dari 15 menit.`,
+		`*「❗」* Mohon maaf waktu voting tidak boleh melebihi dari 15 menit`
 	]
     return  kata[Math.floor(Math.random() * (kata.length))].trim()
 }
 export const BerhasilKickVote = (sender: string) => {
-    return `_Bot akan mengeluarkan @${sender.replace("@s.whatsapp.net", "")} dikarenakan voting 15 Orang memilih vote_`
+    return `Bot akan mengeluarkan @${sender.replace("@s.whatsapp.net", "")} dikarenakan voting 15 Orang memilih vote`
 }
 export const BerhasilVote = (sender: string) => {
-	return `_Voting berakhir dengan hasil anggota setuju telah melebihi 15 orang, tetapi bot tidak akan mengeluarkan ${sender.replace("@s.whatsapp.net", "")} karena bot bukan admin, Keputusan sekarang diserahkan kepada admin group_`
+	return `Voting berakhir dengan hasil anggota setuju telah melebihi 15 orang, tetapi bot tidak akan mengeluarkan ${sender.replace("@s.whatsapp.net", "")} karena bot bukan admin, Keputusan sekarang diserahkan kepada admin group`
 }
 export const CancelVote = () => {
-    return `_Voting berakhir dengan hasil anggota yang tidak setuju melebihi 15 orang, Voting di tutup._`
+    return `Voting berakhir dengan hasil anggota yang tidak setuju melebihi 15 orang, Voting di tutup.`
 }
 export const DiaKeluarVote = () => {
-    return `_Target vote terdeteksi kabur Sesi voting otomatis di tutup_`
+    return `Target vote terdeteksi kabur Sesi voting otomatis di tutup`
 }
 export const IndUdahVote = () => {
 	let kata: string[] = [
-		`*「❗」* _Mohon maaf kak anda sudah melakukan pemilihan kakak tidak bisa memilih kedua kalinya_`,
-		`*「❗」* _Mohon maaf kak kakak sudah mememilih sebelumnya, kakak tidak bisa memilih 2 kali_`,
-		`*「❗」* _Mohon maaf kak kakak sebelumnya sudah pernah melakukan pemilihan, kakak tidak bisa memilih 2 kali_`,
-		`*「❗」* _Mohon maaf, Anda sudah pernah melakukan pemilihan sebelumnya anda tidak dapat memilih untuk kedua kalinya, harap tunggu sampai voting berakhir_`,
-		`*「❗」* _Mohon maaf, kamu telah melakukan voting sebelumnya. voting hanya dapat dilakukan sekali di setiap nomer_`
+		`*「❗」* Mohon maaf kak anda sudah melakukan pemilihan kakak tidak bisa memilih kedua kalinya`,
+		`*「❗」* Mohon maaf kak kakak sudah mememilih sebelumnya, kakak tidak bisa memilih 2 kali`,
+		`*「❗」* Mohon maaf kak kakak sebelumnya sudah pernah melakukan pemilihan, kakak tidak bisa memilih 2 kali`,
+		`*「❗」* Mohon maaf, Anda sudah pernah melakukan pemilihan sebelumnya anda tidak dapat memilih untuk kedua kalinya, harap tunggu sampai voting berakhir`,
+		`*「❗」* Mohon maaf, kamu telah melakukan voting sebelumnya. voting hanya dapat dilakukan sekali di setiap nomer`
 	]
 	return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
 export const BukanStickerGif = () => {
 	let kata: string[] = [
-		`*「❗」*  _Mohon maaf kak Sticker yang kaka gunakan bukan sticker gif, bot tidak dapat melaksanakan perintah_`,
-		`*「❗」*  _Maaf ka harap gunakan sticker gif kak 🙏🏻_`,
-		`*「❗」* _Maaf ka media yang kaka gunakan bukan sticker gif harap gunakan sticker gif kak 🙏🏻_`
+		`*「❗」*  Mohon maaf kak Sticker yang kaka gunakan bukan sticker gif, bot tidak dapat melaksanakan perintah`,
+		`*「❗」*  Maaf ka harap gunakan sticker gif kak 🙏🏻`,
+		`*「❗」* Maaf ka media yang kaka gunakan bukan sticker gif harap gunakan sticker gif kak 🙏🏻`
 	]
     return  kata[Math.floor(Math.random() * (kata.length))].trim()
 }
@@ -679,9 +718,9 @@ export const InputImage = () => {
 }
 export const InputSticker = () => {
 	let kata: string[] = [
-		`*「❗」* _Maaf kak untuk menggunakan perintah ini harap kirim caption dengan reply sticker_`,
-		`*「❗」* _Mohon maaf kak Harap reply sticker dengan caption_`,
-		`*「❗」* _Maaf kak perintah ini berlaku jika kakak mereply sticker_`
+		`*「❗」* Maaf kak untuk menggunakan perintah ini harap kirim caption dengan reply sticker`,
+		`*「❗」* Mohon maaf kak Harap reply sticker dengan caption`,
+		`*「❗」* Maaf kak perintah ini berlaku jika kakak mereply sticker`
 	]
 	return  kata[Math.floor(Math.random() * (kata.length))].trim()
 }
@@ -691,25 +730,25 @@ export const IndToimgDone = (waktu: string) => {
 		`*✔*`
 	]
 	let kata: string[] = [
-		`_Success mengubah sticker menjadi Image dengan waktu ${waktu}_`,
-		`_Berhasil mengubah sticker menjadi Image dalam waktu ${waktu}_`,
-		`_Berhasil melaksanakan perintah dengan waktu ${waktu}_`
+		`Success mengubah sticker menjadi Image dengan waktu ${waktu}`,
+		`Berhasil mengubah sticker menjadi Image dalam waktu ${waktu}`,
+		`Berhasil melaksanakan perintah dengan waktu ${waktu}`
 	]
 	return Success[Math.floor(Math.random() * (Success.length))] + " " + kata[Math.floor(Math.random() * (kata.length))].trim()
 }
 export const IndBukanSgif = () => {
 	let kata: string[] = [
-		`*「❗」*  _Mohon maaf kak sticker gif tidak bisa dijadikan foto profil_`,
-		`*「❗」*  _Perintah ditolak dikarenakan sticker gif tidak dijadikan foto profil_`,
-		`*「❗」* _Maaf kak sticker gif tidak dapat dijadikan foto profil_`
+		`*「❗」*  Mohon maaf kak sticker gif tidak bisa dijadikan foto profil`,
+		`*「❗」*  Perintah ditolak dikarenakan sticker gif tidak dijadikan foto profil`,
+		`*「❗」* Maaf kak sticker gif tidak dapat dijadikan foto profil`
 	]
     return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
 export const IndLirikMusicMatch = (result: LirikResult) => {
     return  `	ㅤㅤㅤㅤㅤ  *「 LIRIK LAGU 」*
 
-_*📚 Judul :* ${result.result.title}_
-_*💍 Artis :* ${result.result.artist}_
+*📚 Judul :* ${result.result.title}
+*💍 Artis :* ${result.result.artist}
 	
 	
 ${result.result.lirik}`
@@ -717,17 +756,17 @@ ${result.result.lirik}`
 export const IndAzLirik = (result: Azlirik) => {
     return `	ㅤㅤㅤㅤㅤ  *「 LIRIK LAGU 」*
 
-_*📚 Judul :* ${result.title}_
-_*💍 Artis :* ${result.artis}_
+*📚 Judul :* ${result.title}
+*💍 Artis :* ${result.artis}
 
 
   ${result.lirik}`
 }
 export const LirikGada = () => {
 	let kata: string[] = [
-		`*❌* _Maaf kak lirik lagu yang anda cari tidak ditemukan_`,
-		`*❌* _Mohon maaf kak lirik lagu yang ingin kakak cari tidak bot temukan_`,
-		`*❌* _Mohon maaf kak judul lagu yang kakak ingin cari tidak ditemukan, Harap ganti judul lagu!_`
+		`*❌* Maaf kak lirik lagu yang anda cari tidak ditemukan`,
+		`*❌* Mohon maaf kak lirik lagu yang ingin kakak cari tidak bot temukan`,
+		`*❌* Mohon maaf kak judul lagu yang kakak ingin cari tidak ditemukan, Harap ganti judul lagu!`
 	]
     return  kata[Math.floor(Math.random() * (kata.length))].trim()
 }
@@ -744,27 +783,27 @@ export const IndSpamPrefix = () => {
     return `Maaf ka setelah anda menggunakan command prefix ada jeda 60 detik untuk anda bisa menggunakan command prefix kembali`
 }
 export const IndAbsenStart = () => {
-    return `_Absen pada tanggal ${moment(Date.now()).format("LLLL")} dimulai silakan ketik : (Pilih salah satu)_\n\n_1. *HADIR* (Jika anda masuk)_\n_2. *IZIN* (Jika ada halangan) + alasan_\n_3. *SAKIT* (jika anda sakit)_\n\n*Notes :*\n\n_- Anda hanya dapat memilih salah satu_\n_- Absen berlangsung selama 30 menit_\n_- Jika ada anggota yang tidak mengisi absen selama 30 menit otomatis dimasukkan ke list *TANPA KETERANGAN* di akhir absen_`
+    return `Absen pada tanggal ${moment(Date.now()).format("LLLL")} dimulai silakan ketik : (Pilih salah satu)\n\n1. *HADIR* (Jika anda masuk)\n2. *IZIN* (Jika ada halangan) + alasan\n3. *SAKIT* (jika anda sakit)\n\n*Notes :*\n\n- Anda hanya dapat memilih salah satu\n- Absen berlangsung selama 30 menit\n- Jika ada anggota yang tidak mengisi absen selama 30 menit otomatis dimasukkan ke list *TANPA KETERANGAN* di akhir absen`
 }
 export const IndAbsensi = (result: any, mem: number) => {
-    let text: string = `ㅤㅤㅤㅤㅤ  *「 ABSENSI 」*
+    let text: string = `ㅤㅤㅤㅤ *「 ABSENSI 」*
 
 
-_*Daftar list absen yang terdata untuk saat ini*_
+*Daftar list absen yang terdata untuk saat ini*
 	
-_*Total anggota sudah melakukan absen :* ${result.length}_
-_*Total seluruh anggota :* ${mem}_\n\n`
+*Total anggota sudah melakukan absen :* ${result.length}
+*Total seluruh anggota :* ${mem}\n\n`
     let hadir: number = 1
     for (let respon of result) {
 		if (respon.alasan) {
-			text += `_*${hadir}.* ${respon.nama} ( *${respon.status}* )_\n_*Alasan :* ${respon.alasan}_\n\n`
+			text += `*${hadir}.* ${respon.nama} ( *${respon.status}* )\n*Alasan :* ${respon.alasan}\n\n`
 			hadir++
 		} else {
-			text += `_*${hadir}.* ${respon.nama} ( *${respon.status}* )_\n\n`
+			text += `*${hadir}.* ${respon.nama} ( *${respon.status}* )\n\n`
 			hadir++
 		}
     }
-    text += `\n\n_Absen pada tanggal ${moment(Date.now()).format("LLLL")} silakan ketik : (Pilih salah satu)_\n\n_1. *HADIR* (Jika anda masuk)_\n_2. *IZIN* (Jika ada halangan) + Alasan_\n_3. *SAKIT* (jika anda sakit)_\n\n*Notes :*\n\n_- Anda hanya dapat memilih salah satu_\n_- Absen berlangsung selama 30 menit_\n_- Jika ada anggota yang tidak mengisi absen selama 30 menit otomatis dimasukkan ke list *TANPA KETERANGAN* di akhir absen_`
+    text += `\n\nAbsen pada tanggal ${moment(Date.now()).format("LLLL")} silakan ketik : (Pilih salah satu)\n\n1. *HADIR* (Jika anda masuk)\n2. *IZIN* (Jika ada halangan) + Alasan\n3. *SAKIT* (jika anda sakit)\n\n*Notes :*\n\n- Anda hanya dapat memilih salah satu\n- Absen berlangsung selama 30 menit\n- Jika ada anggota yang tidak mengisi absen selama 30 menit otomatis dimasukkan ke list *TANPA KETERANGAN* di akhir absen`
     return text
 }
 export const IndAbsen = (result: any, mem: number) => {
@@ -784,12 +823,12 @@ export const IndAbsen = (result: any, mem: number) => {
 export const indAfkOn = (target: string, group: string, alasan: string, pushname: string) => {
     return `ㅤㅤ *「 AFK MODE 」*
 
-_*➸ Nama :* ${pushname}_
-_*➸ Target :* ${target}_
-_*➸ In :* ${group}_
-_*➸ Alasan :* ${alasan}_
+*➸ Nama :* ${pushname}
+*➸ Target :* ${target}
+*➸ In :* ${group}
+*➸ Alasan :* ${alasan}
 
-_*Fitur AFK berhasil diaktifkan !_*
+*Fitur AFK berhasil diaktifkan !*
 `
 }
 export const indAfkDahNyala = () => {
@@ -805,4 +844,111 @@ export const IndWarningSpamTag = () => {
 export const IndAfkBalik = (time: number) => {
     const Time = parsems(time)
     return `Anda telah berhenti Afk, setelah afk selama  ${Time.hours} Jam ${Time.minutes} menit ${Time.seconds} detik yang lalu`
+}
+
+export const IndLebihDariLimit = (limit: number, fitur: string) => {
+	let kata: string[] = [
+		`*「❗」* Mohon maaf kak, Limit yang kakak masukkan melebihi batas, Batas maksimum limit fitur ${fitur} adalah ${limit}`,
+		`*「❗」* Mohon maaf kak, Batas Limit yang kakak masukkan melebihi batas yang ditetapkan bot kak, batas ${fitur} adalah ${limit}`,
+		`*「❗」* Mohon maaf, Batas wajar fitur ${fitur} adalah ${limit}, tidak bisa melebihi batas yang telah di tetapkan bot`
+	]
+	return kata[Math.floor(Math.random() * (kata.length))].trim()
+}
+export const IndQuerryKosong = () => {
+	let kata: string[] = [
+		`*「❗」* Mohon maaf kak, Querry yang kaka masukkan Kosong harap masukkan Querry untuk melakukan pencarian`,
+		`*「❗」* Mohon maaf kak, Kakak belum memasukkan Querry pencarian harap masukkan Querry untuk melakukan pencarian`,
+		`*「❗」* Mohon maaf kak, Kakak belum memasukkan Querry pencarian harap masukkan Querry untuk melakukan pencarian`
+	]
+	return kata[Math.floor(Math.random() * (kata.length))].trim()
+}
+export const IndGoogleSearch = (result: Googlesearch[]) => {
+	let text: string = `ㅤㅤㅤㅤ  *「 GOOGLE SEARCH 」*\n\n`
+	for (let data of result) {
+		text +=  `\n*❒──────────────────────❒*\n\n*📚 Judul :* ${data.title}\n\n*💫 Url :* ${data.link}\n\n*📖 Information :* ${data.snippet}\n\n`
+	}
+	return text
+}
+export const IndGoogleKosong = () => {
+	let kata: string[] = [
+		`*「❗」* Mohon maaf kak, Bot tidak dapat menemukan pencarian yang kakak maksud, Mohon ganti querry ya kak *🙏🏻*`,
+		`*「❗」* Mohon maaf kak, pencarian anda untuk saat ini tidak ditemukan, harap ganti querry ya kak  *🙏🏻*`,
+		`*「❗」* Mohon maaf kak, bot tidak dapat menemukan pencarian yang kakak maksud harap ganti querry ya kak  *🙏🏻*`
+	]
+	return kata[Math.floor(Math.random() * (kata.length))].trim()
+}
+export const IndSuccesSearch = (waktu: string, fitur: string) => {
+	let Success: string[] = [
+		`*✅*`,
+		`*✔*`
+	]
+	let kata: string[] = [
+		`Success menlakukan pencarian ${fitur} dalam waktu ${waktu}`,
+		`Berhasil mengirimkan data ${fitur} dalam waktu ${waktu}`,
+		`Berhasil melaksanakan perintah dengan waktu ${waktu}`
+	]
+	return Success[Math.floor(Math.random() * (Success.length))] + " " + kata[Math.floor(Math.random() * (kata.length))].trim()
+}
+export const IndBrainly = (result:  { question: Question, answers: Answer[] }[]) => {
+	let text: string = `ㅤㅤㅤㅤ  *「 BRAINLY SEARCH 」*\n\n`
+	for (let data of result) {
+		text += `\n*❒──────────────────────❒*\n\n*📚 Pertanyaan  :* ${data.question.content}\n\n*🗓 Tanggal Pertanyaan :* ${moment(data.question.created.date).format("LLLL")}\n\n*📕 Tema :* ${data.question.education}\n\n*🏫 Tingkat :* ${data.question.grade}\n\n*💫 Jawaban :* ${data.question.answers.map((value) => "\n" + value.content + "\n\n")}`
+	}
+	const Html = new html()
+	return Html.filter(String(text))
+}
+export const IndGroupWa = (result: { status: number; name: string; link: string | undefined }[]) => {
+	let text: string = `ㅤㅤㅤㅤ  *「 GROUP SEARCH 」*\n\n`
+	for (let data of result) {
+		text += `\n*❒──────────────────────❒*\n\n*💘 Nama :* ${data.name}\n\n*💌 Link :* ${data.link}\n\n`
+	}
+	return text
+}
+export const IndWikipedia = (result: { url: string, judul: string, publish: string, desk: string, thumb: string, penjelasan: string}) => {
+	return `ㅤㅤㅤㅤ  *「 WIKIPEDIA 」*
+
+
+*📚 Judul :* ${result.judul}
+*🌐 Url :* ${result.url}
+*🤖 Timestamp :* ${moment(result.publish).format("LLLL")}
+*📜 Deskripsi :* ${result.desk}
+
+
+${result.penjelasan}
+`
+}
+export const IndAccesDenided = () => {
+	let kata: string[] = [
+		`*「❗」* Mohon maaf, Akses menuju web di tolak harap coba lagi lain kali`,
+		`*「❗」* Mohon maaf, bot gagal mengakses web yang anda cari akses di tolak harap coba lagi lain kali`,
+		`*「❗」* Mohon maaf, bot gagal menghubungan pencarian anda dengan web yang ingin di tuju harap coba lagi lain waktu`
+	]
+	return kata[Math.floor(Math.random() * (kata.length))].trim()
+}
+export const IndSearchYt = (result: VideoSearchResult[]) => {
+	let text: string = `ㅤㅤㅤㅤ  *「 YOUTUBE SEARCH 」*\n\n`
+	let count: number = 1;
+	for (let data of result) {
+		text += `\n
+*${count++}. 📚 Judul :* ${data.title}
+*🌐 Id :* ${data.videoId}
+*💫 Url :* ${data.url}
+*🕧 Durasi :* ${data.timestamp}
+*🤖 Publish :* ${data.ago ?? "Tidak terdeteksi//"}
+*👁‍🗨 Penonton :* ${convertAngka(data.views)}
+*💌 Channel :* ${data.author.name}\n`
+	}
+	return text
+}
+export const IndPlayStore = (result: PlayStore[]) => {
+	let text: string =  `ㅤㅤ *「 PLAYSTORE SEARCH 」*\n\n`
+	let count: number = 1;
+	for (let data of result) {
+		text += `\n
+*${count++}. 📚 Judul :* ${data.title}
+*🌟 Rating :* ${data.rating}
+*🏢 Developer :* ${data.developer}
+*💫 Url :* ${data.link}\n`
+	}
+	return text
 }

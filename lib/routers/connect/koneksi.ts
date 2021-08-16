@@ -18,11 +18,13 @@ export class Connected extends Main {
     }
     protected async SessionsSave(): Promise<WAOpenResult> {
         const Path: string = `./lib/routers/sessions/sessions_default_Ra.json`
-        this.client.browserDescription = Browsers.macOS('Chrome')
         this.client.on('qr', () => {
             console.log(chalk.red('[!]'), chalk.hex('#e3ff00')('Please scan your Qr code immediately...........'))
         })
         fs.existsSync(Path) && this.client.loadAuthInfo(Path)
+		this.client.browserDescription = Browsers.macOS('Chrome')
+		this.client.version = [2, 2126, 14]
+		this.client.logger.level = "fatal"
         const Connect: WAOpenResult = await this.client.connect()
         fs.writeFileSync(Path, JSON.stringify(this.client.base64EncodedAuthInfo(), null, 2))
         return Connect

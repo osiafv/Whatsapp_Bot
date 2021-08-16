@@ -1,6 +1,6 @@
-import { ViewOnce  as _viewOnce } from '.'
+import { Muted  as _dataMuted } from '.'
 
-export class ConnectMoongo extends _viewOnce{
+export class ConnectMoongo extends _dataMuted {
     constructor() {
         super()
     }

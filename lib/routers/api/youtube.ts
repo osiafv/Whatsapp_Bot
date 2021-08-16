@@ -1,4 +1,4 @@
-import ytSearch, { SearchResult, ChannelSearchResult } from 'yt-search'
+import ytSearch, { SearchResult, ChannelSearchResult, VideoSearchResult } from 'yt-search'
 import axios, { AxiosResponse } from 'axios'
 import cheerio, { CheerioAPI } from 'cheerio'
 
@@ -139,4 +139,13 @@ export async function Yt1SVid(Url: string): Promise<{ url: string, quality: stri
             reject(err)
         }
     })
+}
+export async function YtSearch (judul: string): Promise <VideoSearchResult[]> {
+	return new Promise (async (resolve, reject) => {
+		await ytSearch(judul).then((value:  SearchResult) => {
+			return resolve(value.videos)
+		}).catch((err: Error) => {
+			return reject(new Error(String(err)))
+		})
+	})
 }

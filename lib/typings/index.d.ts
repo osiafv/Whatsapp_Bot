@@ -7,3 +7,7 @@ export * from './tiktok';
 export * from './lirik';
 export * from './verify';
 export * from "./converter";
+export * from "./github";
+export * from "./google";
+export * from "./brainly";
+export * from "./playstore";

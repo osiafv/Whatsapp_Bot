@@ -115,7 +115,7 @@ export class register extends Mongoose {
     }
     public async statusPrefix(sender: string): Promise<boolean> {
         if (!(await this.CheckRegister(sender))) return false
-        let status: boolean = true
+        let status: boolean = false
         const _database: Registrasi = await this.register.findOne({ id: sender })
         if (_database.multi) {
             status = true
