@@ -25,7 +25,7 @@ interface Duration {
 	timestamp: string;
 	toString: () => string;
 }
-interface Author {
+interface author {
 	name: string;
 	url: string;
 }
@@ -55,7 +55,7 @@ export interface YoutubeMP4PlaySer2 {
 	ago: string;
 	image: string;
 	thumbnail: string;
-	author: Author;
+	author: author;
 	link?: string; 
 	thumb?: string; 
 	size?: string 
@@ -74,7 +74,7 @@ export interface YoutubeMP3PlaySer2 {
 	ago: string;
 	image: string;
 	thumbnail: string;
-	author: Author;
+	author: author;
 	link?: string; 
 	thumb?: string; 
 	size?: string 
