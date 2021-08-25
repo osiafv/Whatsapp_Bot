@@ -29,7 +29,7 @@ export class GroupData extends MusicHandling {
         this.revokedLink()
     }
     protected AddGroup() {
-		globalThis.CMD.on('admingc|add/masuk <tag/reply>', ['add', 'masuk'], async (res: WAConnection, data: Commands) => {
+		globalThis.CMD.on('admingc|add/masuk <tag/reply>',  { event: ["add <tag/reply>", "masuk <tag/reply>"], tag: "groupadmins"},['add', 'masuk'], async (res: WAConnection, data: Commands) => {
 			const { isBotAdmins, from, isGroupAdmins, isGroupMsg, mess, mentioned, groupMember, isOwner, groupMetadata } = data
             if (!isOwner) return
 			if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(), mess)
@@ -45,7 +45,7 @@ export class GroupData extends MusicHandling {
 		})
 	}
     protected kickGroup() {
-		globalThis.CMD.on('admingc|kick/sepak <tag/reply>', ['kick', 'tendang', 'sepak'], async (res: WAConnection, data: Commands) => {
+		globalThis.CMD.on('admingc|kick/sepak <tag/reply>',  { event: ["kick <tag/reply>", "sepak <tag/reply>"], tag: "groupadmins"},['kick', 'tendang', 'sepak'], async (res: WAConnection, data: Commands) => {
 			const { isBotAdmins, from, isGroupAdmins, isGroupMsg, mess, mentioned, groupMember, isOwner, ownerGroup, sender } = data
             if (!isOwner) return
             if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(), mess)
@@ -66,7 +66,7 @@ export class GroupData extends MusicHandling {
 	})
 }
     protected linkgroup() {
-        globalThis.CMD.on('admingc|linkgc', ['linkgroup', 'linkgc', 'linkgrup'], async (res: WAConnection, data: Commands) => {
+        globalThis.CMD.on('admingc|linkgc',  { event: ["linkgroup"], tag: "groupadmins"}, ['linkgroup', 'linkgc', 'linkgrup'], async (res: WAConnection, data: Commands) => {
 			const { isBotAdmins, from, isGroupAdmins, groupMetadata, mess, isGroupMsg, isOwner } = data
             if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(), mess)
             if (!isBotAdmins) return this.Ra.reply(from, BotGaAdmin(), mess)
@@ -80,7 +80,7 @@ export class GroupData extends MusicHandling {
 		})
     }
     protected revokedLink() {
-		globalThis.CMD.on('admingc|revoke', ['revoke', 'revoked'], async (res: WAConnection, data: Commands) => {
+		globalThis.CMD.on('admingc|revoke',  { event: ["revoked"], tag: "groupadmins"},['revoke', 'revoked'], async (res: WAConnection, data: Commands) => {
 			const { isGroupMsg, isBotAdmins, isGroupAdmins, isOwner, from, mess, groupMetadata } = data
             if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(), mess)
             if (!isBotAdmins) return this.Ra.reply(from, BotGaAdmin(), mess)
@@ -91,7 +91,7 @@ export class GroupData extends MusicHandling {
         })
     }
     protected OpenCloseGc() {
-		globalThis.CMD.on('admingc|group <open/close>', ['group', 'grup'], async (res: WAConnection, data: Commands) => {
+		globalThis.CMD.on('admingc|group <open/close>',  { event: ["group <open/close>"], tag: "groupadmins"},['group', 'grup'], async (res: WAConnection, data: Commands) => {
 			const { isBotAdmins, from, isGroupAdmins, mess, isGroupMsg, args, isOwner, groupMetadata } = data
             if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(), mess)
             if (!isBotAdmins) return this.Ra.reply(from, BotGaAdmin(), mess)
@@ -104,7 +104,7 @@ export class GroupData extends MusicHandling {
 		})
     }
     protected Promote() {
-		globalThis.CMD.on('admingc|promote <tag/reply>', ['promote', 'getadmin'], async (res: WAConnection, data: Commands) => {
+		globalThis.CMD.on('admingc|promote <tag/reply>',  { event: ["promote <tag/reply>"], tag: "groupadmins"},['promote', 'getadmin'], async (res: WAConnection, data: Commands) => {
 			const { isBotAdmins, from, isGroupAdmins, mess, isGroupMsg, mentioned, isOwner, sender, groupMetadata } = data
             if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(), mess)
             if (!isBotAdmins) return this.Ra.reply(from, BotGaAdmin(), mess)
@@ -122,7 +122,7 @@ export class GroupData extends MusicHandling {
 		})
     }
     protected Demote() {
-        globalThis.CMD.on('admingc|demote <tag/reply>', ['demote'], async (res: WAConnection, data: Commands) => {
+        globalThis.CMD.on('admingc|demote <tag/reply>',  { event: ["demote <tag/reply>"], tag: "groupadmins"},['demote'], async (res: WAConnection, data: Commands) => {
 			const { isBotAdmins, from, isGroupAdmins, mess, isGroupMsg, mentioned, isOwner, sender, groupMetadata } = data
             if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(), mess)
             if (!isBotAdmins) return this.Ra.reply(from, BotGaAdmin(), mess)
@@ -138,7 +138,7 @@ export class GroupData extends MusicHandling {
         })
     }
     protected setPPGc() {
-		globalThis.CMD.on('admingc|setppgc <img/sticker',['setppgc', 'setppgroup'], async (res: WAConnection, data: Commands) => {
+		globalThis.CMD.on('admingc|setppgc <img/sticker',  { event: ["setppgc"], tag: "groupadmins"},['setppgc', 'setppgroup'], async (res: WAConnection, data: Commands) => {
 			const { isBotAdmins, from, isGroupAdmins, mess, isGroupMsg, media, isQuotedImage, isGambar, isQuotedSticker, isOwner } = data
             if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(), mess)
             if (!isBotAdmins) return this.Ra.reply(from, BotGaAdmin(), mess)
@@ -162,7 +162,7 @@ export class GroupData extends MusicHandling {
 		})
     }
     protected setNameGc() {
-        globalThis.CMD.on('admingc|setnamegc <text>', ['setnamagc', 'setnamegc', 'setnamegrup', 'setnamagroup'], async (res: WAConnection, data: Commands) => {
+        globalThis.CMD.on('admingc|setnamegc <text>',  { event: ["setnamegc <text>"], tag: "groupadmins"},['setnamagc', 'setnamegc', 'setnamegrup', 'setnamagroup'], async (res: WAConnection, data: Commands) => {
 			const { isBotAdmins, from, isGroupAdmins, mess, isGroupMsg, args, isOwner } = data
             if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(), mess)
             if (!isBotAdmins) return this.Ra.reply(from, BotGaAdmin(), mess)
@@ -172,7 +172,7 @@ export class GroupData extends MusicHandling {
 		})
     }
     protected setBioGc() {
-        globalThis.CMD.on('admingc|setbiogc <text>', ['setdesk', 'setdeskgc', 'setdesc'], async (res: WAConnection, data: Commands) => {
+        globalThis.CMD.on('admingc|setbiogc <text>',  { event: ["setbiogc"], tag: "groupadmins"},['setdesk', 'setdeskgc', 'setdesc'], async (res: WAConnection, data: Commands) => {
 			const { isBotAdmins, from, isGroupAdmins, mess, isGroupMsg, args, isOwner } = data
             if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(), mess)
             if (!isBotAdmins) return this.Ra.reply(from, BotGaAdmin(), mess)
@@ -182,7 +182,7 @@ export class GroupData extends MusicHandling {
 		})
     }
     protected Hidetag() {
-        globalThis.CMD.on('admingc|hidetag <img,vid,stick,txt>',['hidetag', 'hidden'], async (res: WAConnection, data: Commands) => {
+        globalThis.CMD.on('admingc|hidetag <img,vid,stick,txt>',  { event: ["hidetag <img/vid/stick/txt>"], tag: "groupadmins"},['hidetag', 'hidden'], async (res: WAConnection, data: Commands) => {
 			const { isBotAdmins, from, isGroupAdmins, args, groupMember, isVideo, isQuotedVideo, media, isGambar, isQuotedImage, isQuotedSticker, isMedia, isQuotedDokumen, mentioned, isOwner } = data
             const Members: string[] | undefined = groupMember?.filter((value: WAGroupParticipant) => value.isAdmin == false).map((value: WAGroupParticipant) => value.jid)
             if ((isOwner && Members) || (isBotAdmins && isGroupAdmins && Members)) {
@@ -200,7 +200,7 @@ export class GroupData extends MusicHandling {
 		})
     }
     protected Tagall() {
-        globalThis.CMD.on('admingc|tagall', ['tagall', 'tagal'], async (res: WAConnection, data: Commands) => {
+        globalThis.CMD.on('admingc|tagall',  { event: ["tagall"], tag: "groupadmins"},['tagall', 'tagal'], async (res: WAConnection, data: Commands) => {
             const { from, groupMember, isGroupMsg, isGroupAdmins, mess, isOwner } = data
             if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(), mess)
             if (!isOwner && !isGroupAdmins) return
@@ -209,7 +209,7 @@ export class GroupData extends MusicHandling {
         })
     }
     protected ListOnline() {
-        globalThis.CMD.on('admingc|listonline', ['listonline', 'online'], async (res: WAConnection, data: Commands) => {
+        globalThis.CMD.on('admingc|listonline',  { event: ["listonline"], tag: "groupadmins"},['listonline', 'online'], async (res: WAConnection, data: Commands) => {
 			const { from, isGroupAdmins, isGroupMsg, mess, isOwner } = data
             if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(), mess)
             if (!isOwner && !isGroupAdmins) return

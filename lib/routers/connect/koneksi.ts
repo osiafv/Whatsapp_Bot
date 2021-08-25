@@ -22,9 +22,9 @@ export class Connected extends Main {
             console.log(chalk.red('[!]'), chalk.hex('#e3ff00')('Please scan your Qr code immediately...........'))
         })
         fs.existsSync(Path) && this.client.loadAuthInfo(Path)
-		this.client.browserDescription = Browsers.macOS('Chrome')
 		this.client.version = [2, 2126, 14]
 		this.client.logger.level = "fatal"
+		this.client.browserDescription = Browsers.baileys('Chrome')
         const Connect: WAOpenResult = await this.client.connect()
         fs.writeFileSync(Path, JSON.stringify(this.client.base64EncodedAuthInfo(), null, 2))
         return Connect

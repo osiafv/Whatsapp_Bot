@@ -1,13 +1,13 @@
-import { WAConnection, MessageType, proto } from '@adiwajshing/baileys'
+import { WAConnection, MessageType, proto, WAMessage } from '@adiwajshing/baileys'
 import { Commands } from '../typings'
-import { Tomp3, Tocute, CreateSticker, toVideoV2, Toimg, createStickerV2, createStickerV3 } from '../tools'
-import { Tunggu, Buffer, RandomName, CheckSticker, AddSticker } from '../functions/function'
+import { Tomp3, Tocute, CreateSticker, toVideoV2, Toimg, createStickerV2, createStickerV3, CreateStickerCircle  } from '../tools'
+import { Tunggu, Buffer, RandomName} from '../functions/function'
 import { ToVideo } from '../routers/api'
 import * as fs from 'fs'
 import { Client } from '../src/Client';
 import {  MapSticker } from "../typings";
 import parsems from "parse-ms";
-import filesize from "filesize"
+import filesize from "filesize";
 import { IndTunggu, IndBukanVid, IndToVid, IndBukanAud, IndBukanSticker, IndGagalSticker, IndErrorMP3, IndStickerReply, StickerDuplicate, StickerFound, BukanStickerGif, InputSticker,  IndSuccesToVid, IndToimgDone,  IndStickerVideoPanjang  } from '../lang/ind'
 
 const Stick: Map<string, MapSticker[]> = new Map()
@@ -19,90 +19,259 @@ export class Converter {
         this.ToVideo()
         this.toCUTE()
         this.toImg()
+		this.StickerCircle()
     }
-    protected async Sticker(): Promise<void> {
-        globalThis.CMD.on('converter|sticker <img,vid,sticker>', ['sticker', 's', 'stiker', 'stickergif', 'stikergif', 'sgif'], async (res: WAConnection, data: Commands) => {
-			const { args, media, from, mess, sendOwner, isQuotedDokumen, Command, FileSha, sender, quotedMsg, isVideo, isQuotedVideo } = data
-            if (!media) return await this.Ra.reply(from, IndStickerReply(Command), mess)
-			if (isVideo && Number(media.message?.videoMessage?.seconds) > 15) return await this.Ra.reply(from,  IndStickerVideoPanjang(), mess)
-			if (isQuotedVideo && Number(media.message?.videoMessage?.seconds) > 15) return await this.Ra.reply(from,  IndStickerVideoPanjang(), mess)
-			if (isQuotedDokumen && !/(image|video)/gi.test(String(quotedMsg?.quotedMessage?.documentMessage?.mimetype))) return await this.Ra.reply(from, IndStickerReply(Command), mess)
-			if (isQuotedDokumen && /(video)/gi.test(String(quotedMsg?.quotedMessage?.documentMessage?.mimetype)) && /(mb)/i.test(filesize(Number(quotedMsg?.quotedMessage?.documentMessage?.fileLength))) && Number(filesize(Number(quotedMsg?.quotedMessage?.documentMessage?.fileLength)).replace(/mb/i, "")) > 12) return  await this.Ra.reply(from,  IndStickerVideoPanjang(), mess)
-            if (CheckSticker(from, FileSha || 'undefined', Stick)) {
-				const Hasil:  MapSticker[] | undefined = Stick.get(from)
-                if (!Hasil) return
-                const Respon:  MapSticker | undefined = Hasil.find((value) => value.filesha == FileSha)
-				await this.Ra.sendTextWithMentions(from, StickerDuplicate(Respon?.sender || '', Respon?.id || 0), [Respon?.sender || ''], mess)
-                await this.Ra.sendTextWithMentions(from, StickerFound(sender || ''), [sender || ''], Respon?.mess)
-			}
-			if (CheckSticker(from, FileSha || '', Stick)) return
-            const Wm: string | null | undefined = args[0] === undefined ? undefined : args.join(' ')
-            await this.Ra.reply(from, IndTunggu(), mess)
-            const input: string = await res.downloadAndSaveMediaMessage(media, './lib/storage/temp/' + RandomName(22))
-            await CreateSticker(input, Wm).then(async (result: string | Error) => {
-				try {
-					if (typeof result !== 'string') return
-					let ress: proto.WebMessageInfo = await res.sendMessage(from, fs.readFileSync(result), MessageType.sticker, { quoted: mess })
-					await AddSticker(ress, from, FileSha || 'undefined', sender || '', Stick)
-                    await Tunggu(2000)
-					if (fs.existsSync(result)) fs.unlinkSync(result)
-                    if (fs.existsSync(input)) fs.unlinkSync(input)
-				} catch (err) {
-					if (typeof result === 'string' && fs.existsSync(result)) fs.unlinkSync(result)
-					if (fs.existsSync(input)) fs.unlinkSync(input)
-                            // Jan dihapus ntar bocor
+	protected async StickerCircle () {
+		globalThis.CMD.on("converter|stickercircle", { event: ["scircle <img,vid, stick>"], tag: "converter"},["stikerc", "stickerc", "scircle", "stickercircle", "stikercirle"], async (res: WAConnection, data: Commands) => {
+			const { media, from, mess, isQuotedImage, isGambar, isQuotedSticker, quotedMsg } = data;
+			if (isGambar || isQuotedImage || isQuotedSticker) {
+				await this.Ra.reply(from, IndTunggu(), mess)
+				if (!media) return
+				const input: string = await res.downloadAndSaveMediaMessage(media,  './lib/storage/temp/' + RandomName(22))
+				await CreateStickerCircle(input).then(async (respon: string) => {
+					await this.Ra.sendSticker(from, respon, mess)
+					await Tunggu(2000)
+					if (fs.existsSync(respon)) fs.unlinkSync(respon)
+				}, )
+			} else if (quotedMsg?.quotedMessage?.extendedTextMessage?.jpegThumbnail) {
+				await this.Ra.reply(from, IndTunggu(), mess)
+				const Path: string = `./lib/storage/temp/${RandomName(32)}.png`
+				fs.writeFileSync(Path, (quotedMsg.quotedMessage.extendedTextMessage.jpegThumbnail))
+				await CreateStickerCircle(Path).then(async (respon: string) => {
+					await this.Ra.sendSticker(from, respon, mess)
+					await Tunggu(2000)
+					if (fs.existsSync(respon)) fs.unlinkSync(respon)
+				})
+			} else if (quotedMsg?.quotedMessage?.buttonsMessage?.locationMessage?.jpegThumbnail) {
+				await this.Ra.reply(from, IndTunggu(), mess)
+				const Path: string = `./lib/storage/temp/${RandomName(31)}.png`
+				fs.writeFileSync(Path, (quotedMsg?.quotedMessage?.buttonsMessage?.locationMessage?.jpegThumbnail))
+				await CreateStickerCircle(Path).then(async (respon: string) => {
+					await this.Ra.sendSticker(from, respon, mess)
+					await Tunggu(2000)
+					if (fs.existsSync(respon)) fs.unlinkSync(respon)
+				})
+			} else if (quotedMsg?.stanzaId) {
+				const message: proto.WebMessageInfo = await res.loadMessage(from, quotedMsg.stanzaId)
+				const media: WAMessage | null = message?.message?.imageMessage || message?.message?.videoMessage || message?.message?.documentMessage || message?.message?.stickerMessage ? message
+				: message?.message?.extendedTextMessage?.contextInfo?.quotedMessage?.imageMessage || message?.message?.extendedTextMessage?.contextInfo?.quotedMessage?.videoMessage || message?.message?.extendedTextMessage?.contextInfo?.quotedMessage?.stickerMessage || message?.message?.extendedTextMessage?.contextInfo?.quotedMessage?.documentMessage ? JSON.parse(JSON.stringify(message).replace('quotedM', 'm')).message?.extendedTextMessage?.contextInfo
+				: message?.message?.viewOnceMessage ? message.message.viewOnceMessage  : quotedMsg ? quotedMsg.quotedMessage?.viewOnceMessage ? {  stanzaId: quotedMsg.stanzaId, ...quotedMsg.quotedMessage?.viewOnceMessage } : quotedMsg.quotedMessage?.buttonsMessage ?  quotedMsg.quotedMessage.buttonsMessage.imageMessage ? { stanzaId: quotedMsg.stanzaId, message: { imageMessage: quotedMsg.quotedMessage.buttonsMessage.imageMessage }} : quotedMsg.quotedMessage.buttonsMessage.videoMessage ? { stanzaId: quotedMsg.stanzaId, message: { videoMessage:  quotedMsg.quotedMessage.buttonsMessage.videoMessage }} :  quotedMsg.quotedMessage.buttonsMessage.documentMessage ? { stanzaId: quotedMsg.stanzaId, message: { documentMessage:  quotedMsg.quotedMessage.buttonsMessage.documentMessage }} : null : null : message?.message?.buttonsMessage ? message.message.buttonsMessage.imageMessage ? { participant: mess?.participant, message: { imageMessage: message.message.buttonsMessage.imageMessage}} :  message.message.buttonsMessage.videoMessage ? { participant: mess?.participant, message: { videoMessage: message.message.buttonsMessage.videoMessage}} 
+				: message.message.buttonsMessage.documentMessage ? { participant: mess?.participant, message: { documentMessage: message.message.buttonsMessage.videoMessage}} : null : null
+				if (!media) return
+				if (media.message?.imageMessage || media.message?.stickerMessage) {
+					await this.Ra.reply(from, IndTunggu(), mess)
+					const Data: string = await res.downloadAndSaveMediaMessage(media,  './lib/storage/temp/' + RandomName(24))
+					await CreateStickerCircle(Data).then(async (respon: string) => {
+						await this.Ra.sendSticker(from, respon, mess)
+						await Tunggu(2000)
+						if (fs.existsSync(respon)) fs.unlinkSync(respon)
+					})
 				}
-			}).catch(async () => {
-				await CreateSticker(input, Wm).then(async (Res) => {
+			}
+		})
+	}
+    protected async Sticker(): Promise<void> {
+        globalThis.CMD.on('converter|sticker <img,vid,sticker>',  { event: ["sticker <img/vid/stick>"], tag: "converter"},['sticker', 's', 'stiker', 'stickergif', 'stikergif', 'sgif'], async (res: WAConnection, data: Commands) => {
+			const { args, media, from, mess, sendOwner, isQuotedDokumen, Command, FileSha, sender, quotedMsg, isVideo, isQuotedVideo } = data
+			const Wm: string | null | undefined = args[0] === undefined ? undefined : args.join(' ')
+            if (media) {
+				if (isVideo && Number(media.message?.videoMessage?.seconds) > 15) return await this.Ra.reply(from,  IndStickerVideoPanjang(), mess)
+				if (isQuotedVideo && Number(media.message?.videoMessage?.seconds) > 15) return await this.Ra.reply(from,  IndStickerVideoPanjang(), mess)
+				if (isQuotedDokumen && !/(image|video)/gi.test(String(quotedMsg?.quotedMessage?.documentMessage?.mimetype))) return await this.Ra.reply(from, IndStickerReply(Command), mess)
+				if (isQuotedDokumen && /(video)/gi.test(String(quotedMsg?.quotedMessage?.documentMessage?.mimetype)) && /(mb)/i.test(filesize(Number(quotedMsg?.quotedMessage?.documentMessage?.fileLength))) && Number(filesize(Number(quotedMsg?.quotedMessage?.documentMessage?.fileLength)).replace(/mb/i, "")) > 12) return  await this.Ra.reply(from,  IndStickerVideoPanjang(), mess)
+				await this.Ra.reply(from, IndTunggu(), mess)
+				const input: string = await res.downloadAndSaveMediaMessage(media, './lib/storage/temp/' + RandomName(22))
+				await CreateSticker(input, Wm).then(async (result: string | Error) => {
 					try {
-						if (typeof Res !== 'string') return
-						let ress: proto.WebMessageInfo = await res.sendMessage(from, fs.readFileSync(Res), MessageType.sticker, { quoted: mess })
-                        await AddSticker(ress, from, FileSha || 'undefined', sender || '', Stick)
-                        await Tunggu(2000)
-						if (fs.existsSync(Res)) fs.unlinkSync(Res)
+						if (typeof result !== 'string') return
+						await this.Ra.sendSticker(from, result, mess)
+						await Tunggu(2000)
+						if (fs.existsSync(result)) fs.unlinkSync(result)
 						if (fs.existsSync(input)) fs.unlinkSync(input)
 					} catch (err) {
-						if (typeof Res === 'string' && fs.existsSync(Res)) fs.unlinkSync(Res)
-                        if (fs.existsSync(input)) fs.unlinkSync(input)
-                    }
+						if (typeof result === 'string' && fs.existsSync(result)) fs.unlinkSync(result)
+						if (fs.existsSync(input)) fs.unlinkSync(input)
+                            // Jan dihapus ntar bocor
+					}
 				}).catch(async () => {
-					await createStickerV2(input, Wm).then(async (Result) => {
+					await CreateSticker(input, Wm).then(async (Res) => {
 						try {
-							if (typeof Result !== 'string') return
-                            let ress: proto.WebMessageInfo = await res.sendMessage(from, fs.readFileSync(Result), MessageType.sticker, { quoted: mess })
-                            await AddSticker(ress, from, FileSha || 'undefined', sender || '', Stick)
-                            await Tunggu(2000)
-                            if (fs.existsSync(Result)) fs.unlinkSync(Result)
-                            if (fs.existsSync(input)) fs.unlinkSync(input)
+							if (typeof Res !== 'string') return
+							await this.Ra.sendSticker(from, Res, mess)
+							await Tunggu(2000)
+							if (fs.existsSync(Res)) fs.unlinkSync(Res)
+							if (fs.existsSync(input)) fs.unlinkSync(input)
 						} catch (err) {
-                            if (typeof Result === 'string' && fs.existsSync(Result)) fs.unlinkSync(Result)
-                            if (fs.existsSync(input)) fs.unlinkSync(input)
+							if (typeof Res === 'string' && fs.existsSync(Res)) fs.unlinkSync(Res)
+							if (fs.existsSync(input)) fs.unlinkSync(input)
 						}
 					}).catch(async () => {
-						await createStickerV3(input, Wm).then(async (Res) => {
-							 try {
-								 if (typeof Res !== 'string') return
-								 let ress: proto.WebMessageInfo = await res.sendMessage(from, fs.readFileSync(Res), MessageType.sticker, { quoted: mess })
-                                 await AddSticker(ress, from, FileSha || 'undefined', sender || '', Stick)
-								 await Tunggu(2000)
-								 if (fs.existsSync(Res)) fs.unlinkSync(Res)
-								 if (fs.existsSync(input)) fs.unlinkSync(input)
-								} catch (err) {
-									if (typeof Res === 'string' && fs.existsSync(Res)) fs.unlinkSync(Res)
-									if (fs.existsSync(input)) fs.unlinkSync(input)
-                                }
-							}).catch((err) => {
+						await createStickerV2(input, Wm).then(async (Result) => {
+							try {
+								if (typeof Result !== 'string') return
+								await this.Ra.sendSticker(from, Result, mess)
+								await Tunggu(2000)
+								if (fs.existsSync(Result)) fs.unlinkSync(Result)
 								if (fs.existsSync(input)) fs.unlinkSync(input)
-                                this.Ra.reply(from, IndGagalSticker(), mess)
-                                this.Ra.sendText(sendOwner, 'ERROR Sticker : ' + err)
+							} catch (err) {
+								if (typeof Result === 'string' && fs.existsSync(Result)) fs.unlinkSync(Result)
+								if (fs.existsSync(input)) fs.unlinkSync(input)
+							}
+						}).catch(async () => {
+							await createStickerV3(input, Wm).then(async (Res) => {
+								 try {
+									 if (typeof Res !== 'string') return
+									 await this.Ra.sendSticker(from, Res, mess)
+									 await Tunggu(2000)
+									 if (fs.existsSync(Res)) fs.unlinkSync(Res)
+									 if (fs.existsSync(input)) fs.unlinkSync(input)
+									} catch (err) {
+										if (typeof Res === 'string' && fs.existsSync(Res)) fs.unlinkSync(Res)
+										if (fs.existsSync(input)) fs.unlinkSync(input)
+									}
+								}).catch((err) => {
+									if (fs.existsSync(input)) fs.unlinkSync(input)
+									this.Ra.reply(from, IndGagalSticker(), mess)
+									this.Ra.sendText(sendOwner, 'ERROR Sticker : ' + err)
+								})
 							})
 						})
 					})
+				} else if (quotedMsg?.quotedMessage?.extendedTextMessage?.jpegThumbnail || quotedMsg?.quotedMessage?.buttonsMessage?.locationMessage?.jpegThumbnail) {
+					await this.Ra.reply(from, IndTunggu(), mess)
+					const input: string = `./lib/storage/temp/${RandomName(32)}.png`
+					if (quotedMsg?.quotedMessage?.extendedTextMessage?.jpegThumbnail) fs.writeFileSync(input, (quotedMsg.quotedMessage.extendedTextMessage.jpegThumbnail))
+					if (quotedMsg?.quotedMessage?.buttonsMessage?.locationMessage?.jpegThumbnail) fs.writeFileSync(input, (quotedMsg?.quotedMessage?.buttonsMessage?.locationMessage?.jpegThumbnail))
+					await CreateSticker(input, Wm).then(async (result: string | Error) => {
+						try {
+							if (typeof result !== 'string') return
+							await this.Ra.sendSticker(from, result, mess)
+							await Tunggu(2000)
+							if (fs.existsSync(result)) fs.unlinkSync(result)
+							if (fs.existsSync(input)) fs.unlinkSync(input)
+						} catch (err) {
+							if (typeof result === 'string' && fs.existsSync(result)) fs.unlinkSync(result)
+							if (fs.existsSync(input)) fs.unlinkSync(input)
+								// Jan dihapus ntar bocor
+						}
+					}).catch(async () => {
+						await CreateSticker(input, Wm).then(async (Res) => {
+							try {
+								if (typeof Res !== 'string') return
+								await this.Ra.sendSticker(from, Res, mess)
+								await Tunggu(2000)
+								if (fs.existsSync(Res)) fs.unlinkSync(Res)
+								if (fs.existsSync(input)) fs.unlinkSync(input)
+							} catch (err) {
+								if (typeof Res === 'string' && fs.existsSync(Res)) fs.unlinkSync(Res)
+								if (fs.existsSync(input)) fs.unlinkSync(input)
+							}
+						}).catch(async () => {
+							await createStickerV2(input, Wm).then(async (Result) => {
+								try {
+									if (typeof Result !== 'string') return
+									await this.Ra.sendSticker(from, Result, mess)
+									await Tunggu(2000)
+									if (fs.existsSync(Result)) fs.unlinkSync(Result)
+									if (fs.existsSync(input)) fs.unlinkSync(input)
+								} catch (err) {
+									if (typeof Result === 'string' && fs.existsSync(Result)) fs.unlinkSync(Result)
+									if (fs.existsSync(input)) fs.unlinkSync(input)
+								}
+							}).catch(async () => {
+								await createStickerV3(input, Wm).then(async (Res) => {
+									 try {
+										 if (typeof Res !== 'string') return
+										 await this.Ra.sendSticker(from, Res, mess)
+										 await Tunggu(2000)
+										 if (fs.existsSync(Res)) fs.unlinkSync(Res)
+										 if (fs.existsSync(input)) fs.unlinkSync(input)
+										} catch (err) {
+											if (typeof Res === 'string' && fs.existsSync(Res)) fs.unlinkSync(Res)
+											if (fs.existsSync(input)) fs.unlinkSync(input)
+										}
+									}).catch((err) => {
+										if (fs.existsSync(input)) fs.unlinkSync(input)
+										this.Ra.reply(from, IndGagalSticker(), mess)
+										this.Ra.sendText(sendOwner, 'ERROR Sticker : ' + err)
+									})
+								})
+							})
+						})
+					} else if (quotedMsg?.stanzaId) {
+						const message: proto.WebMessageInfo = await res.loadMessage(from, quotedMsg.stanzaId)
+						const media: WAMessage | null = message?.message?.imageMessage || message?.message?.videoMessage || message?.message?.documentMessage || message?.message?.stickerMessage ? message
+						: message?.message?.extendedTextMessage?.contextInfo?.quotedMessage?.imageMessage || message?.message?.extendedTextMessage?.contextInfo?.quotedMessage?.videoMessage || message?.message?.extendedTextMessage?.contextInfo?.quotedMessage?.stickerMessage || message?.message?.extendedTextMessage?.contextInfo?.quotedMessage?.documentMessage ? JSON.parse(JSON.stringify(message).replace('quotedM', 'm')).message?.extendedTextMessage?.contextInfo
+						: message?.message?.viewOnceMessage ? message.message.viewOnceMessage  : quotedMsg ? quotedMsg.quotedMessage?.viewOnceMessage ? {  stanzaId: quotedMsg.stanzaId, ...quotedMsg.quotedMessage?.viewOnceMessage } : quotedMsg.quotedMessage?.buttonsMessage ?  quotedMsg.quotedMessage.buttonsMessage.imageMessage ? { stanzaId: quotedMsg.stanzaId, message: { imageMessage: quotedMsg.quotedMessage.buttonsMessage.imageMessage }} : quotedMsg.quotedMessage.buttonsMessage.videoMessage ? { stanzaId: quotedMsg.stanzaId, message: { videoMessage:  quotedMsg.quotedMessage.buttonsMessage.videoMessage }} :  quotedMsg.quotedMessage.buttonsMessage.documentMessage ? { stanzaId: quotedMsg.stanzaId, message: { documentMessage:  quotedMsg.quotedMessage.buttonsMessage.documentMessage }} : null : null : message?.message?.buttonsMessage ? message.message.buttonsMessage.imageMessage ? { participant: mess?.participant, message: { imageMessage: message.message.buttonsMessage.imageMessage}} :  message.message.buttonsMessage.videoMessage ? { participant: mess?.participant, message: { videoMessage: message.message.buttonsMessage.videoMessage}} 
+						: message.message.buttonsMessage.documentMessage ? { participant: mess?.participant, message: { documentMessage: message.message.buttonsMessage.videoMessage}} : null : null
+						if (!media) return
+						if (media.message?.imageMessage || media.message?.stickerMessage) {
+							await this.Ra.reply(from, IndTunggu(), mess)
+							const input: string = await res.downloadAndSaveMediaMessage(media,  './lib/storage/temp/' + RandomName(24))
+							await CreateSticker(input, Wm).then(async (result: string | Error) => {
+								try {
+									if (typeof result !== 'string') return
+									await this.Ra.sendSticker(from, result, mess)
+									await Tunggu(2000)
+									if (fs.existsSync(result)) fs.unlinkSync(result)
+									if (fs.existsSync(input)) fs.unlinkSync(input)
+								} catch (err) {
+									if (typeof result === 'string' && fs.existsSync(result)) fs.unlinkSync(result)
+									if (fs.existsSync(input)) fs.unlinkSync(input)
+										// Jan dihapus ntar bocor
+								}
+							}).catch(async () => {
+								await CreateSticker(input, Wm).then(async (Res) => {
+									try {
+										if (typeof Res !== 'string') return
+										await this.Ra.sendSticker(from, Res, mess)
+										await Tunggu(2000)
+										if (fs.existsSync(Res)) fs.unlinkSync(Res)
+										if (fs.existsSync(input)) fs.unlinkSync(input)
+									} catch (err) {
+										if (typeof Res === 'string' && fs.existsSync(Res)) fs.unlinkSync(Res)
+										if (fs.existsSync(input)) fs.unlinkSync(input)
+									}
+								}).catch(async () => {
+									await createStickerV2(input, Wm).then(async (Result) => {
+										try {
+											if (typeof Result !== 'string') return
+											await this.Ra.sendSticker(from, Result, mess)
+											await Tunggu(2000)
+											if (fs.existsSync(Result)) fs.unlinkSync(Result)
+											if (fs.existsSync(input)) fs.unlinkSync(input)
+										} catch (err) {
+											if (typeof Result === 'string' && fs.existsSync(Result)) fs.unlinkSync(Result)
+											if (fs.existsSync(input)) fs.unlinkSync(input)
+										}
+									}).catch(async () => {
+										await createStickerV3(input, Wm).then(async (Res) => {
+											 try {
+												 if (typeof Res !== 'string') return
+												 await this.Ra.sendSticker(from, Res, mess)
+												 await Tunggu(2000)
+												 if (fs.existsSync(Res)) fs.unlinkSync(Res)
+												 if (fs.existsSync(input)) fs.unlinkSync(input)
+												} catch (err) {
+													if (typeof Res === 'string' && fs.existsSync(Res)) fs.unlinkSync(Res)
+													if (fs.existsSync(input)) fs.unlinkSync(input)
+												}
+											}).catch((err) => {
+												if (fs.existsSync(input)) fs.unlinkSync(input)
+												this.Ra.reply(from, IndGagalSticker(), mess)
+												this.Ra.sendText(sendOwner, 'ERROR Sticker : ' + err)
+											})
+										})
+									})
+								})
+						} else {
+							return this.Ra.reply(from, IndStickerReply(Command), mess)
+						}
+					}
 				})
-			})
-		}
+			}
     protected async ToVideo() {
-        globalThis.CMD.on('converter|tovid <stickergif>', 'tovid', async (res: WAConnection, data: Commands) => {
+        globalThis.CMD.on('converter|tovid <stickergif>',  { event: ["tovid <stickergif>"], tag: "converter"} ,'tovid', async (res: WAConnection, data: Commands) => {
 			const { isQuotedSticker, media, from, mess, sender, Command } = data
 			let Proses: number = Date.now()
 			if (!media && !isQuotedSticker) return this.Ra.reply(from, IndBukanSticker(Command), mess)
@@ -132,7 +301,7 @@ export class Converter {
 		},{ noPrefix: false })
 	}
     protected async toMP3() {
-		globalThis.CMD.on('converter|tomp3 <video>', 'tomp3', async (res: WAConnection, data: Commands) => {
+		globalThis.CMD.on('converter|tomp3 <video>',  { event: ["tomp3 <video>"], tag: "converter"},'tomp3', async (res: WAConnection, data: Commands) => {
 			const { media, isQuotedVideo, from, mess, isVideo, sender, sendOwner } = data
             if ((!media && !isQuotedVideo) || (!media && isVideo)) return this.Ra.reply(from, IndBukanVid(), mess)
             if (!media) return
@@ -157,19 +326,23 @@ export class Converter {
 		},{ noPrefix: false })
 	}
 	protected async toImg() {
-		globalThis.CMD.on('converter|toimg <img>','toimg', async (res: WAConnection, data: Commands) => {
+		globalThis.CMD.on('converter|toimg <img>',  { event: ["toimg <img>"], tag: "converter"},'toimg', async (res: WAConnection, data: Commands) => {
 			const { from, mess, isQuotedSticker } = data
 			const Time = Date.now()
             if (!isQuotedSticker) return this.Ra.reply(from,  InputSticker(), mess)
             if (!data.media) return
 			await this.Ra.reply(from, IndTunggu(), mess)
-            const result: string = await Toimg(await res.downloadAndSaveMediaMessage(data.media, './lib/storage/temp/' + RandomName(27)))
-			const Timer = parsems(Date.now() - Time)
-            return void (await this.Ra.sendImage(from, fs.readFileSync(result || ''),  IndToimgDone(String(Timer.seconds + " Detik, " + Timer.milliseconds + " Miliseconds")), mess))
+			try {
+				const result: string = await Toimg(await res.downloadAndSaveMediaMessage(data.media, './lib/storage/temp/' + RandomName(27)))
+				const Timer = parsems(Date.now() - Time)
+				return void (await this.Ra.sendImage(from, fs.readFileSync(result || ''),  IndToimgDone(String(Timer.seconds + " Detik, " + Timer.milliseconds + " Miliseconds")), mess))
+			} catch (err) {
+				console.log(err)
+			}
         }, { noPrefix: false })
 	}
     protected async toCUTE() {
-		globalThis.CMD.on('converter|tocute <audio>', 'tocute', async (res: WAConnection, data: Commands) => {
+		globalThis.CMD.on('converter|tocute <audio>',  { event: ["tocute <audio>"], tag: "converter"},'tocute', async (res: WAConnection, data: Commands) => {
 			const { media, isQuotedAudio, from, mess, isAudio, sender } = data
             if ((!media && !isQuotedAudio) || (!media && isAudio)) return this.Ra.reply(from, IndBukanAud(), mess)
             if (!media) return
@@ -187,6 +360,6 @@ export class Converter {
                     await Tunggu(2000)
                     if (fs.existsSync(result)) fs.unlinkSync(result)
 				}
-			})},{ noPrefix: false })
+			}).catch((err) => console.log(err))},{ noPrefix: false })
     }
 }

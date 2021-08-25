@@ -3,7 +3,6 @@ import { Validation } from './validasi'
 import { Validasi, HandlingMessage } from '../typings'
 import moment from 'moment-timezone'
 import { config } from 'dotenv'
-import { ConnectMoongo } from '../database/mongoodb/main'
 config({ path: './.env' })
 
 export class HandlerMsg extends Validation {

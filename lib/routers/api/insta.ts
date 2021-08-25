@@ -6,7 +6,7 @@ import cheerio, { CheerioAPI } from 'cheerio'
 export const InstaStalk = async (username: string, headers?: AxiosRequestConfig): Promise<instaStalk> => {
     return new Promise(async (resolve, reject) => {
         const Headers: AxiosRequestConfig = headers == undefined ? { headers: {
-			'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36',
+			'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36'
 		}
 	} : headers
         await axios.get(`https://www.instagram.com/${username}/?__a=1`, Headers).then((data: AxiosResponse) => {

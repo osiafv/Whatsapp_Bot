@@ -16,7 +16,7 @@ export class GroupGuards extends GroupCommands {
 		this.MutedGc()
 	}
 	private async MutedGc () {
-		globalThis.CMD.on("guard|muted <on/off>", ["mute", "muted"], async (res: WAConnection, data: Commands) => {
+		globalThis.CMD.on("guard|muted <on/off>",  { event: ["mute <on/off>"], tag: "groupguards"},["mute", "muted"], async (res: WAConnection, data: Commands) => {
 			const { from, isGroupMsg, isOwner, isGroupAdmins, groupMetadata, args, mess } = data
 			if (!isGroupMsg) return
 			if (!isOwner && !isGroupAdmins) return 
@@ -35,7 +35,7 @@ export class GroupGuards extends GroupCommands {
 		})
 	}
 	private async AntiViewOnce () {
-		globalThis.CMD.on("guard|antiviewonce <on/off>", ["antiviewonce", "antivo"], async (res: WAConnection, data: Commands) => {
+		globalThis.CMD.on("guard|antiviewonce <on/off>",  { event: ["antiviewonce <on/off>"], tag: "groupguards"},["antiviewonce", "antivo"], async (res: WAConnection, data: Commands) => {
 			const { args, from, isGroupMsg, mess, groupMetadata, isGroupAdmins, isOwner } = data
 			if (!isGroupMsg) return
 			if (!isOwner && !isGroupAdmins) return 

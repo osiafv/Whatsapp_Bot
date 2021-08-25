@@ -11,3 +11,4 @@ export * from "./github";
 export * from "./google";
 export * from "./brainly";
 export * from "./playstore";
+export * from "./youtube";

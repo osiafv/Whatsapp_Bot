@@ -2,7 +2,8 @@ import { exec, ExecException } from 'child_process'
 import ffmpeg from 'fluent-ffmpeg'
 import * as fs from 'fs'
 import { RandomName, isUrl }from '../functions/function'
-import { videoToWebp, gifToWebp, pngToWebp } from '../routers/api';
+import { videoToWebp, pngToWebp } from '../routers/api';
+import { WebpCircle,  ImgCircle } from "."
 
 async function createExif (pakage: string, author: string, Path: string) {
 	const json: { "sticker-pack-name": string, "sticker-pack-publisher": string} = {	
@@ -123,7 +124,24 @@ export async function createStickerV2(input: string, wm?: string): Promise<strin
 	}
 })
 }
-export async function CreateSticker(input: string, wm?: string): Promise<string | Error> {
+export async function CreateStickerCircle (input: string): Promise <string> {
+	return new Promise (async (resolve, reject) => {
+		if (/^(webp)$/i.test(input.split('.')[2])) {
+			await WebpCircle(input).then(async (value: string) => {
+				await CreateSticker(value).then((start: string) => {
+					return resolve(start)
+				}).catch((err) => reject(err))
+			}).catch((err) => reject(err))
+		} else {
+			await  ImgCircle(input).then(async (value: string) => {
+				await CreateSticker(value).then((start: string) => {
+					return resolve(start)
+				}).catch((err) => reject(err))
+			}).catch((err) => reject(err))
+		}
+	})
+}
+export async function CreateSticker(input: string, wm?: string): Promise<string> {
     return new Promise(async (resolve, reject) => {
         if (/^(mp4|gif)$/i.test(input.split('.')[2])) {
             const output: string = `./lib/storage/temp/${RandomName(22)}.webp`
@@ -131,7 +149,7 @@ export async function CreateSticker(input: string, wm?: string): Promise<string 
             await ffmpeg(input)
 			.inputFormat(`${input.split('.')[2]}`)
             .on('error', function (error) {
-				reject(error)
+				return reject(error)
 			})
             .on('end', async function () {
 				if (fs.existsSync(input)) fs.unlinkSync(input)
@@ -140,7 +158,7 @@ export async function CreateSticker(input: string, wm?: string): Promise<string 
 					if (error) {
 						if (fs.existsSync(exifPath + '.exif') && typeof wm == 'string') fs.unlinkSync(exifPath + '.exif')
                         if (fs.existsSync(output)) fs.unlinkSync(output)
-                        reject(error)
+                        return reject(error)
                     } else {
 						if (fs.existsSync(exifPath + '.exif') && typeof wm == 'string') fs.unlinkSync(exifPath + '.exif')
                         if (fs.existsSync(input)) fs.unlinkSync(input)
@@ -148,7 +166,7 @@ export async function CreateSticker(input: string, wm?: string): Promise<string 
                     }
 				})
 			})
-			.addOutputOptions([`-vcodec`,`libwebp`,`-vf`,`scale='min(320,iw)':min'(320,ih)':force_original_aspect_ratio=decrease,fps=15, pad=320:320:-1:-1:color=white@0.0, split [a][b]; [a] palettegen=reserve_transparent=on:transparency_color=ffffff [p]; [b][p] paletteuse`,`-preset`,`default`,`-an`,`-vsync`,`0`,`-s`,`512:512`])
+			.addOutputOptions([`-vcodec`,`libwebp`,`-vf`,`scale='min(320,iw)':min'(320,ih)':force_original_aspect_ratio=decrease,fps=15, pad=320:320:-1:-1:color=white@0.0, split [a][b]; [a] palettegen=reserve_transparent=on:transparency_color=ffffff [p]; [b][p] paletteuse`])
             .toFormat('webp')
             .save(output)
         } else if (/^(webp)$/i.test(input.split('.')[2])) {

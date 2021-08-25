@@ -1,4 +1,4 @@
-import { instaStalk, TiktokStalk, LirikResult, Azlirik,  GhStalk, Googlesearch, Question, Answer, PlayStore  } from '../typings'
+import { instaStalk, TiktokStalk, LirikResult, Azlirik,  GhStalk, Googlesearch, Question, Answer, PlayStore, youtubeDlCore, YoutubeMP3PlaySer2, YoutubeMP4PlaySer2 } from '../typings'
 import { ChannelSearchResult, VideoSearchResult  } from 'yt-search'
 import { WAGroupMetadata, WAGroupParticipant } from '@adiwajshing/baileys'
 import parsems from 'parse-ms';
@@ -951,4 +951,136 @@ export const IndPlayStore = (result: PlayStore[]) => {
 *💫 Url :* ${data.link}\n`
 	}
 	return text
+}
+export const IndDorker = (result:{ id: string, bio?: string, status: boolean, bisnis?: boolean }[]) => {
+	let Aktif:{ id: string, bio?: string, status: boolean, bisnis?: boolean }[] = result.filter((value:{ id: string, bio?: string, status: boolean, bisnis?: boolean }) => value.status == true)
+	let Mati:{ id: string, bio?: string, status: boolean, bisnis?: boolean }[] = result.filter((value:{ id: string, bio?: string, status: boolean, bisnis?: boolean }) => value.status == false)
+	let text: string = `ㅤㅤㅤ ㅤ *「 DORK 」*\n\n`
+	let aktif: number = 1
+	let mati: number = 1
+	text += `        *Aktif*\n\n`
+	for (let data of Aktif) {
+		text += `*${aktif++}. 📞 Nomer :* http://wa.me/${data.id.split("@")[0]}\n*⚠ Status :* ${data.status ? "*✅*" : "*❌*"}\n*💌 Bio :* ${/404/.test(String(data.bio)) ? "Tidak ada bio" : data.bio}\n*🏢 Akun Bisnis :* ${data.bisnis ? "*✅*" : "*❌*"}\n\n`
+	}
+	text += `ㅤㅤ   *Mati*\n\n`
+	for (let data of Mati) {
+		text += `*${mati++}. 📞 Nomer :* ${data.id.split("@")[0]}\n*⚠ Status :* ${data.status ? "*✅*" : "*❌*"}\n\n`
+	}
+	return text
+}
+export const IndDedork = (command: string) => {
+	return `*「❗」* Untuk menggunakan fitur dork harap masukkan ${command} <nomer + xxx (disamarkan)> <jumlah>`
+}
+export const IndQuerryPanjangDork = () => {
+	return `*「❗」* Mohon maaf kak nomer yang anda masukkan terlalu panjang untuk dork maximal 14`
+}
+export const IndDorkLebih = () => {
+	return `*「❗」*  Mohon maaf kak, Maksimal jumlah dork adalah 125`
+}
+export const IndBknViewOnce = () => {
+	return `*「❗」* Mohon maaf kak harap kirim/ reply media berupa viewonce untuk menggunakan perintah ini`
+}
+export const IndYoutubeKosong = () => {
+	return `*「❗」* Mohon maaf kak hasil pencarian youtube anda error / kosong harap ganti media lain`
+}
+export const IndYtPlayVidSer2 = (value: YoutubeMP4PlaySer2): string => {
+	return `
+*╭────────────────*
+*│「 𝐏𝐋𝐀𝐘 𝐘𝐎𝐔𝐓𝐔𝐁𝐄  」*
+*╰────────────────*
+
+*📬 ID :* ${value.videoId}
+*📜 Judul :* ${value.title}
+*📍 Link :* ${value.url}
+*⏱️ Durasi :* ${value.duration}
+*🎁 Type :* mp4
+*🎞️ Penonton :* ${value.views}
+*🛡️ Genre :* ${value.genre}
+*🎉 Rilis :* ${value.uploadDate}
+*⚖️ Ukuran :* ${value.size}
+*📑 Deskripsi :* ${value.description}
+
+*╭─── ⟬ Play MP4 ⟭ ───*
+*│ 🤖 Author : I` + ` am Ra*  
+*╰───「 RA BOT 」───*`
+}
+export const IndYtPlayAudSer2 = (value: YoutubeMP3PlaySer2): string => {
+	return `
+*╭────────────────*
+*│「 𝐏𝐋𝐀𝐘 𝐘𝐎𝐔𝐓𝐔𝐁𝐄  」*
+*╰────────────────*
+
+*📬 ID :* ${value.videoId}
+*📜 Judul :* ${value.title}
+*📍 Link :* ${value.url}
+*⏱️ Durasi :* ${value.duration}
+*🎁 Type :* mp3
+*🎞️ Penonton :* ${value.views}
+*🛡️ Genre :* ${value.genre}
+*🎉 Rilis :* ${value.uploadDate}
+*⚖️ Ukuran :* ${value.size}
+*📑 Deskripsi :* ${value.description}
+
+*╭─── ⟬ Play MP3 ⟭ ───*
+*│ 🤖 Author : I` + ` am Ra*  
+*╰───「 RA BOT 」───*`
+}
+export const IndYtPlayMP3 = (value: youtubeDlCore) => {
+	let Regex: RegExpExecArray | null | string = /(?:http(?:s|):\/\/|)(?:(?:www\.|)youtube(?:\-nocookie|)\.com\/(?:watch\?.*(?:|\&)v=|embed\/|v\/)|youtu\.be\/)([-_0-9A-Za-z]{11})/.exec(value.data.video_url)
+	if (!Regex) Regex = value.data.video_url
+	return `
+*╭────────────────*
+*│「 𝐏𝐋𝐀𝐘 𝐘𝐎𝐔𝐓𝐔𝐁𝐄  」*
+*╰────────────────*
+
+*📬 ID :* ${Regex[0]}
+*📜 Judul :* ${value.data.title}
+*📍 Link :* ${value.data.video_url}
+*⏱️ Durasi :* ${value.data.durasi}
+*❤ Like :* ${value.data.like}
+*🖤 Dislike :* ${value.data.dislike}
+*🎁 Type :* ${value.data.format}
+*🎞️ Penonton :* ${value.data.viewers}
+*🎉 Rilis :* ${value.data.rilis}
+*🎯 Ago :* ${value.data.ago}
+*🛡️ Genre :* ${value.data.category}
+*🎥 Channel :* ${value.data.channel}
+*💡 Kualitas :* ${value.data.quality}
+*⚖️ Ukuran :* ${value.data.size}
+*📑 Deskripsi :* ${value.data.desk}
+
+*╭─── ⟬ Play MP3 ⟭ ───*
+*│ 🤖 Author : I` + ` am Ra*  
+*╰───「 RA BOT 」───*`
+}
+export const IndYtPlayMP4 = (value: youtubeDlCore) => {
+	let Regex: RegExpExecArray | null | string = /(?:http(?:s|):\/\/|)(?:(?:www\.|)youtube(?:\-nocookie|)\.com\/(?:watch\?.*(?:|\&)v=|embed\/|v\/)|youtu\.be\/)([-_0-9A-Za-z]{11})/.exec(value.data.video_url)
+	if (!Regex) Regex = value.data.video_url
+	return `
+*╭────────────────*
+*│「 𝐏𝐋𝐀𝐘 𝐘𝐎𝐔𝐓𝐔𝐁𝐄  」*
+*╰────────────────*
+
+*📬 ID :* ${Regex[0]}
+*📜 Judul :* ${value.data.title}
+*📍 Link :* ${value.data.video_url}
+*⏱️ Durasi :* ${value.data.durasi}
+*❤ Like :* ${value.data.like}
+*🖤 Dislike :* ${value.data.dislike}
+*🎁 Type :* ${value.data.format}
+*🎞️ Penonton :* ${value.data.viewers}
+*🎉 Rilis :* ${value.data.rilis}
+*🎯 Ago :* ${value.data.ago}
+*🛡️ Genre :* ${value.data.category}
+*🎥 Channel :* ${value.data.channel}
+*💡 Kualitas :* ${value.data.quality}
+*⚖️ Ukuran :* ${value.data.size}
+*📑 Deskripsi :* ${value.data.desk}
+
+*╭─── ⟬ Play MP4 ⟭ ───*
+*│ 🤖 Author : I` + ` am Ra*  
+*╰───「 RA BOT 」───*`
+}
+export const IndSizeBesar = (awal: string, akhir: string, fitur: string, Link: string) => {
+	return `*「❗」* Mohon maaf kak ukuran media kakak ${awal} terlalu besar untuk dikirimkan bot, batas maksimal size fitur ${fitur} adalah ${akhir}. Kaka bisa download manual di link berikut : ${Link}`
 }

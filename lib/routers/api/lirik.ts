@@ -1,18 +1,21 @@
 import got, { Response } from 'got'
 import cheerio, { CheerioAPI } from 'cheerio'
-import { LirikResult, LirikSearching, Azlirik } from '../../typings'
+import { LirikResult, LirikSearching, Azlirik } from '../../typings';
+import proxyAgent from "https-proxy-agent";
 
 const MusicMatchReg: RegExp = /(?:http(?:s|):\/\/|)(?:www\.|)musixmatch.com/
 const getJudul: RegExp = /.\/(.)\/(.*)$/
 export async function LirikLagu(judul: string): Promise<LirikResult | undefined> {
     return new Promise(async (resolve, reject) => {
+		const Agent = proxyAgent({ port: "", host: "36.94.13.63"})
         await got({
             url: 'https://www.musixmatch.com/search/' + judul,
             method: 'GET',
             headers: {
-                'user-agent':
-                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'
-            }
+                'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'
+            },
+			port: 3128,
+			host: "36.94.13.63"
         }).then((respon): void => {
 			const c: CheerioAPI = cheerio.load(respon.body)
             const Url: string | undefined = c('#search-all-results > div.main-panel > div:nth-child(1)').find('div.box-content > div > ul > li > div > div.media-card-body > div > h2 > a').attr('href')
@@ -21,7 +24,9 @@ export async function LirikLagu(judul: string): Promise<LirikResult | undefined>
 				method: 'GET',
                 headers: {
 					'user-agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'
-				}
+				},
+				port: 3128,
+				host: "36.94.13.63"
 			}).then((response): void => {
 				const $: CheerioAPI = cheerio.load(response.body)
                 const title: string = $('div.mxm-track-banner.top > div > div > div > div').find('div.track-title-header > div.mxm-track-title').find('h1').text().trim().replace(/Lyrics/, '')
@@ -50,9 +55,10 @@ export async function LirikInfo(Url: string): Promise<LirikResult | undefined | 
             url: Url,
             method: 'GET',
             headers: {
-                'user-agent':
-                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'
-            }
+                'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'
+            },
+			port: 3128,
+			host: "36.94.13.63"
         }).then((response): void => {
 			const $: CheerioAPI = cheerio.load(response.body)
             const title: string = $('div.mxm-track-banner.top > div > div > div > div').find('div.track-title-header > div.mxm-track-title').find('h1').text().trim().replace(/Lyrics/, '')
@@ -81,7 +87,9 @@ export async function LirikSearch(judul: string): Promise<LirikSearching[]> {
             headers: {
                 'user-agent':
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'
-            }
+            },
+			port: 3128,
+			host: "36.94.13.63"
         }).then((respon): void => {
 			const $: CheerioAPI = cheerio.load(respon.body)
             const result: LirikSearching[] = []
@@ -110,8 +118,7 @@ export async function AzLirik(judul: string): Promise<Azlirik> {
             const search: Response<string> = await got('https://search.azlyrics.com/search.php?q=' + judul, {
                 method: 'GET',
                 headers: {
-                    'user-agent':
-                        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'
+                    'user-agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'
                 }
             })
             if (search.statusCode !== 200) return reject(new Error(String(search.statusCode)))
@@ -128,7 +135,9 @@ export async function AzLirik(judul: string): Promise<Azlirik> {
                 method: 'GET',
                 headers: {
                     'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'
-                }
+                },
+				port: 3128,
+				host: "36.94.13.63"
             })
             if (data.statusCode !== 200) return reject(new Error(String(search.statusCode)))
             const ch: CheerioAPI = cheerio.load(data.body)

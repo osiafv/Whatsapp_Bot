@@ -5,7 +5,7 @@ import { GoogleImage,  GoogleSearch,  BrainlySearch,  GroupWa,  YtSearch,  Pinte
 import { WAConnection, MessageType, compressImage  } from "@adiwajshing/baileys";
 import { Commands, GIS, Googlesearch, Question, Answer, PlayStore } from "../typings";
 import {  CreateSticker } from "../tools"
-import { IndSuccesSearch, IndTungguSearch,  IndLebihDariLimit, IndQuerryKosong, IndGoogleSearch,  IndGoogleKosong, IndBrainly, IndGroupWa,  IndSearchYt, IndWikipedia, IndPlayStore   } from "../lang/ind";
+import { IndSuccesSearch, IndTungguSearch,  IndLebihDariLimit, IndQuerryKosong, IndGoogleSearch,  IndGoogleKosong, IndBrainly, IndGroupWa,  IndSearchYt, IndWikipedia, IndPlayStore,  IndDorker,  IndDedork, IndQuerryPanjangDork,  IndDorkLebih } from "../lang/ind";
 import parsems, { Parsed } from "parse-ms";
 import { isUrl, Buffer, RandomName, Tunggu, RandomArray } from '../functions/function';
 import { VideoSearchResult } from "yt-search";
@@ -28,9 +28,48 @@ export class Searching extends Downloader {
 		this.Wikiped()
 		this.StickerSearch()
 		this.PlayStor()
+		this.Dork()
     }
+	private async Dork () {
+		globalThis.CMD.on("search|dork 62812510xxxx *25*",  { event: ["dork _62812510xxxx 25_"], tag: "search"},["dork", "dorker"], async (res: WAConnection, data: Commands) => {
+			const { from, args, mess, Command } = data
+			if (!args[0]) return this.Ra.reply(from,  IndDedork(Command), mess)
+			if (Number(args[0].search("x")) == 0) return  this.Ra.reply(from,  IndDedork(Command), mess)
+			if (args[0].length > 14) return this.Ra.reply(from, IndQuerryPanjangDork(), mess)
+			const Jumlah: number = isNaN(Number(args[1])) ? 25 : Number(args[1])
+			if (Jumlah > 125) return this.Ra.reply(from,  IndDorkLebih(), mess)
+			this.Ra.reply(from,  IndTungguSearch(), mess)
+			const Nomer: string[] = args[0].split("x")
+			let Nom: string[] = []
+			for (let i = 0; i < Jumlah; i++) {
+				let Hasil: string[] = []
+				await Nomer.map(async (value) => {
+					if (value == "") {
+						await Hasil.push(String((Math.floor(Math.random() * 9))))
+					} else {
+						await Hasil.push(value)
+					}
+				})
+				await Nom.push(Hasil.join("") + "@s.whatsapp.net")
+			}
+			Nom = Nom.filter(function(res1, res2) {
+				return Nom.indexOf(res1) == res2
+			})
+			let result: { id: string, bio?: string, status: boolean, bisnis?: boolean }[] = []
+			for (let value of Nom) {
+				let Data: { exists: boolean, jid: string, isBusiness: boolean} = await res.isOnWhatsApp(value)
+				if (Data) {
+					const Response: { status: string} = await res.getStatus(value)
+					result.push({ id: value, bio: Response.status ?? "Tidak ada status", status: true, bisnis: Data.isBusiness})
+				} else {
+					result.push({ id: value, status: false})
+				}
+			}
+			this.Ra.reply(from,  IndDorker(result), mess) 
+		})
+	}
 	private async PlayStor () {
-		globalThis.CMD.on("search|playstore", ["searchplaystore", "playstore"], async (res: WAConnection, data: Commands) => {
+		globalThis.CMD.on("search|playstore <querry>", { event: ["playstore <querry>"], tag: "search"},["searchplaystore", "playstore"], async (res: WAConnection, data: Commands) => {
 			const { from, args, mess }= data
 			if (!args[0]) return this.Ra.reply(from, IndQuerryKosong(), mess)
 			this.Ra.reply(from,  IndTungguSearch(), mess)
@@ -55,7 +94,7 @@ export class Searching extends Downloader {
 		})
 	}
 	private async StickerSearch () {
-		globalThis.CMD.on("search|stickersearch", ["stickersearch", "searchsticker", "stikersearch", "stikersearch", "searchstiker", "caristiker", "caristicker"], async(res: WAConnection, data: Commands) => {
+		globalThis.CMD.on("search|stickersearch <querry>",  { event: ["stickersearch <querry>"], tag: "search"},["stickersearch", "searchsticker", "stikersearch", "stikersearch", "searchstiker", "caristiker", "caristicker"], async(res: WAConnection, data: Commands) => {
 			const { from, args, mess  } = data
 			const Time: number = Date.now()
 			if (!args[0]) return this.Ra.reply(from, IndQuerryKosong(), mess)
@@ -87,7 +126,7 @@ export class Searching extends Downloader {
 		})
 	}
 	private async Wikiped () {
-		globalThis.CMD.on("search|wikipedia", ["wikipedia", "wiki"], async (res: WAConnection, data: Commands) => {
+		globalThis.CMD.on("search|wikipedia <querry>",  { event: ["wikipedia <querry>"], tag: "search"},["wikipedia", "wiki"], async (res: WAConnection, data: Commands) => {
 			const { from, args, mess } = data
 			if (!args[0]) return this.Ra.reply(from, IndQuerryKosong(), mess)
 			this.Ra.reply(from,  IndTungguSearch(), mess)
@@ -99,7 +138,7 @@ export class Searching extends Downloader {
 		})
 	}
 	private async pinterest () {
-		globalThis.CMD.on("search|pinterest", ["pinterest", "pinteres"], async (res: WAConnection, data: Commands) => {
+		globalThis.CMD.on("search|pinterest <num> <query>",  { event: ["pinterest <num> <query>"], tag: "search"},["pinterest", "pinteres"], async (res: WAConnection, data: Commands) => {
 			const { from, args, mess} = data
 			if (!args[0]) return this.Ra.reply(from, IndQuerryKosong(), mess)
 			const Time: number = Date.now()
@@ -110,33 +149,29 @@ export class Searching extends Downloader {
 			}
 			if (Jumlah > 8) return this.Ra.reply(from,  IndLebihDariLimit(8, "Pinterest"), mess)
 			this.Ra.reply(from,  IndTungguSearch(), mess)
-			try {
-				await  Pinterest(args.join(" ")).then(async (value: string[]) => {
-					if (!value[0]) return void this.Ra.reply(from,  IndGoogleKosong(), mess)
-					for (let result of value) {
-						if (count > Jumlah) {
-							const Timer = parsems(Date.now() - Time)
-							await this.Ra.reply(from,IndSuccesSearch(String(Timer.seconds + " Detik, " + Timer.milliseconds + " Miliseconds"), "Pinterest"))
-							break;
-						} else  if (Jumlah >= value.length) {
-							const Timer: Parsed = parsems(Date.now() - Time)
-							await this.Ra.reply(from,IndSuccesSearch(String(Timer.seconds + " Detik, " + Timer.milliseconds + " Miliseconds"), "Pinterest"))
-							break;
-						} else {
-							const Media: Buffer =  await Buffer(result)
-							const Thumb: any =  await compressImage(Media)
-							await res.sendMessage(from, Media, MessageType.image, { quoted: mess, thumbnail: Thumb})
-							count++
-						}
+			await  Pinterest(args.join(" ")).then(async (value: string[]) => {
+				if (!value[0]) return void this.Ra.reply(from,  IndGoogleKosong(), mess)
+				for (let result of value) {
+					if (count > Jumlah) {
+						const Timer = parsems(Date.now() - Time)
+						await this.Ra.reply(from,IndSuccesSearch(String(Timer.seconds + " Detik, " + Timer.milliseconds + " Miliseconds"), "Pinterest"))
+						break;
+					} else  if (Jumlah >= value.length) {
+						const Timer: Parsed = parsems(Date.now() - Time)
+						await this.Ra.reply(from,IndSuccesSearch(String(Timer.seconds + " Detik, " + Timer.milliseconds + " Miliseconds"), "Pinterest"))
+						break;
+					} else {
+						const Media: Buffer =  await Buffer(result)
+						const Thumb: any =  await compressImage(Media)
+						await res.sendMessage(from, Media, MessageType.image, { quoted: mess, thumbnail: Thumb})
+						count++
 					}
-				})
-			} catch (err) {
-				return void this.Ra.reply(from,  IndGoogleKosong(), mess)
-			}
+				}
+			})
 		})
 	}
 	private async ytSearch () {
-		globalThis.CMD.on("search|ytsearch", ["ytsearch", "cariyt"], async (res: WAConnection, data: Commands) => {
+		globalThis.CMD.on("search|ytsearch <querry>",  { event: ["ytsearch <querry>"], tag: "search"},["ytsearch", "cariyt"], async (res: WAConnection, data: Commands) => {
 			const { from, args, mess } = data
 			if (!args[0]) return this.Ra.reply(from, IndQuerryKosong(), mess)
 			this.Ra.reply(from,  IndTungguSearch(), mess)
@@ -149,7 +184,7 @@ export class Searching extends Downloader {
 		})
 	}
 	private async SearchGroup () {
-		globalThis.CMD.on("search|groupwa", ["searchgroup", "searchgc", "carigc", "searchgrup", "groupwa", "wagroup", "grupwa", "wagrup"], async (res: WAConnection, data: Commands) => {
+		globalThis.CMD.on("search|groupwa <querry>",  { event: ["groupwa <querry>"], tag: "search"},["searchgroup", "searchgc", "carigc", "searchgrup", "groupwa", "wagroup", "grupwa", "wagrup"], async (res: WAConnection, data: Commands) => {
 			const { from, args, mess } = data
 			if (!args[0]) return this.Ra.reply(from, IndQuerryKosong(), mess)
 			this.Ra.reply(from,  IndTungguSearch(), mess)
@@ -162,7 +197,7 @@ export class Searching extends Downloader {
 		})
 	}
 	private async Brainly () {
-		globalThis.CMD.on("search|brainly", ["brainly", "brainlysearch"], async (res: WAConnection, data: Commands) => {
+		globalThis.CMD.on("search|brainly <querry>",  { event: ["brainly <querry>"], tag: "search"},["brainly", "brainlysearch"], async (res: WAConnection, data: Commands) => {
 			const { from, args, mess } = data
 			if (!args[0]) return this.Ra.reply(from, IndQuerryKosong(), mess)
 			this.Ra.reply(from,  IndTungguSearch(), mess)
@@ -174,7 +209,7 @@ export class Searching extends Downloader {
 		})
 	}
 	private async Google () {
-		globalThis.CMD.on("search|google", ["google", "googlesearch"], async (res: WAConnection, data: Commands) => {
+		globalThis.CMD.on("search|google <querry>",  { event: ["google <querry>"], tag: "search"},["google", "googlesearch"], async (res: WAConnection, data: Commands) => {
 			const { from, args, mess } = data
 			if (!args[0]) return this.Ra.reply(from, IndQuerryKosong(), mess)
 			this.Ra.reply(from,  IndTungguSearch(), mess)
@@ -187,7 +222,7 @@ export class Searching extends Downloader {
 		})
 	}
 	private async GIS () {
-		globalThis.CMD.on("search|googleimg", ["googleimg", "googleimage"], async (res: WAConnection, data: Commands) => {
+		globalThis.CMD.on("search|googleimg <nmr> <query>",  { event: ["googleimg <nmr> <query>"], tag: "search"},["googleimg", "googleimage", "googleimg"], async (res: WAConnection, data: Commands) => {
 			const { from, args, mess } = data
 			const Time: number = Date.now()
 			let count: number = 1;
@@ -212,8 +247,6 @@ export class Searching extends Downloader {
 						count++
 					}
 				}
-			}).catch(() => {
-				return void this.Ra.reply(from,  IndGoogleKosong(), mess)
 			})
 		})
 	}

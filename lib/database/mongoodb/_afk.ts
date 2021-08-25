@@ -23,4 +23,7 @@ export class AFK extends Registrasi {
     public async getDataAfk(sender: string): Promise<{ id: string; from: string; alasan: string; time: number }> {
         return this._database.findOne({ id: sender })
     }
+	public async ResetAfk (): Promise <void> {
+		return void await this._database.remove()
+	}
 }

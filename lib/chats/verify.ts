@@ -52,7 +52,7 @@ export class Verify {
         }
     }
     private async Verify() {
-        globalThis.CMD.on('user|verify', ['verify'], async (res: WAConnection, data: Commands) => {
+        globalThis.CMD.on('user|verify',  { event: ["verify"], tag: "user"}, ['verify'], async (res: WAConnection, data: Commands) => {
             const { sender, from, mess, pushname } = data
 			if (!sender) return
             if (await this.database.VerifyCheckDb(sender)) return (pushname == "Tidak Terdeteksi")  ? await this.client.sendMessage(from, IndSdhVerifikasi(sender), MessageType.extendedText, { quoted: mess, contextInfo: { mentionedJid: [sender]}}) : await this.client.sendMessage(from, IndSdhVerifikasi(pushname), MessageType.extendedText, { quoted: mess})

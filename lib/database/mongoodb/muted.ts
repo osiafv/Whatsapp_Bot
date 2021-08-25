@@ -7,17 +7,20 @@ export class Muted extends Banned {
 	}
 	public async AddMuted (from: string): Promise <void> {
 		if (await this.CheckMuted(from)) return 
-		return void await this._dataMute.insert({ from })
+		return void await this._dataMute.insert({ from: from })
 	}
 	public async CheckMuted (from: string): Promise <boolean> {
 		let status: boolean = false;
-		if (await this._dataMute.findOne({ from })) {
+		if (await this._dataMute.findOne({ from: from })) {
 			status = true
 		}
 		return status
 	}
 	public async deleteMuted (from: string): Promise <void> {
 		if (!await this.CheckMuted(from)) return
-		return void await this._dataMute.remove({ from })
+		return void await this._dataMute.remove({ from: from })
+	}
+	public async resetMuted (): Promise <void> {
+		return void await this._dataMute.remove()
 	}
 }

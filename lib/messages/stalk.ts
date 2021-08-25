@@ -20,7 +20,7 @@ export class Stalking extends Storager {
 		this.GHStalk()
     }
 	private async GHStalk () {
-		globalThis.CMD.on("stalk|ghstalk <username>", ["ghstalk", "githubstalk"], async (res: WAConnection, data: Commands) => {
+		globalThis.CMD.on("stalk|ghstalk <username>",  { event: ["ghstalk <username>"], tag: "stalking"}, ["ghstalk", "githubstalk"], async (res: WAConnection, data: Commands) => {
 			const { from, args, mess } = data
 			if (!args[0]) return  this.Ra.reply(from, IndUsernameNoKosong("Github"), mess)
 			if (isUrl(args[0])) return await this.Ra.reply(from, IndMasukkanUsernameNoUrl('Github'), mess)
@@ -33,7 +33,7 @@ export class Stalking extends Storager {
 		})
 	}
     private async TiktokStalk() {
-        globalThis.CMD.on('stalk|tiktokstalk <username>', ['stalktiktok', 'tiktokstalk'], async (res: WAConnection, data: Commands) => {
+        globalThis.CMD.on('stalk|tiktokstalk <username>', { event: ["tiktokstalk <username>"], tag: "stalking"},['stalktiktok', 'tiktokstalk'], async (res: WAConnection, data: Commands) => {
 			const { from, mess, args } = data
             if (args[0] == undefined) return await this.Ra.reply(from, IndUsernameNoKosong("Tiktok"), mess)
             if (isUrl(args[0])) return await this.Ra.reply(from, IndMasukkanUsernameNoUrl('Tiktok'), mess)
@@ -48,7 +48,7 @@ export class Stalking extends Storager {
 		})
     }
     private YoutubeStalk() {
-        globalThis.CMD.on('stalk|ytstalk <username>', ['ytstalk'], async (res: WAConnection, data: Commands) => {
+        globalThis.CMD.on('stalk|ytstalk <username>',   { event: ["ytstalk <username>"], tag: "stalking"},['ytstalk'], async (res: WAConnection, data: Commands) => {
 			const { from, mess, args, sendOwner } = data
             if (args[0] == undefined) return await this.Ra.reply(from, IndUsernameNoKosong("Youtube"), mess)
 			this.Ra.reply(from,  IndTungguSearch(), mess)
@@ -65,7 +65,7 @@ export class Stalking extends Storager {
         })
     }
     private async insta() {
-        globalThis.CMD.on('stalk|igstalk <username>', ['igstalk'], async (res: WAConnection, data: Commands) => {
+        globalThis.CMD.on('stalk|igstalk <username>', { event: ["igstalk <username>"], tag: "stalking"},['igstalk'], async (res: WAConnection, data: Commands) => {
             const { from, mess, args } = data
             if (args[0] == undefined) return await this.Ra.reply(from, IndUsernameNoKosong("Instagram"), mess)
 			this.Ra.reply(from,  IndTungguSearch(), mess)

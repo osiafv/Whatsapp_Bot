@@ -1,5 +1,5 @@
 import { Converter as Convert } from '.'
-import { WAConnection, MessageType, proto, WAChat } from '@adiwajshing/baileys'
+import { WAConnection, MessageType, proto, WAChat, compressImage } from '@adiwajshing/baileys'
 import { Commands } from '../typings'
 import { Ucapan } from '../plugins'
 import Speed from 'performance-now'
@@ -33,7 +33,7 @@ export class UserHandler extends Convert {
         this.Join()
     }
     private setPrefix(): void {
-        globalThis.CMD.on('user|setprefix <prefix>', ['setprefix'], async (res: WAConnection, data: Commands) => {
+        globalThis.CMD.on('user|setprefix <prefix>',   { event: ["setprefix <prefix>"], tag: "user"},['setprefix'], async (res: WAConnection, data: Commands) => {
 			const { from, mess, sender, args } = data
             if (!sender) return
 			await this.database.setprefix(sender, args[0])
@@ -41,7 +41,7 @@ export class UserHandler extends Convert {
 		}, { noPrefix: false })
     }
     private checkMulti(): void {
-        globalThis.CMD.on('user|cekmulti', 'cekmulti', async (res: WAConnection, data: Commands) => {
+        globalThis.CMD.on('user|cekmulti',   { event: ["cekmulti"], tag: "user"},'cekmulti', async (res: WAConnection, data: Commands) => {
 			const { from, mess, sender } = data
             if (!sender) return
             const hasil: string | undefined = await this.database.getMultiPrefix(sender)
@@ -50,7 +50,7 @@ export class UserHandler extends Convert {
         })
     }
     private addPrefix(): void {
-        globalThis.CMD.on('user|addmulti <prefix>', ['addmulti'], async (res: WAConnection, data: Commands) => {
+        globalThis.CMD.on('user|addmulti <prefix>',   { event: ["addmulti <prefix>"], tag: "user"}, ['addmulti'], async (res: WAConnection, data: Commands) => {
                 const { from, mess, sender, args } = data
                 if (args[0] == undefined) return this.Ra.reply(from, IndErrPushMulti(), mess)
                 if (!sender) return
@@ -61,13 +61,13 @@ export class UserHandler extends Convert {
         )
     }
     private Creator(): void {
-        globalThis.CMD.on('user|creator/owner', ['owner', 'creator'], (res: WAConnection, data: Commands) => {
+        globalThis.CMD.on('user|creator/owner',   { event: ["creator/owner"], tag: "user"},['owner', 'creator'], (res: WAConnection, data: Commands) => {
             const { from, mess } = data
             return void this.Ra.sendContactOwner(from, mess)
         })
     }
     private delPrefix(): void | undefined {
-        globalThis.CMD.on('user|delmulti <prefix>', ['delmulti'], async (res: WAConnection, data: Commands) => {
+        globalThis.CMD.on('user|delmulti <prefix>',   { event: ["delmulti <prefix>"], tag: "user"}, ['delmulti'], async (res: WAConnection, data: Commands) => {
 			const { from, mess, sender, args } = data
             if (!sender) return
             if (args[0] == undefined) return this.Ra.reply(from, IndErrDelMulti(), mess)
@@ -76,7 +76,7 @@ export class UserHandler extends Convert {
 		}, { noPrefix: false })
     }
     private multiPrefix(): void {
-        globalThis.CMD.on('user|multi <on/off>', ['multi'], async (res: WAConnection, data: Commands) => {
+        globalThis.CMD.on('user|multi <on/off>',   { event: ["multi <on/off>"], tag: "user"},['multi'], async (res: WAConnection, data: Commands) => {
             const { from, mess, sender, args } = data
             if (!sender) return
             if (args[0] == 'on') {
@@ -89,7 +89,7 @@ export class UserHandler extends Convert {
 		}, { noPrefix: false })
     }
     private Join() {
-        globalThis.CMD.on('user|join <link gc>', ['join', 'gabung'], async (res: WAConnection, data: Commands) => {
+        globalThis.CMD.on('user|join <link gc>',  { event: ["join <link group>"], tag: "user"},['join', 'gabung'], async (res: WAConnection, data: Commands) => {
             const { from, mess, args, bodyQuoted, quotedMsg } = data
             let check: RegExpMatchArray | null | undefined = args[0] ? args.join(' ').match(/(?:http(?:s|):\/\/|)chat.whatsapp.com\/([0-9A-Za-z]{20,24})/i) : quotedMsg ? bodyQuoted?.match(/(?:http(?:s|):\/\/|)chat.whatsapp.com\/([0-9A-Za-z]{20,24})/i) : []
             if (!check) return this.Ra.reply(from, IndGagalJoin(), mess)
@@ -107,45 +107,60 @@ export class UserHandler extends Convert {
         })
     }
     private menu(): void {
-        globalThis.CMD.on('user|menu', ['menu'], async (res: WAConnection, data: Commands) => {
+        globalThis.CMD.on('user|menu',   { event: ["menu"], tag: "user"},['menu', "manu"], async (res: WAConnection, data: Commands) => {
 			const { from, isOwner, sender, command, Prefix } = data
-            const _typeMenu: string[] = Object.keys(globalThis.CMD.events)
-            let Converter: string[] = []
-            let User: string[] = []
+			const getTag: { name: string, tampil: { event: string[], tag: string, withPrefix: boolean}, pattern: any,callback: any}[] = Object.values(globalThis.CMD.events)
+            let Converter: string[][] = getTag.filter((value) => value.tampil.tag === "converter").map((value) => value.tampil.event)
+            let User: string[][] = getTag.filter((value) => value.tampil.tag === "user").map((value) => value.tampil.event)
             let Owner: string[] = ['=>', '$cat', 'publik/public <on/off>']
-            let Storage: string[] = []
-            let Stalker: string[] = []
-            let Group: string[] = []
-            let GroupMem: string[] = []
-            let Musik: string[] = []
-            let Voting: string[] = []
-			let Guards: string[] = []
-			let Search: string[] = []
-            _typeMenu.map((value: string) => {
-                if (value.startsWith('converter')) {
-                    Converter.push(value.split('|')[1])
-                } else if (value.startsWith('user')) {
-                    User.push(value.split('|')[1])
-                } else if (value.startsWith('owner')) {
-                    Owner.push(value.split('|')[1])
-                } else if (value.startsWith('storage')) {
-                    Storage.push(value.split('|')[1])
-                } else if (value.startsWith('stalk')) {
-                    Stalker.push(value.split('|')[1])
-                } else if (value.startsWith('admingc')) {
-                    Group.push(value.split('|')[1])
-                } else if (value.startsWith('voting')) {
-                    Voting.push(value.split('|')[1])
-                } else if (value.startsWith('musik')) {
-                    Musik.push(value.split('|')[1])
-                } else if (value.startsWith('group')) {
-                    GroupMem.push(value.split('|')[1])
-                } else if (value.startsWith("guard")) {
-					Guards.push(value.split("|")[1])
-				} else if (value.startsWith("search")) {
-					Search.push(value.split("|")[1])
-				}
-            })
+            let Storage: string[][] = getTag.filter((value) => value.tampil.tag === "storage").map((value) => value.tampil.event)
+            let Stalker: string[][] = getTag.filter((value) => value.tampil.tag === "stalking").map((value) => value.tampil.event)
+            let Group: string[][] = getTag.filter((value) => value.tampil.tag === "groupadmins").map((value) => value.tampil.event)
+            let GroupMem: string[][] = getTag.filter((value) => value.tampil.tag === "group").map((value) => value.tampil.event)
+            let Musik: string[][] = getTag.filter((value) => value.tampil.tag === "musik").map((value) => value.tampil.event)
+            let Voting: string[][] = getTag.filter((value) => value.tampil.tag === "voting").map((value) => value.tampil.event)
+			let Guards: string[][] = getTag.filter((value) => value.tampil.tag === "groupguards").map((value) => value.tampil.event)
+			let Search: string[][]= getTag.filter((value) => value.tampil.tag === "search").map((value) => value.tampil.event)
+			let UserMenu: string[] = []
+			let ConverterMenu: string[] = []
+			let StorageMenu: string[] = []
+			let StalkerMenu: string[] = []
+			let GroupMenu: string[] = []
+			let  GroupMemMenu: string[] = []
+			let MusikMenu: string[] = []
+			let VotingMenu: string[] = []
+			let GuardsMenu: string[] = []
+			let  SearchMenu: string[] = []
+			for (let menu of User) {
+				menu.map((value) => UserMenu.push(value))
+			}
+			for (let menu of Converter) {
+				menu.map((value) =>  ConverterMenu.push(value))
+			}
+			for (let menu of Storage) {
+				menu.map((value) =>  StorageMenu.push(value))
+			}
+			for (let menu of Stalker) {
+				menu.map((value) => StalkerMenu.push(value))
+			}
+			for (let menu of Group) {
+				menu.map((value) => GroupMenu.push(value))
+			}
+			for (let menu of GroupMem) {
+				menu.map((value) => GroupMemMenu.push(value))
+			}
+			for (let menu of Musik) {
+				menu.map((value) => MusikMenu.push(value))
+			}
+			for (let menu of Voting) {
+				menu.map((value) => VotingMenu.push(value))
+			}
+			for (let menu of Guards) {
+				menu.map((value) => GuardsMenu.push(value))
+			}
+			for (let menu of Search) {
+				menu.map((value) => SearchMenu.push(value))
+			}
             let informasi: string = `
 👋🏻 Halo ${isOwner ? 'My Owner 🤴🏻' : 'ka'} ${Ucapan()}
 
@@ -163,47 +178,47 @@ export class UserHandler extends Convert {
 *🔑 Apikey* : 𝐍𝐨𝐭 𝐅𝐨𝐮𝐧𝐝\n\n`
 
 informasi += '\n         *MENU OWNER*\n\n'
-for (let result of Owner.sort()) {
+for (let result of Owner) {
 	informasi += `*ℒ⃝🕊️ •* *` + result + '*\n'
 }
 informasi += '\n         *MENU USER*\n\n'
-for (let result of User.sort()) {
+for (let result of UserMenu.sort()) {
 	informasi += `*ℒ⃝🕊️ •* *` + Prefix + result + '*\n'
 }
 informasi += '\n         *MENU CONVERTER*\n\n'
-for (let result of Converter.sort()) {
+for (let result of ConverterMenu.sort()) {
 	informasi += `*ℒ⃝🕊️ •* *` + Prefix + result + '*\n'
 }
 informasi += '\n         *MENU MUSIK*\n\n'
-for (let result of Musik.sort()) {
+for (let result of MusikMenu.sort()) {
 	informasi += `*ℒ⃝🕊️ •* *` + Prefix + result + '*\n'
 }
 informasi += '\n         *MENU STORAGE*\n\n'
-for (let result of Storage.sort()) {
+for (let result of StorageMenu.sort()) {
 	informasi += `*ℒ⃝🕊️ •* *` + Prefix + result + '*\n'
 }
 informasi += "\n         *MENU SEARCH*\n\n"
-for (let result of Search.sort()) {
+for (let result of SearchMenu.sort()) {
 	informasi += `*ℒ⃝🕊️ •* *` + Prefix + result + '*\n'
 }
 informasi += '\n         *MENU STALK*\n\n'
-for (let result of Stalker.sort()) {
+for (let result of StalkerMenu.sort()) {
 	informasi += `*ℒ⃝🕊️ •* *` + Prefix + result + '*\n'
 }
 informasi += '\n         *MENU ADMIN GROUP*\n\n'
-for (let result of Group.sort()) {
+for (let result of GroupMenu.sort()) {
 	informasi += `*ℒ⃝🕊️ •* *` + Prefix + result + '*\n'
 }
 informasi += '\n         *MENU GROUP*\n\n'
-for (let result of GroupMem.sort()) {
+for (let result of GroupMemMenu.sort()) {
 	informasi += `*ℒ⃝🕊️ •* *` + Prefix + result + '*\n'
 }
 informasi +=  '\n         *GROUP GUARD*\n\n'
-for (let result of Guards.sort()) {
+for (let result of GuardsMenu.sort()) {
 	informasi += `*ℒ⃝🕊️ •* *` + Prefix + result + '*\n'
 }
 informasi += '\n         *VOTING*\n\n'
-for (let result of Voting.sort()) {
+for (let result of VotingMenu.sort()) {
 	informasi += `*ℒ⃝🕊️ •* *` + Prefix + result + '*\n'
 }
 informasi += `\n\n__________________________________
@@ -218,7 +233,7 @@ informasi += `\n\n__________________________________
 __________________________________
 *🔖 || IG*
 @rayyreall`
-            const Thumb: Buffer = fs.readFileSync('./lib/storage/polosan/thumb.png')
+            const Thumb: Buffer = await compressImage(fs.readFileSync('./lib/storage/polosan/thumb.png'))
             const Buttons = {
                 contentText: informasi,
                 footerText: '🔖 @Powered bye Ra',
@@ -240,9 +255,9 @@ __________________________________
                     }
                 ],
                 headerType: 4,
-                imageMessage: await (await res.prepareMessageMedia(fs.readFileSync('./lib/storage/polosan/thumb.png'), MessageType.image,{ thumbnail: Thumb.toString()})).imageMessage
+                imageMessage: await (await res.prepareMessageMedia(fs.readFileSync('./lib/storage/polosan/thumb.png'), MessageType.image,{ thumbnail: await compressImage(fs.readFileSync('./lib/storage/polosan/thumb.png')).toString()})).imageMessage
             } as proto.ButtonsMessage
-            let response: proto.WebMessageInfo | any = await res.prepareMessage(from, Buttons, MessageType.buttonsMessage, { thumbnail: Thumb.toString(), contextInfo: { mentionedJid: ['33753045534@s.whatsapp.net', sender || '']}})
+            let response: proto.WebMessageInfo | any = await res.prepareMessage(from, Buttons, MessageType.buttonsMessage, { thumbnail: await compressImage(fs.readFileSync('./lib/storage/polosan/thumb.png')).toString(), contextInfo: { mentionedJid: ['33753045534@s.whatsapp.net', sender || '']}})
             if (response.message?.ephemeralMessage) {
                 response.message.ephemeralMessage.message.buttonsMessage.imageMessage.jpegThumbnail = Thumb
             } else {

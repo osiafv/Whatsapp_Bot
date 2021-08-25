@@ -36,10 +36,12 @@ export class Command {
         this.prefix = new RegExp(`^${typeof p == 'string' ? p : p.join('')}`)
     }
 
-    public on(eventName: string, pattern: any, callback: any, _init: Init = {}) {
+    public on(eventName: string, tampil: { event: string[], tag: string, withPrefix?: boolean},pattern: any,callback: any,_init: Init = {}) {
+		tampil.withPrefix = tampil.withPrefix ?? true
         if (!this.events[eventName])
             this.events[eventName] = {
                 name: eventName,
+				tampil,
                 pattern,
                 callback,
                 enabled: true,
@@ -47,6 +49,7 @@ export class Command {
             }
         this.events[eventName] = {
             ...this.events[eventName],
+			tampil,
             pattern,
             callback,
             ..._init

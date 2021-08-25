@@ -117,7 +117,7 @@ export class register extends Mongoose {
         if (!(await this.CheckRegister(sender))) return false
         let status: boolean = false
         const _database: Registrasi = await this.register.findOne({ id: sender })
-        if (_database.multi) {
+        if (_database?.multi) {
             status = true
         }
         return status
@@ -135,7 +135,7 @@ export class register extends Mongoose {
     public async GetPrefix(sender: string, command: string): Promise<string> {
         if (!(await this.CheckRegister(sender))) return '.'
         const _database: Registrasi = await this.register.findOne({ id: sender })
-        if (_database.multi) {
+        if (_database?.multi) {
             let hasil: string = 'MULTI PREFIX'
             _database.prefix.map((value: string) => {
                 if (command.startsWith(value)) {
@@ -147,4 +147,7 @@ export class register extends Mongoose {
             return _database.Prefix
         }
     }
+	public async ResetRegister (): Promise <void> {
+		return void await this.register.remove()
+	}
 }

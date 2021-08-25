@@ -38,6 +38,9 @@ export function RandomName(jumlah: number): string {
     }
     return result.join('')
 }
+export function getMentions (text: string | undefined): RegExpMatchArray | null {
+	return String(text).match(/@(0|[0-9]{4,14})/g)
+}
 export function convertAngka(number: number): string {
     const data: string[] = String(number).split('').reverse()
     let combine: string = ''
