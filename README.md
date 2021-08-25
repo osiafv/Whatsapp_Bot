@@ -11,7 +11,7 @@
 <a href="https://github.com/rayyreall/Whatsapp_Bot/stargazers/"><img title="Stars" src="https://img.shields.io/github/stars/rayyreall/Whatsapp_Bot?color=red&style=flat-square"></a>
 </p>
 
-### I'm a Single Fighter Developer!
+### Hello I`am Ra!
 - 🔭 I’m a hard worker who never gives up before trying
 - 🌱 I'm still learning and continue to learn the language I'm currently using is javascript
 - 👯 I’m like learning about programming languages
