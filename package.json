@@ -1,6 +1,6 @@
 {
   "name": "whatsapp-bot",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "",
   "main": "index.ts",
   "directories": {
@@ -54,7 +54,8 @@
   },
   "scripts": {
     "test": " \"echo \\\"Error: no test specified\\\" && exit 1\"",
-    "prettier-format": "prettier --config .prettierrc \"lib/**/*.ts\" --write"
+    "prettier-format": "prettier --config .prettierrc \"lib/**/*.ts\" --write",
+    "start": "tsc && node ./lib/dist/index.js"
   },
   "repository": {
     "type": "git",
