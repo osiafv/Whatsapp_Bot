@@ -17,7 +17,6 @@ export class OwnerOnly extends GroupGuard {
 			if (!data.isOwner) return
 			await this.database.resetMongoDb()
 			await this.Ra.reply(data.from, "Success", data.mess)
-			proto.ReactionMessage
 		})
 	}
 }
