@@ -548,9 +548,7 @@ export async function Ytmp3 (url: string): Promise <youtubeDlCore> {
 		const data: videoInfo = await ytdl.getInfo(getId[1], {
 			requestOptions: {
 				headers: {
-				"x-client-data": "CJC2yQEIo7bJAQjBtskBCKmdygEIj4PLAQjQmssBCKCgywEI7/LLAQjO9ssBCLT4ywEInvnLAQj5+csBCK/6ywEI5P3LARiOnssBGJD1ywE=",
-				"cookie": "VISITOR_INFO1_LIVE=8e7t2Dg-NmE; _gcl_au=1.1.1617653021.1627691158; PREF=f6=80&tz=Asia.Jakarta&f4=4000000&volume=100; SID=AQip5ysp5adFams5UT9n94EynigA2OK7Vh5fgpPLQLHLWTDBb3A7la6nqDA4oqfKS4tgyw.; __Secure-1PSID=AQip5ysp5adFams5UT9n94EynigA2OK7Vh5fgpPLQLHLWTDB9rzz_IaGpyhKuZXlnpclAQ.; __Secure-3PSID=AQip5ysp5adFams5UT9n94EynigA2OK7Vh5fgpPLQLHLWTDB0ErTDQOpGoE0ovY3JNXuow.; HSID=ARVyrsPj7nmdDg_6m; SSID=A7RZ-xsTjLDRoJd6A; APISID=hyaiT7h78kbTrQQj/ABbIkQ22EWIWVeLHo; SAPISID=W9fYb-gZz5a3-6PX/ALt2Ga0J-JKO6AxBu; __Secure-1PAPISID=W9fYb-gZz5a3-6PX/ALt2Ga0J-JKO6AxBu; __Secure-3PAPISID=W9fYb-gZz5a3-6PX/ALt2Ga0J-JKO6AxBu; YSC=k5G6V7YF61I; LOGIN_INFO=AFmmF2swRgIhAPjS7cNQkC5f--ibbeYFaYt48d2KKqgwqHKW3lfZtf-xAiEAqVgTVHk95ecSQrIntqq147pl_wxkGbI_ukm7UpZK-ho:QUQ3MjNmd0JoNUtNRWY5Zk52Wl9SWFBxU2dybTBxZUlaU1VESFFmWjNmZnNTbDdReDgtNWpJYkxZaFZSVEp2V2psRmZZcmhNbk44VFFpdlNUTlhPdmRqdDRsVU83bWJ6MDNWZFJBU2p0MFRPY0w2RTRLWkptMU95T1lRaHMxNXJXb1VGNVBvMW90SDhXWmwxb20zaEJxRmhJOFlvYjh4NGtR; SIDCC=AJi4QfFWZu3VKnFr41KbinoXiN8Hhzul-_FHdneWzi3XVOZbzv4nb438cKMA2MMzVYC_rbY3Uvc; __Secure-3PSIDCC=AJi4QfERWxYOAvPi0i8QF2IwRa90Cp2sQkJsUntUv-N7G5lyzw-r_oXKSi8Ctc31qDhgX7Ndqn4"
-			}
+				}
 		}
 	});
 	const format: videoFormat | undefined = ytdl.filterFormats(data.formats, 'audioonly').find((result => result.audioQuality === "AUDIO_QUALITY_MEDIUM"))
