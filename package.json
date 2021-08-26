@@ -58,7 +58,8 @@
   "scripts": {
     "test": " \"echo \\\"Error: no test specified\\\" && exit 1\"",
     "prettier-format": "prettier --config .prettierrc \"lib/**/*.ts\" --write",
-    "start": "tsc && node ./lib/dist/index.js"
+    "start": "tsc && node ./lib/dist/index.js",
+	"mulai": "ts-node index.ts"
   },
   "repository": {
     "type": "git",
