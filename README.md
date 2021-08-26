@@ -62,9 +62,9 @@ npm i -g ts-node (It's up to this)
 ## Run
 
 ```bash
-npm start 
+npm run mulai (If you use this, you have to install ts-node first)
 or
-ts-node index.ts (If you use this, you have to install ts-node first)
+npm start
 ```
 
 ---
@@ -86,9 +86,9 @@ npm i -g ts-node (It's up to this)
 ## Run
 
 ```bash
-npm start 
+npm run mulai (If you use this, you have to install ts-node first)
 or
-ts-node index.ts (If you use this, you have to install ts-node first)
+npm start
 ```
 
 Notes : I've never tried it on termux so sorry if there's an error
