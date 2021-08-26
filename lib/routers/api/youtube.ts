@@ -548,7 +548,7 @@ export async function Ytmp3 (url: string): Promise <youtubeDlCore> {
 		const data: videoInfo = await ytdl.getInfo(getId[1], {
 			requestOptions: {
 				headers: {
-				}
+			}
 		}
 	});
 	const format: videoFormat | undefined = ytdl.filterFormats(data.formats, 'audioonly').find((result => result.audioQuality === "AUDIO_QUALITY_MEDIUM"))

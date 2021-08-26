@@ -3,8 +3,6 @@ import axios, { AxiosResponse } from 'axios'
 import cheerio, { CheerioAPI } from 'cheerio'
 import { convertAngka } from "../../functions/function";
 
-// Free cookies for tiktok
-// if the feature error please replace the tiktok cookie on the tiktok.com web site
 
 export async function tiktokStalk(username: string): Promise<TiktokStalk> {
     return new Promise(async (resolve, reject) => {
@@ -13,8 +11,7 @@ export async function tiktokStalk(username: string): Promise<TiktokStalk> {
             url: `https://www.tiktok.com/${User}?lang=id`,
             method: 'GET',
             headers: {
-				'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36',
-               
+				'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36' 
             }
         }).then((data: AxiosResponse) => {
 			const $: CheerioAPI = cheerio.load(data.data)

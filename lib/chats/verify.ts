@@ -1,5 +1,5 @@
 import { Commands, HandlingMessage, FormatVerify } from "../typings";
-import { WAConnection, MessageType } from '@adiwajshing/baileys';
+import { WAConnection, MessageType, compressImage } from '@adiwajshing/baileys';
 import { RandomOtp, Buffer, RandomName } from '../functions/function';
 import { Indverifikasi, IndSdhVerifikasi } from '../lang/ind';
 import { ConnectMoongo } from '../database/mongoodb/main';
@@ -32,21 +32,15 @@ export class Verify {
 				profile = fs.readFileSync("./lib/storage/polosan/thumb.png")
 			} finally {
 				if (typeof profile !== "string") {
-					await jimp.read("./lib/storage/polosan/thumb.png", async (err, lenna) => {
-						lenna.blur(10)
-						let Media: any = await lenna.getBufferAsync(lenna.getMIME())
-						this.client.sendMessage(from, profile, MessageType.image, { quoted: mess, caption: Indverifikasi(4, '', { nama: pushname, id: sender.replace("@s.whatsapp.net", ""), dalam: isGroupMsg ? groupMetadata?.subject || "" : "Private chat"}), thumbnail: Media })
-					})
+					let Media: any = await compressImage("./lib/storage/polosan/thumb.png")
+					this.client.sendMessage(from, profile, MessageType.image, { quoted: mess, caption: Indverifikasi(4, '', { nama: pushname, id: sender.replace("@s.whatsapp.net", ""), dalam: isGroupMsg ? groupMetadata?.subject || "" : "Private chat"}), thumbnail: Media })
 				} else {
 					const Media: Buffer =  await Buffer(profile)
 					const Thumb: string = "./lib/storage/temp/" + RandomName (20) + ".png"
 					await fs.writeFileSync(Thumb, (Media))
-					await jimp.read(Thumb, async (err, lenna) => {
-						lenna.blur(10)
-						let tum: any = await lenna.getBufferAsync(lenna.getMIME())
-						await this.client.sendMessage(from, Media, MessageType.image, { quoted: mess, caption:  Indverifikasi(4, '', { nama: pushname, id: sender.replace("@s.whatsapp.net", ""), dalam: isGroupMsg ? groupMetadata?.subject || "" : "Private chat"}), thumbnail:  tum })
-						if (fs.existsSync(Thumb)) fs.unlinkSync(Thumb)
-					})
+					let tum: any = await compressImage(Thumb)
+					await this.client.sendMessage(from, Media, MessageType.image, { quoted: mess, caption:  Indverifikasi(4, '', { nama: pushname, id: sender.replace("@s.whatsapp.net", ""), dalam: isGroupMsg ? groupMetadata?.subject || "" : "Private chat"}), thumbnail:  tum })
+					if (fs.existsSync(Thumb)) fs.unlinkSync(Thumb)
 				}
 			}
         }
