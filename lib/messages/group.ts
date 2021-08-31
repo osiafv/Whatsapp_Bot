@@ -56,9 +56,9 @@ export class GroupData extends MusicHandling {
             if (mentioned[0] == ownerGroup) return this.Ra.reply(from, isOwnerGroupNokick(), mess)
             if (groupMember !== null ? groupMember?.filter((value) => value.isAdmin == true).map((value) => value.jid).includes(mentioned[0]) : (false && ownerGroup == sender) || isOwner) {
 				await res.groupRemove(from, [mentioned[0]])
-				await this.Ra.sendTextWithMentions(from, kickSucces(mentioned[0], sender || ""), [...mentioned, sender || ""], mess)
+				await this.Ra.sendTextWithMentions(from, kickSucces(mentioned[0], sender || ""), mess)
 			} else {
-				await this.Ra.sendTextWithMentions(from, Admindia(mentioned[0]), mentioned, mess)
+				await this.Ra.sendTextWithMentions(from, Admindia(mentioned[0]), mess)
 			}
 		} else {
 			await this.Ra.reply(from, TagOrReply(), mess)
@@ -115,9 +115,9 @@ export class GroupData extends MusicHandling {
 				await this.Ra.reply(from, TagOrReply(), mess)
             } else if (!groupMetadata?.participants.filter((value) => value.isAdmin == true).map((value) => value.jid).includes(mentioned !== undefined ? mentioned[0] : '')) {
 				await res.groupMakeAdmin(from, [mentioned !== undefined ? mentioned[0] : ''])
-                await this.Ra.sendTextWithMentions(from, PromoteSuccess(mentioned !== undefined ? mentioned[0] : ''),mentioned || [],mess)
+                await this.Ra.sendTextWithMentions(from, PromoteSuccess(mentioned !== undefined ? mentioned[0] : ''),mess)
             } else {
-				await this.Ra.sendTextWithMentions(from, PromoteDiaAdmin(mentioned !== undefined ? mentioned[0] : ''), [mentioned !== undefined ? mentioned[0] : ''], mess)
+				await this.Ra.sendTextWithMentions(from, PromoteDiaAdmin(mentioned !== undefined ? mentioned[0] : ''), mess)
             }
 		})
     }
@@ -131,9 +131,9 @@ export class GroupData extends MusicHandling {
 				await this.Ra.reply(from, TagOrReply(), mess)
             } else if (groupMetadata?.participants.filter((value) => value.isAdmin == true).map((value) => value.jid).includes(mentioned !== undefined ? mentioned[0] : '')) {
                 await res.groupDemoteAdmin(from, [mentioned !== undefined ? mentioned[0] : ''])
-                await this.Ra.sendTextWithMentions(from, DemoteSuccess(mentioned !== undefined ? mentioned[0] : ''),mentioned || [],mess)
+                await this.Ra.sendTextWithMentions(from, DemoteSuccess(mentioned !== undefined ? mentioned[0] : ''),mess)
             } else {
-                await this.Ra.sendTextWithMentions(from, DemoteBukanAdmin(mentioned !== undefined ? mentioned[0] : ''), [mentioned !== undefined ? mentioned[0] : ''],mess)
+                await this.Ra.sendTextWithMentions(from, DemoteBukanAdmin(mentioned !== undefined ? mentioned[0] : ''), mess)
             }
         })
     }
@@ -205,7 +205,7 @@ export class GroupData extends MusicHandling {
             if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(), mess)
             if (!isOwner && !isGroupAdmins) return
             const Members: string[] | undefined = groupMember?.map((value) => value.jid)
-            return void (await this.Ra.sendTextWithMentions(from, IndTagall(Members), Members || [], mess))
+            return void (await this.Ra.sendTextWithMentions(from, IndTagall(Members), mess))
         })
     }
     protected ListOnline() {
@@ -221,7 +221,7 @@ export class GroupData extends MusicHandling {
                         result.push({ id: value, nama: Target[value].name || '' })
                     }
                 })
-                await this.Ra.sendTextWithMentions(from, IndListOn(result), [...result.map((value) => value.id)], mess)
+                await this.Ra.sendTextWithMentions(from, IndListOn(result), mess)
             } catch (err) {
                 await this.Ra.reply(from, IndGadaOn(), mess)
             }

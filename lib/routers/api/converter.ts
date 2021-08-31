@@ -2,7 +2,8 @@ import axios, { AxiosResponse, AxiosPromise } from 'axios'
 import cheerio, { CheerioAPI } from 'cheerio'
 import FormData from 'form-data'
 import * as fs from 'fs'
-import { isUrl } from '../../functions/function'
+import { isUrl } from '../../functions/function';
+import { ToUrlUguuse } from "../../typings"
 
 export async function ToVideo(path: string): Promise<{ status: number; data: string } | Error> {
     return new Promise(async (resolve, reject) => {
@@ -207,4 +208,40 @@ export async function pngToWebp(File: string): Promise<{ status: number; hasil: 
             resolve(result)
         }
     })
+}
+export async function TelegraPh (Path: string) {
+	return new Promise (async (resolve, reject) => {
+		if (!fs.existsSync(Path)) return reject(new Error("File not Found"))
+		try {
+			const BodyForm: FormData = new FormData();
+			BodyForm.append("file", fs.createReadStream(Path))
+			const data: AxiosResponse = await  axios({
+				url: "https://telegra.ph/upload",
+				method: "POST",
+				headers: {
+					...BodyForm.getHeaders()
+				},
+				data: BodyForm
+			})
+			return resolve("https://telegra.ph" + data.data[0].src)
+		} catch (err) {
+			return reject(new Error(String(err)))
+		}
+	})
+}
+export async function ToUrlUguuse (Path: string): Promise <ToUrlUguuse> {
+	return new Promise (async (resolve, reject) => {
+		if (!fs.existsSync(Path)) return reject(new Error("File not Found"))
+		const BodyForm: FormData = new FormData();
+		BodyForm.append("files[]", fs.createReadStream(Path))
+		const data: AxiosResponse = await  axios({
+			url: "https://uguu.se/upload.php",
+			method: "POST",
+			headers: {
+				...BodyForm.getHeaders()
+			},
+			data: BodyForm
+		})
+		return resolve(data.data.files[0])
+	})
 }

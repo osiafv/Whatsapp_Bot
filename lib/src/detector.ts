@@ -1,4 +1,4 @@
-import { MessageType, WAConnection, proto } from '@adiwajshing/baileys'
+import { MessageType, WAConnection, proto, WAMessageProto,  } from '@adiwajshing/baileys'
 import { HandlingMessage } from '../typings'
 import { Verify } from '../chats'
 import chalk from 'chalk'
@@ -8,6 +8,7 @@ import ts from 'typescript'
 import util from 'util'
 import { ConnectMoongo } from '../database/mongoodb/main'
 import { RandomName } from "../functions/function"
+import { Document } from "mongodb"
 
 let Reject: Set<string> = new Set()
 let Res: Set<string> = new Set()
@@ -63,11 +64,9 @@ export class Detector extends Verify {
         if (!sender) return
         if (!from) return
         if (await this.database.checkAfk(sender + from)) {
-            const result: { id: string; from: string; alasan: string; time: number } = await this.database.getDataAfk(
-                sender + from
-            )
+            const result: { id: string; from: string; alasan: string; time: number } | Document | null = await this.database.getDataAfk(sender + from)
             await this.database.delAfk(sender + from)
-            await this.client.sendMessage(from, IndAfkBalik(result.time), MessageType.extendedText, { quoted: mess })
+            await this.client.sendMessage(from, IndAfkBalik(result?.time), MessageType.extendedText, { quoted: mess })
         }
         if (mentioned) {
             for (let result of mentioned) {
@@ -75,8 +74,8 @@ export class Detector extends Verify {
                     if (!!AfkTwo.has(sender)) return
                     if (!!AfkOne.has(sender))
                         return ((await this.client.sendMessage(from, IndWarningSpamTag(), MessageType.text, { quoted: mess })) && (await AfkTwo.add(sender)))
-                    const Data: { id: string; from: string; alasan: string; time: number } = await this.database.getDataAfk(result + from)
-                    await this.client.sendMessage(from, indJanganTagAfk(Data.alasan, Data.time), MessageType.extendedText, { quoted: mess })
+                    const Data: { id: string; from: string; alasan: string; time: number } | Document | null  = await this.database.getDataAfk(result + from)
+                    await this.client.sendMessage(from, indJanganTagAfk(Data?.alasan, Data?.time), MessageType.extendedText, { quoted: mess })
                     await AfkOne.add(sender)
                     setTimeout(() => {
                         AfkOne.delete(sender)
@@ -145,6 +144,7 @@ __________________________________
         } else if (/^=>$/.test(Command) && isOwner) {
             const data: HandlingMessage = this.data
             const client = this.client
+			let WaMessageProto = WAMessageProto
 			const { text, extendedText, image, video, sticker, document, buttonsMessage} = MessageType
 			const sendText = (text: any) => { 
 				this.client.sendMessage(from, util.format(text), MessageType.extendedText, { quoted: mess})
@@ -169,7 +169,6 @@ __________________________________
                 quoted: mess
             })
         } else if (/^(<spam)$/i.test(Command) && isOwner) {
-			console.log("masuk")
 			let Text =  this.data?.body?.split(' ')
 			Text?.shift()
 			if (!Text) return
@@ -180,7 +179,7 @@ __________________________________
 				resul.key.id = "RABOT" + RandomName(11).toUpperCase() + resul.key.id
 				await this.client.relayWAMessage(resul)
 			}
-		} 
+		}
     }
     private getRegister() {
         if (!this.data.sender) return

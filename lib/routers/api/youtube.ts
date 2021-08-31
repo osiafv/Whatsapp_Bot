@@ -4,8 +4,16 @@ import cheerio, { CheerioAPI } from 'cheerio'
 import  ytdl, { videoInfo, videoFormat } from 'ytdl-core';
 import { convertAngka } from "../../functions/function";
 import filesize from "filesize";
-import { youtubeDlCore, Y2Mate, YoutubeMP3PlaySer2, YtS, snappeaAud, YoutubeMP4PlaySer2 } from "../../typings"
+import { youtubeDlCore, Y2Mate, YoutubeMP3PlaySer2, YtS, snappeaAud, YoutubeMP4PlaySer2 } from "../../typings";
+import { config } from "dotenv"
+config({ path: './env' })
 
+let getCookies: { cookie?: string, "x-client-data"?: string} = {
+	"cookie": process.env.cookieYoutube
+}
+if (process.env.cookieYoutube) getCookies.cookie = process.env.cookieYoutube
+if (process.env.xcliendatayoutube) getCookies['x-client-data'] = process.env.xcliendatayoutube
+console.log(getCookies)
 export async function ytStalk(channel: string): Promise<ChannelSearchResult> {
     return new Promise(async (resolve, reject) => {
         await ytSearch(channel, (err, call: SearchResult) => {
@@ -509,7 +517,7 @@ export async function Ytmp4 (url: string): Promise <youtubeDlCore> {
 		const data: videoInfo = await ytdl.getInfo(getId[1], {
 			requestOptions: {
 				headers: {
-
+					...getCookies
 			}
 		}
 	});
@@ -548,6 +556,7 @@ export async function Ytmp3 (url: string): Promise <youtubeDlCore> {
 		const data: videoInfo = await ytdl.getInfo(getId[1], {
 			requestOptions: {
 				headers: {
+					...getCookies
 			}
 		}
 	});

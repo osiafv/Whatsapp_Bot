@@ -29,3 +29,44 @@ export declare class TiktokStalk {
 	suka: number
 	total_video: number
 }
+export declare class MusikTiktok {
+	id: string
+	title: string
+	playUrl: string
+	coverLarge: string
+	coverMedium: string
+	coverThumb: string
+	authorName: string
+	original: boolean
+	duration: number
+	album: string
+	scheduleSearchTime: number
+}
+export interface StatistikTiktok {
+	diggCount: number
+	shareCount: number
+	commentCount: number
+	playCount: number
+}
+export declare class TiktokDownloaders {
+	id: string;
+	desk: string;
+	tanggal_buat: string;
+	durasi: string;
+	resolusi: string;
+	url_with_watermark: string;
+	thumbnail: string;
+	format: string;
+	username: string;
+	nickname:  string;
+	foto_profil: string;
+	verify: boolean;
+	music: MusikTiktok;
+	statistic: StatistikTiktok
+	video_private: boolean
+	duetEnabled: boolean
+	stitchEnabled: boolean
+	nowm: string | undefined
+	wm: string | undefined
+	audio: string | undefined
+}

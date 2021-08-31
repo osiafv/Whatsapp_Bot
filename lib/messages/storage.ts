@@ -26,8 +26,8 @@ export class Storager extends UserHandler {
 				if (!media) return
                 if (!sender) return
                 const size: { size: string, value: number, symbol: string }| any = filesize(Filesize || 0, { output: 'object' })
-                if (!/(MB|KB|B)/i.test(size.symbol)) return this.Ra.sendTextWithMentions(from, IndFileGede(sender), [sender], mess)
-                if (size.value >= 50.0 && size.symbol == 'MB') return this.Ra.sendTextWithMentions(from, IndFileGede(sender), [sender], mess)
+                if (!/(MB|KB|B)/i.test(size.symbol)) return this.Ra.sendTextWithMentions(from, IndFileGede(sender), mess)
+                if (size.value >= 50.0 && size.symbol == 'MB') return this.Ra.sendTextWithMentions(from, IndFileGede(sender), mess)
                 const Path: string = './lib/storage/public/' + sender.replace(/@s.whatsapp.net/gi, '') + args[0]
                 fs.readdir('./lib/storage/public/', async (err, call) => {
                     const total: number = call.filter((duh: string) => duh.startsWith(sender.replace(/@s.whatsapp.net/gi, ''))).length

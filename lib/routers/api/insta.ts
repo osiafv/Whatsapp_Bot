@@ -1,12 +1,20 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
-import { instaStalk } from '../../typings'
+import { instaStalk, IgReelsDown, IgPostDown, IgTvDown } from '../../typings'
 import got from 'got'
 import cheerio, { CheerioAPI } from 'cheerio'
+import { config } from "dotenv"
+config({ path: './env' })
+
+let getCookies: { cookie?: string} = {
+	"cookie": process.env.cookieIg
+}
+if (!getCookies?.cookie) getCookies = {}
 
 export const InstaStalk = async (username: string, headers?: AxiosRequestConfig): Promise<instaStalk> => {
     return new Promise(async (resolve, reject) => {
         const Headers: AxiosRequestConfig = headers == undefined ? { headers: {
-			'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36'
+			'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36',
+			...getCookies
 		}
 	} : headers
         await axios.get(`https://www.instagram.com/${username}/?__a=1`, Headers).then((data: AxiosResponse) => {
@@ -134,4 +142,86 @@ export const InstaStalkV3 = async (username: string): Promise<instaStalk> => {
             reject(err)
         }
     })
+}
+export async function InstaDownloader (url: string): Promise <IgPostDown | IgReelsDown | IgTvDown> {
+	return new Promise (async (resolve, reject) => {
+		const RegPost: RegExpExecArray | null= /(?:http(?:s|):\/\/|)(?:www\.|)instagram.com\/p\/([-_0-9A-Za-z]{5,18})/gi.exec(url)
+		const RegReels: RegExpExecArray | null = /(?:http(?:s|):\/\/|)(?:www\.|)instagram.com\/reel\/([-_0-9A-Za-z]{5,18})/gi.exec(url)
+		const RegIgTv: RegExpExecArray | null =   /(?:http(?:s|):\/\/|)(?:www\.|)instagram.com\/tv\/([-_0-9A-Za-z]{5,18})/gi.exec(url)
+		try {
+			if (RegPost) {
+				let BaseUrlPost: string = `https://www.instagram.com/p/`
+				const data: AxiosResponse = await axios({
+					url: BaseUrlPost + RegPost[1] + "/?__a=1",
+					method: "GET",
+					headers: {
+						'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36',
+						...getCookies
+					}
+				})
+				const image = data.data.graphql.shortcode_media.edge_sidecar_to_children.edges.filter((v: any) => v.node.__typename === "GraphImage")
+				const video =  data.data.graphql.shortcode_media.edge_sidecar_to_children.edges.filter((v: any)  => v.node.__typename === "GraphVideo")
+				const getData: { isVideo: boolean, url: string}[] = []
+				for (let result of image) {
+					getData.push({ isVideo: false, url: result.node.display_url })
+				}
+				for  (let result of video) {
+					getData.push({ isVideo: true, url: result.node.video_url})
+				}
+				const format: IgPostDown = {
+					getData,
+					caption: data.data.graphql.shortcode_media. edge_media_to_caption.edges[0].node. text,
+					username: data.data.graphql.shortcode_media.owner.username,
+					like: data.data.graphql.shortcode_media. edge_media_preview_like.count
+				}
+				return resolve(format)
+			} else if (RegReels) {
+				let BaseUrlReel: string = "https://www.instagram.com/reel/"
+				const data: AxiosResponse = await axios({
+					url: BaseUrlReel + RegReels[1] + "/?__a=1",
+					method: "GET",
+					headers: {
+						'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36',
+						...getCookies
+					}
+				})
+				const Format: IgReelsDown = {
+					link: data.data.graphql. shortcode_media.video_url,
+					total_views: data.data.graphql. shortcode_media.video_view_count,
+					total_plays:  data.data.graphql. shortcode_media.video_play_count,
+					total_koment: data.data.graphql. shortcode_media.edge_media_preview_comment.count,
+					username:  data.data.graphql. shortcode_media.owner.username,
+					durasi: data.data.graphql. shortcode_media.video_duration,
+					thumbnail:  data.data.graphql. shortcode_media.thumbnail_src,
+					like: data.data.graphql. shortcode_media.edge_media_preview_like.count
+				}
+				return resolve(Format)
+			} else if (RegIgTv) {
+				let BaseUrlIgtv: string = "https://www.instagram.com/tv/"
+				const data: AxiosResponse = await axios({
+					url: BaseUrlIgtv + RegIgTv[1] + "/?__a=1",
+					method: "GET",
+					headers: {
+						'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36',
+						...getCookies
+					}
+				})
+				const Format: IgTvDown = {
+					link: data.data.graphql.shortcode_media.video_url,
+					thumbnail: data.data.graphql.shortcode_media.thumbnail_src,
+					title: data.data.graphql.shortcode_media.title,
+					total_coment:  data.data.graphql.shortcode_media.edge_media_preview_comment.count,
+					total_view:  data.data.graphql.shortcode_media.video_view_count,
+					total_play:   data.data.graphql.shortcode_media.video_play_count,
+					username:  data.data.graphql.shortcode_media.owner.username,
+			
+				}
+				return resolve(Format)
+			} else {
+				return reject(new Error(String("Url Invalid")))
+			}
+		} catch (err) {
+			return reject(new Error(String(err)))
+		}
+	})
 }

@@ -11,8 +11,9 @@
     "@types/diacritics": "^1.3.1",
     "@types/fast-levenshtein": "0.0.2",
     "@types/figlet": "^1.5.4",
+    "@types/jsdom": "^16.2.13",
     "@types/lodash": "^4.14.172",
-    "@types/monk": "^6.0.0",
+    "@types/mongodb": "^4.0.7",
     "@types/prompt-sync": "^4.1.1",
     "@types/yt-search": "^2.3.2",
     "acorn": "^8.4.1",
@@ -32,9 +33,9 @@
     "got": "^11.8.2",
     "html-filter": "^4.3.0",
     "jimp": "^0.16.1",
+    "jsdom": "^17.0.0",
     "moment-timezone": "^0.5.33",
-	"monk": "^5.0.2",
-    "monk-middleware-wrap-non-dollar-update": "^0.2.1",
+    "mongodb": "^4.1.1",
     "node-webpmux": "^3.1.0",
     "parse-ms": "^2.1.0",
     "playstore-scraper": "^1.0.1",
@@ -50,16 +51,13 @@
     "@types/crypto-js": "^4.0.2",
     "@types/fluent-ffmpeg": "^2.1.18",
     "@types/gifencoder": "^2.0.1",
-    "@types/monk": "^6.0.0",
-    "@types/ms": "^0.7.31",
-    "@types/pino": "^6.3.11",
-    "@types/ws": "^7.4.7"
+    "@types/ms": "^0.7.31"
   },
   "scripts": {
     "test": " \"echo \\\"Error: no test specified\\\" && exit 1\"",
     "prettier-format": "prettier --config .prettierrc \"lib/**/*.ts\" --write",
     "start": "tsc && node ./lib/dist/index.js",
-	"mulai": "ts-node index.ts"
+    "mulai": "ts-node index.ts"
   },
   "repository": {
     "type": "git",
@@ -67,11 +65,11 @@
   },
   "keywords": [
     "Whatsapp-bot",
-	"bot",
-	"BotWhatsapp",
-	"whatsapp-bot",
-	"botwa",
-	"wabot"
+    "bot",
+    "BotWhatsapp",
+    "whatsapp-bot",
+    "botwa",
+    "wabot"
   ],
   "author": "I`am Ra",
   "license": "MIT",

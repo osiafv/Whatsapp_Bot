@@ -1,8 +1,9 @@
 import { Mongoose } from '../../routers/connect/mongoodb'
 import { Registrasi } from '../../typings'
+import { Document } from "mongodb"
 
 export class register extends Mongoose {
-    private register = this.Client.get('register')
+    private register = this.Client.db().collection('register')
     constructor() {
         super()
     }
@@ -55,12 +56,13 @@ export class register extends Mongoose {
             multi: true,
             Prefix: '.'
         }
-        return void (await this.register.insert(Format))
+        return void (await this.register.insertOne(Format))
     }
     public async VerifyCheckDb(sender: string): Promise<boolean> {
         let status: boolean = false
         if (!(await this.CheckRegister(sender))) return status
-        const _database: Registrasi = await this.register.findOne({ id: sender })
+        const _database:  Registrasi | Document  | null= await this.register.findOne({ id: sender })
+		if (!_database) return status
         return _database.status
     }
     public async DoneVerify(sender: string): Promise<void> {
@@ -69,12 +71,14 @@ export class register extends Mongoose {
     }
     public async addHIT(sender: string): Promise<void> {
         if (!(await this.CheckRegister(sender))) return
-        const _database: Registrasi = await this.register.findOne({ id: sender })
+        const _database: Registrasi | Document  | null = await this.register.findOne({ id: sender })
+		if (!_database) return
         return void (await this.register.findOneAndUpdate({ id: sender }, { $set: { hit: Number(_database.hit + 1) } }))
     }
     public async getHIT(sender: string): Promise<number> {
         if (!(await this.CheckRegister(sender))) return 0
-        const _database: Registrasi = await this.register.findOne({ id: sender })
+        const _database:  Registrasi | Document  | null = await this.register.findOne({ id: sender })
+		if (!_database) return 0
         return _database.hit
     }
     public async setprefix(sender: string, Prefix: string | undefined): Promise<void> {
@@ -83,7 +87,8 @@ export class register extends Mongoose {
     }
     public async addMultiPrefix(sender: string, Prefix: string): Promise<boolean> {
         if (!(await this.CheckRegister(sender))) return false
-        const _database: Registrasi = await this.register.findOne({ id: sender })
+        const _database:  Registrasi | Document  | null = await this.register.findOne({ id: sender })
+		if (!_database) return false
         let status: boolean = true
         _database.prefix.map((value: string) => {
             if (value === Prefix) status = false
@@ -96,11 +101,12 @@ export class register extends Mongoose {
     }
     public async delMultiPrefix(sender: string, Prefix: string): Promise<boolean> {
         if (!(await this.CheckRegister(sender))) return false
-        const _database: Registrasi = await this.register.findOne({ id: sender })
-        if (_database.prefix.find((value) => value == Prefix)) {
+        const _database:  Registrasi | Document  | null = await this.register.findOne({ id: sender })
+		if (!_database) return false
+        if (_database.prefix.find((value: any) => value == Prefix)) {
             const _format: string[] = _database.prefix
             _format.splice(
-                _database.prefix.findIndex((value) => value == Prefix),
+                _database.prefix.findIndex((value: any) => value == Prefix),
                 1
             )
             await this.register.findOneAndUpdate({ id: sender }, { $set: { Prefix: _format } })
@@ -110,13 +116,14 @@ export class register extends Mongoose {
         }
     }
     public async getMultiPrefix(sender: string): Promise<string> {
-        const _database: Registrasi = await this.register.findOne({ id: sender })
+        const _database:  Registrasi | Document  | null = await this.register.findOne({ id: sender })
+		if (!_database) return "."
         return _database.prefix.join(', ')
     }
     public async statusPrefix(sender: string): Promise<boolean> {
         if (!(await this.CheckRegister(sender))) return false
         let status: boolean = false
-        const _database: Registrasi = await this.register.findOne({ id: sender })
+        const _database:  Registrasi | Document  | null = await this.register.findOne({ id: sender })
         if (_database?.multi) {
             status = true
         }
@@ -134,7 +141,8 @@ export class register extends Mongoose {
     }
     public async GetPrefix(sender: string, command: string): Promise<string> {
         if (!(await this.CheckRegister(sender))) return '.'
-        const _database: Registrasi = await this.register.findOne({ id: sender })
+        const _database:  Registrasi | Document  | null = await this.register.findOne({ id: sender })
+		if (!_database) return "."
         if (_database?.multi) {
             let hasil: string = 'MULTI PREFIX'
             _database.prefix.map((value: string) => {
@@ -148,6 +156,6 @@ export class register extends Mongoose {
         }
     }
 	public async ResetRegister (): Promise <void> {
-		return void await this.register.remove()
+		return void await this.register.deleteMany({})
 	}
 }

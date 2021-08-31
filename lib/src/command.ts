@@ -68,8 +68,7 @@ export class Command {
                     const event: any = this.events[eventName]
                     if (!event.enabled && !isOwner) continue
                     const prefix: string = this.getPrefix(event)
-                    const match: (
-						RegExp | any[])[] = this.getMatch(body?.toLocaleLowerCase() || '', prefix)
+                    const match: (RegExp | any[])[] = this.getMatch(body?.toLocaleLowerCase() || '', prefix)
                     if (event.noPrefix || !event.pattern) {
                         if (await event.callback(client, { match, ...data })) continue
                     }

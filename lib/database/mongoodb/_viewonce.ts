@@ -1,7 +1,7 @@
 import { AFK as _afk } from '.'
 
 export class ViewOnce extends _afk {
-	private database = this.Client.get('viewonce')
+	private database = this.Client.db().collection('viewonce')
     constructor() {
         super()
     }
@@ -14,13 +14,13 @@ export class ViewOnce extends _afk {
 	}
 	public async  AddViewOnce (id: string): Promise <void> {
 		if (await this.checkViewOnce(id)) return
-		return void await this.database.insert({ id: id })
+		return void await this.database.insertOne({ id: id })
 	}
 	public async deleteViewOnce (id: string): Promise <void> {
 		if (!(await this.checkAfk(id))) return
-		return void await this.database.remove({ id: id })
+		return void await this.database.deleteOne({ id: id })
 	}
 	public async resetViewOnce (): Promise <void> {
-		return void await this.database.remove()
+		return void await this.database.deleteMany({})
 	}
 }

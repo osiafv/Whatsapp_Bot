@@ -12,3 +12,5 @@ export * from "./pinterest";
 export * from "./wikipedia";
 export * from "./Sticker";
 export * from "./playstore";
+export * from "./mediafire";
+export * from "./facebook";

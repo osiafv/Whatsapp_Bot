@@ -13,3 +13,9 @@ export interface AddSTICKER {
     sender: string,
 	Stick: Map <String, MapSticker>
 }
+export interface ToUrlUguuse {
+	hash: string;
+	name: string
+	url: string
+	size: number
+}

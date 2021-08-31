@@ -5,12 +5,10 @@ import { Tunggu, Buffer, RandomName} from '../functions/function'
 import { ToVideo } from '../routers/api'
 import * as fs from 'fs'
 import { Client } from '../src/Client';
-import {  MapSticker } from "../typings";
 import parsems from "parse-ms";
 import filesize from "filesize";
 import { IndTunggu, IndBukanVid, IndToVid, IndBukanAud, IndBukanSticker, IndGagalSticker, IndErrorMP3, IndStickerReply, StickerDuplicate, StickerFound, BukanStickerGif, InputSticker,  IndSuccesToVid, IndToimgDone,  IndStickerVideoPanjang  } from '../lang/ind'
 
-const Stick: Map<string, MapSticker[]> = new Map()
 export class Converter {
     constructor(public Ra: Client) {}
     public async SendingConverter(): Promise<void> {

@@ -4,7 +4,6 @@ import { RandomOtp, Buffer, RandomName } from '../functions/function';
 import { Indverifikasi, IndSdhVerifikasi } from '../lang/ind';
 import { ConnectMoongo } from '../database/mongoodb/main';
 import * as fs from "fs";
-import jimp from "jimp";
 
 const register: Map<String, { otp: string; hit: number; status: boolean; open: boolean }> = new Map();
 

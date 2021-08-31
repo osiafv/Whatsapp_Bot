@@ -65,10 +65,10 @@ export class MusicHandling extends Stalking {
 		globalThis.CMD.on("musik|play <judul/url>",   { event: ["play <judul/url>", "play mp4 <judul/url>", "play mp3 <judul/url>"], tag: "musik"}, ["play"], async (res: WAConnection, data: Commands) => {
 			const { from, args, mess } = data
 			if (!args[0]) return this.Ra.reply(from, IndQuerryKosong(), mess)
-			this.Ra.reply(from,  IndTungguSearch(), mess)
 			if (args[0].toLocaleLowerCase() === "mp3") {
 				args.shift()
 				if (!args[0]) return this.Ra.reply(from, IndQuerryKosong(), mess)
+				this.Ra.reply(from,  IndTungguSearch(), mess)
 				await YtPlaymp3(args.join(" ")).then(async (value: youtubeDlCore) => {
 					await this.Ra.sendImage(from, value.data.thumbnail ?? "", IndYtPlayMP3(value), mess)
 					if (/(gb)/gi.test(value.data.size)) return void this.Ra.reply(from, IndSizeBesar(value.data.size, "13 MB","Play mp3", value.data.down))
@@ -87,6 +87,7 @@ export class MusicHandling extends Stalking {
 			} else if (args[0].toLowerCase() === "mp4") {
 				args.shift()
 				if (!args[0]) return this.Ra.reply(from, IndQuerryKosong(), mess)
+				this.Ra.reply(from,  IndTungguSearch(), mess)
 				await YtPlaymp4(args.join(" ")).then(async (value: youtubeDlCore) => {
 					await this.Ra.sendImage(from, value.data.thumbnail ?? "", IndYtPlayMP4(value), mess)
 					if (/(gb)/gi.test(value.data.size)) return void this.Ra.reply(from, IndSizeBesar(value.data.size, "50 MB","Play mp4", value.data.down))
@@ -103,6 +104,7 @@ export class MusicHandling extends Stalking {
 					})
 				})
 			} else {
+				this.Ra.reply(from,  IndTungguSearch(), mess)
 				await YtPlaymp3(args.join(" ")).then(async (value: youtubeDlCore) => {
 					await this.Ra.sendImage(from, value.data.thumbnail ?? "", IndYtPlayMP3(value), mess)
 					if (/(gb)/gi.test(value.data.size)) return void this.Ra.reply(from, IndSizeBesar(value.data.size, "13 MB","Play mp3", value.data.down))
@@ -122,7 +124,7 @@ export class MusicHandling extends Stalking {
 		})
 	}
     private Lirik() {
-		globalThis.CMD.on('musik|lirik <judul>',   { event: ["lirik"], tag: "musik"},['lirik', 'lyrics'], async (res: WAConnection, data: Commands) => {
+		globalThis.CMD.on('musik|lirik <judul>',   { event: ["lirik <judul>"], tag: "musik"},['lirik', 'lyrics'], async (res: WAConnection, data: Commands) => {
 			const { from, args, mess } = data
 			if (!args[0]) return this.Ra.reply(from, IndQuerryKosong(), mess)
             await LirikLagu(args.join(' ')).then(async (result: LirikResult | undefined) => {

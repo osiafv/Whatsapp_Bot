@@ -2,7 +2,7 @@ import { config } from 'dotenv'
 config()
 import { WAChatUpdate, WAConnection, proto } from '@adiwajshing/baileys'
 import { HandlerMsg } from './handler'
-import { HandlingMessage } from '../typings'
+import { HandlingMessage, Commands } from '../typings'
 import { Command } from './command'
 import { OwnerOnly , groupMembers, CheckUpdate } from '../messages'
 import { Detector } from './detector'
@@ -27,7 +27,7 @@ export class Main {
     public Response() {
         this.client.on('chat-update', async (chats: WAChatUpdate) => {
             const data: HandlingMessage | undefined = await this.message.handling(chats)
-            if (data == undefined) return
+            if (!data) return
 			if (!data.isOwner && !data.isGroupAdmins && (await this.database.CheckMuted(String(data.from)))) return
             this.detector = new Detector(this.client, data, this.database)
             this.detector.antiAll()
@@ -39,18 +39,18 @@ export class Main {
             this.Respon.SendOwner()
             new groupMembers(this.client, data).sendDataMembers()
             this.detector.CommnadGlobal()
-			if (/^(publik|public)/i.test(data.Command) && data.isOwner) {
-				let Body: string = data.body ? data.body : ''
-                if (/(on)/i.test(Body.split(' ')[1])) {
-                    if (Public) return this.Ra.reply(data.from || '', IndPublicDuplicate(true), data.mess)
-                    Public = true
-                    this.Ra.reply(data.from || '', IndPublicSucces(true), data.mess)
-                } else if (/(off)/i.test(Body.split(' ')[1])) {
-                    if (!Public) return this.Ra.reply(data.from || '', IndPublicDuplicate(false), data.mess)
-                    Public = false
-                    this.Ra.reply(data.from || '', IndPublicSucces(false), data.mess)
-                }
-            }
+			globalThis.CMD.on("owner|Publik", { event: ["publik <on/off>", "public <on/off>", "=> <kode>", "$cat", "<spam <jumlah> <text>"], tag: "owner", withPrefix: false}, ["publik", "public"], async (res: WAConnection, data: Commands) => {
+				const { args } = data
+				if (/(on)/i.test(args[0])){
+					if (Public) return this.Ra.reply(data.from, IndPublicDuplicate(true), data.mess)
+					Public = true
+					this.Ra.reply(data.from || '', IndPublicSucces(true), data.mess)
+				} else if (/(off)/i.test(args[0])) {
+					if (!Public) return this.Ra.reply(data.from, IndPublicDuplicate(false), data.mess)
+					Public = false
+					this.Ra.reply(data.from || '', IndPublicSucces(false), data.mess)
+				}
+			})
             return void (await CMD.validate(data, this.client))
         })
     }

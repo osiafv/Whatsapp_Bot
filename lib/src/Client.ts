@@ -1,16 +1,16 @@
 import { WAConnection, MessageType, proto, compressImage } from '@adiwajshing/baileys'
 import * as fs from 'fs'
-import { isUrl, Buffer, RandomName } from '../functions/function'
-import jimp from 'jimp'
+import { isUrl, Buffer, getMentions} from '../functions/function'
+import filetype, { FileTypeResult } from "file-type"
 
 export class Client {
     constructor(public Client: WAConnection) {}
     public async sendText(from: string, text: string): Promise<void> {
         return void (await this.Client.sendMessage(from, text, MessageType.text))
     }
-    public async sendTextWithMentions(from: string, text: string, mentioned: string[], id?: proto.WebMessageInfo | undefined): Promise<void> {
+    public async sendTextWithMentions(from: string, text: string,  id?: proto.WebMessageInfo | undefined): Promise<void> {
         try {
-			return id ? void (await this.Client.sendMessage(from, text, MessageType.text, { contextInfo: { mentionedJid: mentioned }, quoted: id })) : void (await this.Client.sendMessage(from, text, MessageType.text, { contextInfo: { mentionedJid: mentioned }}))
+			return id ? void (await this.Client.sendMessage(from, text, MessageType.text, { contextInfo: { mentionedJid: getMentions(text)?.map((value) => value.split("@")[1] + "@s.whatsapp.net")}, quoted: id })) : void (await this.Client.sendMessage(from, text, MessageType.text, { contextInfo: { mentionedJid:  getMentions(text)?.map((value) => value.split("@")[1] + "@s.whatsapp.net") }}))
         } catch (err) {
             throw console.log(err)
         }
@@ -33,6 +33,25 @@ export class Client {
             throw console.log(err)
         }
     }
+	public async sendDocument (from: string, file: Buffer | string, id?: proto.WebMessageInfo) {
+		try {
+			if (typeof file !== "string") {
+				const types: FileTypeResult | undefined = await filetype.fromBuffer(file)
+				return void (await this.Client.sendMessage(from, file, MessageType.document, { quoted: id, mimetype: types?.mime}))
+			} else if (fs.existsSync(file)) {
+				const types: FileTypeResult | undefined  = await filetype.fromFile(file)
+				return void (await this.Client.sendMessage(from, fs.readFileSync(file), MessageType.document, { quoted: id, mimetype: types?.mime}))
+			} else if (isUrl(file)) {
+				let Media: Buffer = await Buffer(file)
+				const types: FileTypeResult | undefined  = await filetype.fromBuffer(Media)
+				return void (await this.Client.sendMessage(from, Media, MessageType.document, { quoted: id, mimetype: types?.mime}))
+			} else {
+                throw new Error('Input Invalid')
+            }
+		} catch (err) {
+			throw console.log(err)
+		}
+	}
     public async reply(from: string, text: string, id?: proto.WebMessageInfo | undefined): Promise<void> {
         try {
             if (id !== undefined) {
@@ -47,15 +66,15 @@ export class Client {
     public async sendVideo(from: string, media: Buffer | string, caption?: string, id?: proto.WebMessageInfo): Promise<void | Error> {
         try {
             if (typeof media !== 'string') {
-                const data: proto.WebMessageInfo = id ? await this.Client.prepareMessage(from, media, MessageType.video, { quoted: id, caption }) : await this.Client.prepareMessage(from, media, MessageType.video, { caption})
+                const data: proto.WebMessageInfo = id ? await this.Client.prepareMessage(from, media, MessageType.video, { quoted: id, caption: caption }) : await this.Client.prepareMessage(from, media, MessageType.video, { caption})
                 return void (await this.Client.relayWAMessage(data))
             } else if (fs.existsSync(media)) {
                 let Media: Buffer = fs.readFileSync(media)
-                const data: proto.WebMessageInfo = id ? await this.Client.prepareMessage(from, Media, MessageType.video, { quoted: id, caption }) : await this.Client.prepareMessage(from, Media, MessageType.video, { caption })
+                const data: proto.WebMessageInfo = id ? await this.Client.prepareMessage(from, Media, MessageType.video, { quoted: id, caption: caption }) : await this.Client.prepareMessage(from, Media, MessageType.video, { caption })
                 return void (await this.Client.relayWAMessage(data))
             } else if (isUrl(media)) {
                 let Media: Buffer = await Buffer(media)
-                const data: proto.WebMessageInfo = id ? await this.Client.prepareMessage(from, Media, MessageType.video, { quoted: id }) : await this.Client.prepareMessage(from, Media, MessageType.video, { caption})
+                const data: proto.WebMessageInfo = id ? await this.Client.prepareMessage(from, Media, MessageType.video, { quoted: id, caption: caption }) : await this.Client.prepareMessage(from, Media, MessageType.video, { caption})
                 return void (await this.Client.relayWAMessage(data))
             } else {
                 throw new Error('Input Invalid')

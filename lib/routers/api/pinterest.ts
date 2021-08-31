@@ -1,13 +1,20 @@
 import axios, { AxiosResponse, AxiosRequestConfig } from "axios";
 import cheerio, { CheerioAPI } from "cheerio";
-import {  RandomArray } from "../../functions/function"
+import {  RandomArray } from "../../functions/function";
+import { config } from "dotenv"
+config({ path: './env' })
 
+let getCookies: { cookie?: string} = {
+	"cookie": process.env.cookiePinterest
+}
+if (!getCookies?.cookie) getCookies = {}
 
 export async function Pinterest(title: string, headers?: AxiosRequestConfig): Promise <string[]> {
 	return new Promise (async (resolve, reject) => {
 		headers = headers ?? {
 			headers: {
-				"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90. 0.4430.212 Safari/537.36"
+				"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90. 0.4430.212 Safari/537.36",
+				...getCookies
 			}
 		};
 		await axios.request({

@@ -13,6 +13,7 @@ export class Connected extends Main {
     public async Connect(): Promise<void> {
         await this.SessionsSave()
         StartingLog()
+		await this.database.Conneksi()
         this.getUpdate()
         return void (await this.Response())
     }

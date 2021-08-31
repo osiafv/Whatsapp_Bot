@@ -1,12 +1,12 @@
 import { ConnectMongoo } from '../../functions/log'
-import { config } from 'dotenv'
+import { config } from 'dotenv';
+import { MongoClient } from "mongodb"
 config({ path: './env' })
-const mongoose = require('monk')
 
 export class Mongoose {
-    public Client = mongoose(String(process.env.MONGO_URI))
+    public Client = new MongoClient(String(process.env.MONGO_URI))
     constructor() {
-        ConnectMongoo()
-        this.Client.addMiddleware(require('monk-middleware-wrap-non-dollar-update'))
+			this.Client.connect()
+			ConnectMongoo()
     }
 }

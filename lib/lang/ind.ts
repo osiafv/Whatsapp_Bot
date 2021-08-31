@@ -1,4 +1,4 @@
-import { instaStalk, TiktokStalk, LirikResult, Azlirik,  GhStalk, Googlesearch, Question, Answer, PlayStore, youtubeDlCore, YoutubeMP3PlaySer2, YoutubeMP4PlaySer2 } from '../typings'
+import { instaStalk, TiktokStalk, LirikResult, Azlirik,  GhStalk, Googlesearch, Question, Answer, PlayStore, youtubeDlCore, YoutubeMP3PlaySer2, YoutubeMP4PlaySer2, IgPostDown, IgReelsDown, IgTvDown, FaceBookDown,  TiktokDownloaders } from '../typings'
 import { ChannelSearchResult, VideoSearchResult  } from 'yt-search'
 import { WAGroupMetadata, WAGroupParticipant } from '@adiwajshing/baileys'
 import parsems from 'parse-ms';
@@ -11,6 +11,15 @@ moment.tz.setDefault('Asia/Jakarta').locale('id')
 
 export const IndTest = (): string => {
     return `Test`
+}
+export const IndTungguDown = (Type: string) => {
+	return `*⏳* Tunggu sebentar sedang mengeksekusi link ${Type}`
+}
+export const GaSuppotrFb = () => {
+	return `*「❗」* Mohon maaf kak untuk saat ini downloader facebook hanya support link dengan type videos`
+}
+export const IndBlomSupport = () => {
+	return `*「❗」* Mohon maaf kak link yang kakak masukkan belum support untuk fitur downloader`
 }
 export const IndTunggu = (): string => {
 	let kata: string[] = [
@@ -835,14 +844,14 @@ export const indAfkDahNyala = () => {
 	return `Fitur AFK telah anda diaktifkan sebelumnya.`
 }
 export const indJanganTagAfk = (alasan: string, waktu: number) => {
-    const Time = parsems(waktu - Date.now())
+    const Time = parsems(Date.now() + waktu)
     return `Jangan tag dia dia sedang afk dengan alasan ${alasan},\n\nTelah afk selama ${Time.hours} Jam ${Time.minutes} menit ${Time.seconds} detik yang lalu`
 }
 export const IndWarningSpamTag = () => {
     return `Warning anda terdeteksi melakukan spam kepada user yang afk`
 }
 export const IndAfkBalik = (time: number) => {
-    const Time = parsems(time)
+    const Time = parsems(Date.now() -  time)
     return `Anda telah berhenti Afk, setelah afk selama  ${Time.hours} Jam ${Time.minutes} menit ${Time.seconds} detik yang lalu`
 }
 
@@ -884,6 +893,18 @@ export const IndSuccesSearch = (waktu: string, fitur: string) => {
 	]
 	let kata: string[] = [
 		`Success menlakukan pencarian ${fitur} dalam waktu ${waktu}`,
+		`Berhasil mengirimkan data ${fitur} dalam waktu ${waktu}`,
+		`Berhasil melaksanakan perintah dengan waktu ${waktu}`
+	]
+	return Success[Math.floor(Math.random() * (Success.length))] + " " + kata[Math.floor(Math.random() * (kata.length))].trim()
+}
+export const IndSuccesDownloader = (waktu: string, fitur: string) => {
+	let Success: string[] = [
+		`*✅*`,
+		`*✔*`
+	]
+	let kata: string[] = [
+		`Success menlakukan Download ${fitur} dalam waktu ${waktu}`,
 		`Berhasil mengirimkan data ${fitur} dalam waktu ${waktu}`,
 		`Berhasil melaksanakan perintah dengan waktu ${waktu}`
 	]
@@ -1033,7 +1054,7 @@ export const IndYtPlayMP3 = (value: youtubeDlCore) => {
 *│「 𝐏𝐋𝐀𝐘 𝐘𝐎𝐔𝐓𝐔𝐁𝐄  」*
 *╰────────────────*
 
-*📬 ID :* ${Regex[0]}
+*📬 ID :* ${Regex[1]}
 *📜 Judul :* ${value.data.title}
 *📍 Link :* ${value.data.video_url}
 *⏱️ Durasi :* ${value.data.durasi}
@@ -1052,6 +1073,78 @@ export const IndYtPlayMP3 = (value: youtubeDlCore) => {
 *╭─── ⟬ Play MP3 ⟭ ───*
 *│ 🤖 Author : I` + ` am Ra*  
 *╰───「 RA BOT 」───*`
+}
+export const IndTiktokDown = (data:  TiktokDownloaders) => {
+	return `ㅤㅤ *「 TIKTOK DOWNLOADER 」*
+
+
+*📬 Id :* ${data.id}
+*👤 Username :* ${data.username}
+*💌 Nama :* ${data.nickname}
+*🎯 Tanggal Upload :* ${data.tanggal_buat}
+*🕐 Durasi :* ${data.durasi}
+*💡 Resolusi :* ${data.resolusi}
+*🎁 Type :* ${data.format}
+*📧 Akun Terverifikasi :* ${data.verify ?   '✅' : '❎'}
+*🔐 Video Private :* ${data.video_private ?   '✅' : '❎'}
+*🔷 Stlich Status :* ${data.stitchEnabled ?   '✅' : '❎'}
+*🐒 Duet Status :* ${data.duetEnabled ?   '✅' : '❎'}
+*🎞️ Total Tayangan :* ${data.statistic.playCount}
+*🌐 Total Share :* ${data.statistic.shareCount}
+*💭 Total Komen :* ${data.statistic.commentCount}
+*❤ Like :* ${data.statistic.diggCount}
+*🎶 Judul Musik :* ${data.music.title}
+`
+}
+export const IndIgPost = (value: IgPostDown, url: string) => {
+	return `ㅤㅤ *「 IG DOWNLOADER 」*
+
+*👤 Username :* ${value.username}
+*❤ Like :* ${value.like}
+*📍 Caption :* ${value.caption}
+*💫 Url :* ${url}`
+}
+export const IndMediaFire = (value: { link: string | undefined, size: string}) => {
+	return `ㅤㅤ  *「 MEDIAFIRE」*
+
+*⚖️ Ukuran :* ${value.size}
+*💫 Url :* ${value.link}
+
+Tunggu sebentar file sedang dikirim.....
+`
+}
+export const IndIgReelsDown = (value: IgReelsDown, url: string) => {
+	return `ㅤㅤ *「 IG DOWNLOADER 」*
+
+*👤 Username :* ${value.username}
+*❤ Like :* ${value.like}
+*🎥 Views :* ${value.total_views ?? value.total_plays}
+*💭 Total Komen :* ${value.total_koment}
+*🕐 Durasi :* ${value.durasi}
+*💫 Url :* ${url}
+`
+}
+export const IndIgTvDown = (value: IgTvDown, url: string) => {
+	return `ㅤㅤ *「 IG DOWNLOADER 」*
+
+*👤 Username :* ${value.username}
+*📜 Judul :* ${value.title}
+*🎥 Views :* ${value.total_view ?? value.total_play}
+*💭 Total Komen :* ${value.total_coment}
+*💫 Url :* ${url}
+`
+}
+export const IndIGDlInvalid = () => {
+	return `*「❗」* Mohon maaf kak, Link instagram yang ingin kaka download Invalid harap isi Url dengan benar`
+}
+export const BukanIgDown = () => {
+	return `*「❗」*  Mohon maaf kak, kakak tidak memasukkan link instagram dengan benar. harap masukkan link instagram yang ingin kakak download dengan benar`
+}
+export const BukanUrl = () => {
+	return `*「❗」* Mohon maaf kak, data yang kakak masukkan bukan berupa Url harap masukkan urlnya kak`
+}
+export const BukanMediaFire = () => {
+	return `*「❗」*  Mohon maaf kak, Link yang kakak masukkan bukan link file dari media fire`
 }
 export const IndYtPlayMP4 = (value: youtubeDlCore) => {
 	let Regex: RegExpExecArray | null | string = /(?:http(?:s|):\/\/|)(?:(?:www\.|)youtube(?:\-nocookie|)\.com\/(?:watch\?.*(?:|\&)v=|embed\/|v\/)|youtu\.be\/)([-_0-9A-Za-z]{11})/.exec(value.data.video_url)
@@ -1083,4 +1176,45 @@ export const IndYtPlayMP4 = (value: youtubeDlCore) => {
 }
 export const IndSizeBesar = (awal: string, akhir: string, fitur: string, Link: string) => {
 	return `*「❗」* Mohon maaf kak ukuran media kakak ${awal} terlalu besar untuk dikirimkan bot, batas maksimal size fitur ${fitur} adalah ${akhir}. Kaka bisa download manual di link berikut : ${Link}`
+}
+export const IndInputLink = () => {
+	return `*「❗」* Mohon maaf kak, kakak tidak menginput link apapun untuk menggunakan perintah ini kakak harus menginput link`
+}
+export const IndInputLinkYt = () => {
+	return `*「❗」* Mohon maaf kak, kakak tidak memasukkan link youtube apapun Harap masukkan link youtube yang ingin di download`
+}
+export const IndFesbukErr = () => {
+	return `*「❗」* Mohon maaf kak, Link facebook yang kakak kirim invalid harap masukkan link facebook dengan valid`
+}
+export const IndLinkFesbuk = () => {
+	return `*「❗」* Mohon maaf kak, Harap masukkan link post facebook yang ingin di download dengan benar`
+}
+export const IndFotoFb = () => {
+	return `*「❗」*  Mohon maaf kak, Kalo foto tinggal ss aja kak Ngapain pake bot nyusahin`
+}
+export const IndFaceBookDown = (data: FaceBookDown) => {
+	return `ㅤ *「 FB DOWNLOADER 」*
+
+
+*📜 Judul :* ${data.nama}
+*👤 Username :* ${data.username}
+*⏱️ Durasi :* ${data.durasi}
+*🎯 Tanggal Upload :* ${moment(data.uploadedAt).format("LLLL")}
+*🎉 Rilis :* ${moment(data.publishedAt).format("LLLL")}
+*🌚 Nsfw :* ${data.nsfw ?  '✅' : '❎'}
+*🛡️ Genre :* ${data.genre}
+* ⚔ Hastag :* ${data.keywords.join(", ")}
+* 💭 Total koment :* ${data.total_koment}
+*⚖️ Ukuran :* ${data.size}
+*💡 Kualitas :* ${data.quality}
+*✨Transcript: ${data.transcript}
+*💫 Url stream:* ${data.url_stream},
+*📑 Desk :* ${data.desk}
+`
+}
+export const IndTiktokErr = () => {
+	return `*「❗」* Mohon maaf kak, link tiktok yang kakak masukkan invalid/video private harap ganti url tiktok lain`
+}
+export const IndBukanTiktok = () => {
+	return `*「❗」* Mohon maaf kak, kakak tidak memasukkan link tiktok dengan benar harap isi link tiktok dengan valid`
 }

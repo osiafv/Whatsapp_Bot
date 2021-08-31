@@ -121,6 +121,7 @@ export class UserHandler extends Convert {
             let Voting: string[][] = getTag.filter((value) => value.tampil.tag === "voting").map((value) => value.tampil.event)
 			let Guards: string[][] = getTag.filter((value) => value.tampil.tag === "groupguards").map((value) => value.tampil.event)
 			let Search: string[][]= getTag.filter((value) => value.tampil.tag === "search").map((value) => value.tampil.event)
+			let Downloader: string[][] = getTag.filter((value) => value.tampil.tag === "downloader").map((value) => value.tampil.event)
 			let UserMenu: string[] = []
 			let ConverterMenu: string[] = []
 			let StorageMenu: string[] = []
@@ -131,6 +132,7 @@ export class UserHandler extends Convert {
 			let VotingMenu: string[] = []
 			let GuardsMenu: string[] = []
 			let  SearchMenu: string[] = []
+			let DownloaderMenu: string[] = []
 			for (let menu of User) {
 				menu.map((value) => UserMenu.push(value))
 			}
@@ -160,6 +162,9 @@ export class UserHandler extends Convert {
 			}
 			for (let menu of Search) {
 				menu.map((value) => SearchMenu.push(value))
+			}
+			for (let menu of Downloader) {
+				menu.map((value) => DownloaderMenu.push(value))
 			}
             let informasi: string = `
 👋🏻 Halo ${isOwner ? 'My Owner 🤴🏻' : 'ka'} ${Ucapan()}
@@ -201,6 +206,10 @@ informasi += "\n         *MENU SEARCH*\n\n"
 for (let result of SearchMenu.sort()) {
 	informasi += `*ℒ⃝🕊️ •* *` + Prefix + result + '*\n'
 }
+informasi += "\n         *MENU DOWNLOADER*\n\n"
+for (let result of DownloaderMenu.sort()) {
+	informasi += `*ℒ⃝🕊️ •* *` + Prefix + result + '*\n'
+}
 informasi += '\n         *MENU STALK*\n\n'
 for (let result of StalkerMenu.sort()) {
 	informasi += `*ℒ⃝🕊️ •* *` + Prefix + result + '*\n'
@@ -236,7 +245,7 @@ __________________________________
             const Thumb: Buffer = await compressImage(fs.readFileSync('./lib/storage/polosan/thumb.png'))
             const Buttons = {
                 contentText: informasi,
-                footerText: '🔖 @Powered bye Ra',
+                footerText: '🔖 @Powered by Ra',
                 buttons: [
                     {
                         buttonId: 'gas owner',
