@@ -40,7 +40,8 @@ export class Main {
             new groupMembers(this.client, data).sendDataMembers()
             this.detector.CommnadGlobal()
 			globalThis.CMD.on("owner|Publik", { event: ["publik <on/off>", "public <on/off>", "=> <kode>", "$cat", "<spam <jumlah> <text>"], tag: "owner", withPrefix: false}, ["publik", "public"], async (res: WAConnection, data: Commands) => {
-				const { args } = data
+				const { args, isOwner } = data
+				if (!isOwner) return
 				if (/(on)/i.test(args[0])){
 					if (Public) return this.Ra.reply(data.from, IndPublicDuplicate(true), data.mess)
 					Public = true
