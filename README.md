@@ -99,7 +99,7 @@ Notes : I've never tried it on termux so sorry if there's an error
 - Change Owner Number [here](https://github.com/rayyreall/Whatsapp_Bot/blob/master/.env)
 - URL MONGODB [here](https://github.com/rayyreall/Whatsapp_Bot/blob/master/.env)
 - If there is an error feature related to the web such as youtube, tiktok, instagram
-Set your own cookies
+Set your own cookies in .env
 
 
 ### My Stat
