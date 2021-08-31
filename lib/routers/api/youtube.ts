@@ -13,7 +13,7 @@ let getCookies: { cookie?: string, "x-client-data"?: string} = {
 }
 if (process.env.cookieYoutube) getCookies.cookie = process.env.cookieYoutube
 if (process.env.xcliendatayoutube) getCookies['x-client-data'] = process.env.xcliendatayoutube
-console.log(getCookies)
+
 export async function ytStalk(channel: string): Promise<ChannelSearchResult> {
     return new Promise(async (resolve, reject) => {
         await ytSearch(channel, (err, call: SearchResult) => {
