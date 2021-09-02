@@ -3,7 +3,8 @@ import { ChannelSearchResult, VideoSearchResult  } from 'yt-search'
 import { WAGroupMetadata, WAGroupParticipant } from '@adiwajshing/baileys'
 import parsems from 'parse-ms';
 import moment from "moment-timezone";
-import { convertAngka } from "../functions/function"
+import { convertAngka } from "../functions/function";
+import { ITranslateResponse, languages } from "@vitalets/google-translate-api"
 const html = require("html-filter");
 
 moment.tz.setDefault('Asia/Jakarta').locale('id')
@@ -341,9 +342,9 @@ export const IndStickerReply = (command: string): string => {
 }
 export const IndStickerVideoPanjang = () => {
 	let kata: string[] = [
-		`*「❗」* Mohon maaf kak, video yang kakak kirim terlalu besar untuk dijadikan sticker maksimal video 15 detik`,
-		`*「❗」* Mohon maaf kak, durasi video yang kakak kirim terlalu besar untuk dijadikan sticker maksimal video hanya 15 detik`,
-		`*「❗」* Mohon maaf kak, durasi video yang kakak kirim terlalu besar untuk bot jadikan sticker, untuk video maksimal hanya 15 detik kak`
+		`*「❗」* Mohon maaf kak, video yang kakak kirim terlalu besar untuk dijadikan sticker maksimal video 10 detik`,
+		`*「❗」* Mohon maaf kak, durasi video yang kakak kirim terlalu besar untuk dijadikan sticker maksimal video hanya 10 detik`,
+		`*「❗」* Mohon maaf kak, durasi video yang kakak kirim terlalu besar untuk bot jadikan sticker, untuk video maksimal hanya 10 detik kak`
 	]
 	return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
@@ -365,6 +366,9 @@ export const StickerFound = (sender: string): string => {
 		`ini kan kak sticker yang mau di buat tadi ?, Mohon tidak gunakan media yang sama ya kak makasih 🙏🏻`
 	]
     return kata[Math.floor(Math.random() * (kata.length))].trim()
+}
+export const ErrorCircle = () => {
+	return `*「❗」* Mohon maaf Sticker Circle yang ingin anda buat rusak harap ganti media lain`
 }
 export const BotGaAdmin = () => {
 	let kata: string[] = [
@@ -833,7 +837,7 @@ export const indAfkOn = (target: string, group: string, alasan: string, pushname
     return `ㅤㅤ *「 AFK MODE 」*
 
 *➸ Nama :* ${pushname}
-*➸ Target :* ${target}
+*➸ Target :* @${target}
 *➸ In :* ${group}
 *➸ Alasan :* ${alasan}
 
@@ -1217,4 +1221,22 @@ export const IndTiktokErr = () => {
 }
 export const IndBukanTiktok = () => {
 	return `*「❗」* Mohon maaf kak, kakak tidak memasukkan link tiktok dengan benar harap isi link tiktok dengan valid`
+}
+export const IndEmojiNotFound = () => {
+	return `*「❗」* Mohon maaf kak, Emoji yang ingin kakak buat sticker tidak ditemukan harap masukkan emoji dengan benar`
+}
+export const IndHarapInputEMot = () => {
+	return `*「❗」* Mohon maaf kak harap masukkan emoji yang kakak ingin ubah menjadi sticker`
+}
+export const IndTranslate = (value: ITranslateResponse ) => {
+	let Lang: languages | any = languages
+	return `
+*🌐 Negara deteksi :* ${Lang[value.from.language.iso]}
+*📍 Translate :* ${value.text}`
+}
+export const IndTransErr = () => {
+	return `*「❗」* Mohon maaf kak, Bahasa yang kakak masukkan termasuk kedalam list bahasa`
+}
+export const IndTranslateMasuk = () => {
+	return `*「❗」* Mohon maaf kak,  harap masukkan text yang ingin kakak translate`
 }

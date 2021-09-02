@@ -2,6 +2,7 @@ import got, { Response } from 'got'
 import cheerio, { CheerioAPI } from 'cheerio'
 import { LirikResult, LirikSearching, Azlirik } from '../../typings';
 import proxyAgent from "https-proxy-agent";
+import axios, { AxiosResponse } from "axios"
 
 const MusicMatchReg: RegExp = /(?:http(?:s|):\/\/|)(?:www\.|)musixmatch.com/
 const getJudul: RegExp = /.\/(.)\/(.*)$/
@@ -48,6 +49,45 @@ export async function LirikLagu(judul: string): Promise<LirikResult | undefined>
 		}).catch((err) => reject(new Error(err)))
     })
 }
+export async function LirikServer2 (judul: string): Promise <{ title: string, artis: string, lirik: string } > {
+	return new Promise (async (resolve, reject) => {
+		try {
+			const data: AxiosResponse = await axios({
+				url: `http://www.songlyrics.com/index.php?section=search&searchW=${judul}+&submit=Search&searchIn1=artist&searchIn2=album&searchIn3=song&searchIn4=lyrics`,
+				method: "GET",
+				headers: {
+					'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36'
+				}
+			})
+			const $: CheerioAPI = cheerio.load(data.data)
+			let getUrl: string[] = []
+			$("#wrapper > div.wrapper-inner > div.coltwo-wide-2").each(function (a, b) {
+				$(b).find("div").each(function (cod, tod) {
+					let Url: string | undefined = $(tod).find("h3 > a").attr("href")
+					if (!Url) return
+					getUrl.push(Url)
+				}) 
+			})
+			if (!getUrl[0]) return reject(new Error("Url kosong"))
+			const getRespon: AxiosResponse = await axios({
+				url: getUrl[1] ?? getUrl[0],
+				method: "GET",
+				headers: {
+					'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36'
+				}
+			})
+			const ch: CheerioAPI= cheerio.load(getRespon.data)
+			const Format: { title: string, artis: string,  lirik: string } = {
+				title: ch("#colone-container > div.col-one.col-one-leftad").find("div.pagetitle > h1").text().trim(),
+				artis: ch("#colone-container > div.col-one.col-one-leftad").find("div.pagetitle > p:nth-child(2) > a").text().trim(),
+				lirik: ch("#songLyricsDiv").text()
+			}
+			return resolve(Format)
+		} catch (err) {
+			return reject(new Error(String(err)))
+		}
+	})
+}
 export async function LirikInfo(Url: string): Promise<LirikResult | undefined | null> {
     return new Promise(async (resolve, reject) => {
         if (!MusicMatchReg.test(Url)) return resolve(null)
@@ -56,9 +96,7 @@ export async function LirikInfo(Url: string): Promise<LirikResult | undefined | 
             method: 'GET',
             headers: {
                 'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'
-            },
-			port: 3128,
-			host: "36.94.13.63"
+            }
         }).then((response): void => {
 			const $: CheerioAPI = cheerio.load(response.body)
             const title: string = $('div.mxm-track-banner.top > div > div > div > div').find('div.track-title-header > div.mxm-track-title').find('h1').text().trim().replace(/Lyrics/, '')
@@ -87,9 +125,7 @@ export async function LirikSearch(judul: string): Promise<LirikSearching[]> {
             headers: {
                 'user-agent':
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'
-            },
-			port: 3128,
-			host: "36.94.13.63"
+            }
         }).then((respon): void => {
 			const $: CheerioAPI = cheerio.load(respon.body)
             const result: LirikSearching[] = []

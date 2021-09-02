@@ -42,7 +42,7 @@ export async function Y2mateMp3(url: string): Promise<Y2Mate> {
             })
             const $: CheerioAPI = cheerio.load(data.data.result)
             const IdYt: RegExpExecArray | null = ytIdRegex?.exec(url)
-            if (!IdYt) return
+            if (!IdYt) return reject(new Error("Id Yt null"))
             const convert: { type: string, _id: string, v_id: string, ajax: number, token: string, ftype: string, fquality: string } | any = {
                 type: 'youtube',
                 _id: data.data.result.split(/var k__id = /)[1].split('; ')[0].replace(/"/gi, ''),
@@ -91,7 +91,7 @@ export async function Y2mateVid(url: string): Promise<{ link: string; thumb: str
             })
             const $: CheerioAPI = cheerio.load(data.data.result)
             const IdYt: RegExpExecArray | null = ytIdRegex?.exec(url)
-            if (!IdYt) return
+            if (!IdYt) return reject(new Error("Id Yt null"))
             const convert: { type: string, _id: string, v_id: string, ajax: number, token: string, ftype: string, fquality: string } | any = {
                 type: 'youtube',
                 _id: data.data.result.split(/var k__id = /)[1].split('; ')[0].replace(/"/gi, '')[1],

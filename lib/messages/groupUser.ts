@@ -25,7 +25,7 @@ export class GroupCommands extends Searching {
                 time: Date.now()
             }
             await this.database.AddAfk(sender + from, Format)
-            return void (await this.Ra.reply(from, indAfkOn(sender || "", groupMetadata?.subject || "", args[0] ? args.join(' ') : 'Tanpa alasan', pushname), mess))
+            return void (await this.Ra.sendTextWithMentions(from, indAfkOn(sender?.split("@")[0] || "", groupMetadata?.subject || "", args[0] ? args.join(' ') : 'Tanpa alasan', pushname), mess))
         })
     }
 }

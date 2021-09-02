@@ -14,3 +14,5 @@ export * from "./Sticker";
 export * from "./playstore";
 export * from "./mediafire";
 export * from "./facebook";
+export * from "./emoji";
+export * from "./translate";

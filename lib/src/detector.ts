@@ -7,8 +7,8 @@ import * as fs from 'fs'
 import ts from 'typescript'
 import util from 'util'
 import { ConnectMoongo } from '../database/mongoodb/main'
-import { RandomName } from "../functions/function"
-import { Document } from "mongodb"
+import { RandomName, getMentions } from "../functions/function"
+import { Document } from "mongodb";
 
 let Reject: Set<string> = new Set()
 let Res: Set<string> = new Set()
@@ -75,7 +75,7 @@ export class Detector extends Verify {
                     if (!!AfkOne.has(sender))
                         return ((await this.client.sendMessage(from, IndWarningSpamTag(), MessageType.text, { quoted: mess })) && (await AfkTwo.add(sender)))
                     const Data: { id: string; from: string; alasan: string; time: number } | Document | null  = await this.database.getDataAfk(result + from)
-                    await this.client.sendMessage(from, indJanganTagAfk(Data?.alasan, Data?.time), MessageType.extendedText, { quoted: mess })
+                    await this.client.sendMessage(from, indJanganTagAfk(Data?.alasan, Data?.time), MessageType.extendedText, { quoted: mess, contextInfo: { mentionedJid:  getMentions(String(Data?.alasan))?.map((value) => value.split("@")[1] + "@s.whatsapp.net")} })
                     await AfkOne.add(sender)
                     setTimeout(() => {
                         AfkOne.delete(sender)

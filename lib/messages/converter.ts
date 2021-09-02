@@ -1,13 +1,15 @@
 import { WAConnection, MessageType, proto, WAMessage } from '@adiwajshing/baileys'
 import { Commands } from '../typings'
 import { Tomp3, Tocute, CreateSticker, toVideoV2, Toimg, createStickerV2, createStickerV3, CreateStickerCircle  } from '../tools'
-import { Tunggu, Buffer, RandomName} from '../functions/function'
-import { ToVideo } from '../routers/api'
+import { Tunggu, Buffer, RandomName } from '../functions/function';
+import { ToVideo, EmojiAPI, Translate } from '../routers/api'
 import * as fs from 'fs'
 import { Client } from '../src/Client';
 import parsems from "parse-ms";
 import filesize from "filesize";
-import { IndTunggu, IndBukanVid, IndToVid, IndBukanAud, IndBukanSticker, IndGagalSticker, IndErrorMP3, IndStickerReply, StickerDuplicate, StickerFound, BukanStickerGif, InputSticker,  IndSuccesToVid, IndToimgDone,  IndStickerVideoPanjang  } from '../lang/ind'
+import {  StickerEmoji } from "../tools/emotConvert";
+import { ITranslateResponse, languages } from "@vitalets/google-translate-api"
+import { IndTunggu, IndBukanVid, IndToVid, IndBukanAud, IndBukanSticker, IndGagalSticker, IndErrorMP3, IndStickerReply, BukanStickerGif, InputSticker,  IndSuccesToVid, IndToimgDone,  IndStickerVideoPanjang, IndEmojiNotFound,  IndHarapInputEMot,  ErrorCircle, IndTranslate,  IndTransErr, IndTranslateMasuk } from '../lang/ind'
 
 export class Converter {
     constructor(public Ra: Client) {}
@@ -18,7 +20,45 @@ export class Converter {
         this.toCUTE()
         this.toImg()
 		this.StickerCircle()
+		this.TransLate()
+		this.StickerEmoji()
     }
+	protected async TransLate () {
+		globalThis.CMD.on("Translet", { event: ["translate <to> <text>"], tag: "converter"}, ["translate"], async (res: WAConnection, data: Commands) => {
+			const { from, args, mess, bodyQuoted} = data
+			if (!args[0] && !bodyQuoted) return this.Ra.reply(from, IndTranslateMasuk(), mess)
+			let getLang: string | undefined
+			if  (languages.isSupported(args[0])) {
+				getLang = args[0] 
+				args.shift()
+			}
+			if (!args[0] && !bodyQuoted) return this.Ra.reply(from, IndTranslateMasuk(), mess)
+			await  Translate(args[0] ? args.join(" ") : String(bodyQuoted), getLang).then((value: ITranslateResponse) => {
+				this.Ra.reply(from, IndTranslate(value), mess)
+			}).catch((err) => {
+				return this.Ra.reply(from,  IndTransErr(), mess)
+			})
+		})
+	}
+	protected async StickerEmoji () {
+		globalThis.CMD.on("con|stickeremot", { event: ["emoji <emoji>", "semoji <emoji>"], tag: "converter"}, ["stickeremoji", "semoji","stimoji", "emoji", "emot", "emotikon"], async (res: WAConnection, data: Commands) => {
+			const { from, args, mess } = data
+			if (!args[0]) return this.Ra.reply(from,  IndHarapInputEMot(), mess)
+			await this.Ra.reply(from, IndTunggu(), mess)
+			await  EmojiAPI(args[1] ?? args[0]).then(async (value: { url: string, name: string}[]) => {
+				let getUri: string = value.find((values) => new RegExp(args[0], "gi").test(values.name))?.url ?? value[0].url
+				await StickerEmoji(getUri).then(async (values: string) => {
+					await this.Ra.sendSticker(from, values, mess)
+					await Tunggu(2000)
+					if (fs.existsSync(values)) fs.unlinkSync(values)
+				}).catch(() => {
+					this.Ra.reply(from, IndEmojiNotFound(), mess)
+				})
+			}).catch (() => {
+				this.Ra.reply(from, IndEmojiNotFound(), mess)
+			})
+		})
+	}
 	protected async StickerCircle () {
 		globalThis.CMD.on("converter|stickercircle", { event: ["scircle <img,vid, stick>"], tag: "converter"},["stikerc", "stickerc", "scircle", "stickercircle", "stikercirle"], async (res: WAConnection, data: Commands) => {
 			const { media, from, mess, isQuotedImage, isGambar, isQuotedSticker, quotedMsg } = data;
@@ -30,7 +70,9 @@ export class Converter {
 					await this.Ra.sendSticker(from, respon, mess)
 					await Tunggu(2000)
 					if (fs.existsSync(respon)) fs.unlinkSync(respon)
-				}, )
+				}).catch(() => {
+					this.Ra.reply(from,  ErrorCircle(), mess)
+				})
 			} else if (quotedMsg?.quotedMessage?.extendedTextMessage?.jpegThumbnail) {
 				await this.Ra.reply(from, IndTunggu(), mess)
 				const Path: string = `./lib/storage/temp/${RandomName(32)}.png`
@@ -39,6 +81,8 @@ export class Converter {
 					await this.Ra.sendSticker(from, respon, mess)
 					await Tunggu(2000)
 					if (fs.existsSync(respon)) fs.unlinkSync(respon)
+				}).catch(() => {
+					this.Ra.reply(from,  ErrorCircle(), mess)
 				})
 			} else if (quotedMsg?.quotedMessage?.buttonsMessage?.locationMessage?.jpegThumbnail) {
 				await this.Ra.reply(from, IndTunggu(), mess)
@@ -48,6 +92,8 @@ export class Converter {
 					await this.Ra.sendSticker(from, respon, mess)
 					await Tunggu(2000)
 					if (fs.existsSync(respon)) fs.unlinkSync(respon)
+				}).catch(() => {
+					this.Ra.reply(from,  ErrorCircle(), mess)
 				})
 			} else if (quotedMsg?.stanzaId) {
 				const message: proto.WebMessageInfo = await res.loadMessage(from, quotedMsg.stanzaId)
@@ -63,6 +109,8 @@ export class Converter {
 						await this.Ra.sendSticker(from, respon, mess)
 						await Tunggu(2000)
 						if (fs.existsSync(respon)) fs.unlinkSync(respon)
+					}).catch(() => {
+						this.Ra.reply(from,  ErrorCircle(), mess)
 					})
 				}
 			}
@@ -73,8 +121,8 @@ export class Converter {
 			const { args, media, from, mess, sendOwner, isQuotedDokumen, Command, FileSha, sender, quotedMsg, isVideo, isQuotedVideo } = data
 			const Wm: string | null | undefined = args[0] === undefined ? undefined : args.join(' ')
             if (media) {
-				if (isVideo && Number(media.message?.videoMessage?.seconds) > 15) return await this.Ra.reply(from,  IndStickerVideoPanjang(), mess)
-				if (isQuotedVideo && Number(media.message?.videoMessage?.seconds) > 15) return await this.Ra.reply(from,  IndStickerVideoPanjang(), mess)
+				if (isVideo && Number(media.message?.videoMessage?.seconds) > 10) return await this.Ra.reply(from,  IndStickerVideoPanjang(), mess)
+				if (isQuotedVideo && Number(media.message?.videoMessage?.seconds) > 10) return await this.Ra.reply(from,  IndStickerVideoPanjang(), mess)
 				if (isQuotedDokumen && !/(image|video)/gi.test(String(quotedMsg?.quotedMessage?.documentMessage?.mimetype))) return await this.Ra.reply(from, IndStickerReply(Command), mess)
 				if (isQuotedDokumen && /(video)/gi.test(String(quotedMsg?.quotedMessage?.documentMessage?.mimetype)) && /(mb)/i.test(filesize(Number(quotedMsg?.quotedMessage?.documentMessage?.fileLength))) && Number(filesize(Number(quotedMsg?.quotedMessage?.documentMessage?.fileLength)).replace(/mb/i, "")) > 12) return  await this.Ra.reply(from,  IndStickerVideoPanjang(), mess)
 				await this.Ra.reply(from, IndTunggu(), mess)

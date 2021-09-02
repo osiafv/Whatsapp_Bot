@@ -2,7 +2,7 @@ import { Stalking } from '.'
 import { Client } from '../src/Client'
 import { WAConnection } from '@adiwajshing/baileys'
 import { Commands, LirikResult, Azlirik, youtubeDlCore, YoutubeMP3PlaySer2, YoutubeMP4PlaySer2 } from '../typings'
-import { LirikLagu, AzLirik, YtPlaymp3, YtPlaymp4, Ytplaymp3Server2, Ytplaymp4Server2 } from '../routers/api'
+import { LirikLagu, AzLirik, YtPlaymp3, YtPlaymp4, Ytplaymp3Server2, Ytplaymp4Server2, LirikServer2 } from '../routers/api'
 import { IndLirikMusicMatch, IndAzLirik, LirikGada, IndYtPlayMP3,  IndQuerryKosong, IndYoutubeKosong,  IndTungguSearch, IndSizeBesar, IndYtPlayMP4, IndYtPlayAudSer2, IndYtPlayVidSer2  } from '../lang/ind'
 import { ConnectMoongo } from '../database/mongoodb/main';
 
@@ -131,8 +131,12 @@ export class MusicHandling extends Stalking {
 				if (!result) {
 					await AzLirik(args.join(' ')).then((value: Azlirik) => {
 						this.Ra.reply(from, IndAzLirik(value), mess)
-					}).catch(() => {
-						this.Ra.reply(from, LirikGada(), mess)
+					}).catch(async () => {
+						await LirikServer2(args.join(" ")).then((values: { title: string, artis: string,  lirik: string } ) => {
+							this.Ra.reply(from, IndAzLirik(values), mess)
+						}).catch(() => {
+							this.Ra.reply(from, LirikGada(), mess)
+						})
 					})
 				} else {
 					this.Ra.sendImage(from, result.result.thumbnail, IndLirikMusicMatch(result), mess)
@@ -140,8 +144,12 @@ export class MusicHandling extends Stalking {
 			}).catch(async () => {
 				await AzLirik(args.join(' ')).then((value: Azlirik) => {
 					this.Ra.reply(from, IndAzLirik(value), mess)
-				}).catch(() => {
-					 this.Ra.reply(from, LirikGada(), mess)
+				}).catch(async () => {
+					await LirikServer2(args.join(" ")).then((values: { title: string, artis: string,  lirik: string } ) => {
+						this.Ra.reply(from, IndAzLirik(values), mess)
+					}).catch(() => {
+						this.Ra.reply(from, LirikGada(), mess)
+					})
 					})
 				})
 			})

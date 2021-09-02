@@ -5,7 +5,7 @@ import { RandomName, isUrl }from '../functions/function'
 import { videoToWebp, pngToWebp } from '../routers/api';
 import { WebpCircle,  ImgCircle } from "."
 
-async function createExif (pakage: string, author: string, Path: string) {
+export async function createExif (pakage: string, author: string, Path: string) {
 	const json: { "sticker-pack-name": string, "sticker-pack-publisher": string} = {	
 		"sticker-pack-name": pakage,
 		"sticker-pack-publisher": author,
